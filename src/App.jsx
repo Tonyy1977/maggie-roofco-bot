@@ -19,8 +19,6 @@ function OptionBoxes({ options, onSelect }) {
   );
 }
 
-
-
 function App() {
   const [messages, setMessages] = useState([
     {
@@ -32,29 +30,13 @@ function App() {
   const [input, setInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
-  const [currentFollowUps, setCurrentFollowUps] = useState(null);
-  const [collectedInfo, setCollectedInfo] = useState({});
   const [isTyping, setIsTyping] = useState(false);
 
-  const clean = (str) =>
-    str
-      .toLowerCase()
-      .replace(/[-_]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .replace(/[^\w\s]/g, '')
-      .trim();
-
-  // fuzzy match logic unchanged
-  const findBestMatch = (text) => {
-    // ... existing fuzzy match code ...
-  };
-
   const addMessage = (msg) => {
-    const withTime = {
-      ...msg,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-    setMessages((prev) => [...prev, withTime]);
+    setMessages((prev) => [
+      ...prev,
+      { ...msg, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+    ]);
   };
 
   const handleSend = async (text = input) => {
@@ -66,17 +48,14 @@ function App() {
     addMessage({ sender: 'user', text: userRaw });
     setIsTyping(true);
 
-     const payload = {
-      model: 'gpt-3.5-turbo',  // use a supported model
+    const payload = {
+      model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
           content: `You are Micah, a friendly property-management expert helping U.S. Navy sailors. FAQs: ${JSON.stringify(qaData)}`
         },
-        {
-          role: 'user',
-          content: userRaw
-        }
+        { role: 'user', content: userRaw }
       ]
     };
 
@@ -84,15 +63,14 @@ function App() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const js = await res.json();
       if (!res.ok) {
-        // Show the OpenAI error message
         addMessage({ sender: 'bot', text: `Error: ${js.error?.message || 'Unknown error'}` });
       } else {
-        const reply = js.choices[0]?.message?.content || 'Sorry, something went wrong.';
+        const reply = js.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
         addMessage({ sender: 'bot', text: reply });
       }
     } catch (err) {
@@ -101,28 +79,6 @@ function App() {
       setIsTyping(false);
     }
   };
-
-  try {
-    const res = await fetch('/api/chat', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    model: 'gpt-4o',
-    messages: [
-      // system + user messages
-    ]
-  })
-});
-    const js = await res.json();
-    const reply = js.choices?.[0]?.message?.content ?? 'Sorry, something went wrong.';
-    addMessage({ sender: 'bot', text: reply });
-
-  } catch (err) {
-    addMessage({ sender: 'bot', text: 'Error contacting GPT. Check your API key.' });
-  } finally {
-    setIsTyping(false);
-  }
-};
 
   return (
     <>
@@ -135,7 +91,11 @@ function App() {
               {messages.map((m, i) => (
                 <div key={i} className={`message-row ${m.sender}-row`}>
                   {m.sender === 'bot' && (
-                    <img src="https://i.postimg.cc/wT5gNFQ9/2.jpg" alt="bot-avatar" className="avatar" />
+                    <img
+                      src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
+                      alt="bot-avatar"
+                      className="avatar"
+                    />
                   )}
                   <div className={`message ${m.sender}-msg`}>
                     <span className="message-text">{m.text}</span>
@@ -147,7 +107,13 @@ function App() {
               {showWelcomeOptions && (
                 <div className="welcome-options">
                   {['Rent','Payment','Application','Tour','Emergency contact','Other'].map(opt => (
-                    <button key={opt} className="welcome-btn" onClick={() => handleSend(opt)}>{opt}</button>
+                    <button
+                      key={opt}
+                      className="welcome-btn"
+                      onClick={() => handleSend(opt)}
+                    >
+                      {opt}
+                    </button>
                   ))}
                 </div>
               )}
