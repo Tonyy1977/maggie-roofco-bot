@@ -58,13 +58,49 @@ function App() {
   };
 
   const handleSend = async (text = input) => {
-  const userRaw = text.trim();
-  if (!userRaw) return;
-  setInput('');
-  setShowWelcomeOptions(false);
+    const userRaw = text.trim();
+    if (!userRaw) return;
 
-  addMessage({ sender: 'user', text: userRaw });
-  setIsTyping(true);
+    setInput('');
+    setShowWelcomeOptions(false);
+    addMessage({ sender: 'user', text: userRaw });
+    setIsTyping(true);
+
+     const payload = {
+      model: 'gpt-3.5-turbo',  // use a supported model
+      messages: [
+        {
+          role: 'system',
+          content: `You are Micah, a friendly property-management expert helping U.S. Navy sailors. FAQs: ${JSON.stringify(qaData)}`
+        },
+        {
+          role: 'user',
+          content: userRaw
+        }
+      ]
+    };
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const js = await res.json();
+      if (!res.ok) {
+        // Show the OpenAI error message
+        addMessage({ sender: 'bot', text: `Error: ${js.error?.message || 'Unknown error'}` });
+      } else {
+        const reply = js.choices[0]?.message?.content || 'Sorry, something went wrong.';
+        addMessage({ sender: 'bot', text: reply });
+      }
+    } catch (err) {
+      addMessage({ sender: 'bot', text: 'Network error contacting GPT.' });
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
   try {
     const res = await fetch('/api/chat', {
