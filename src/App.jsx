@@ -68,38 +68,37 @@ function App() {
 
     // follow-up & rule-based logic here...
     // if fall-through to GPT then:
-    setIsTyping(true);
-    try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-    'Content-Type': 'application/json',
-', },
-  body: JSON.stringify({ /* … */ }),
-});
-          'Content-Type': 'application/json',
+    // … inside handleSend:
+setIsTyping(true);
+try {
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: `You are Micah, a friendly property-management expert helping U.S. Navy sailors. Below is the list of frequently asked questions and answers, which you should use as primary reference. Only if none match should you provide freeform guidance. FAQs: ${JSON.stringify(qaData)}`
         },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            {
-              role: 'system',
-              content: `You are Micah, a friendly property-management expert helping U.S. Navy sailors. Below is the list of frequently asked questions and answers, which you should use as primary reference. Only if none match should you provide freeform guidance. FAQs: ${JSON.stringify(qaData)}`
-            },
-            { role: 'user', content: userRaw }
-          ]
-        }),
-      });
-      const js = await res.json();
-      const reply = js.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
-      setIsTyping(false);
-      addMessage({ sender: 'bot', text: reply });
-    } catch (err) {
-      setIsTyping(false);
-      addMessage({ sender: 'bot', text: 'Error contacting GPT. Check your API key.' });
-    }
-  };
+        { role: 'user', content: userRaw }
+      ]
+    })
+  });
+
+  const js = await res.json();
+    const reply = js.choices?.[0]?.message?.content ?? 'Sorry, something went wrong.';
+    addMessage({ sender: 'bot', text: reply });
+
+  } catch (err) {
+    addMessage({ sender: 'bot', text: 'Error contacting GPT. Check your API key.' });
+  } finally {
+    setIsTyping(false);
+  }
+};
 
   return (
     <>
