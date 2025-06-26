@@ -33,7 +33,21 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
-  // 2) Forward to OpenAI
+  // Log the body so we can inspect it in Vercel logs
+  console.log('📨 Received body:', JSON.stringify(body));
+
+  // 2) Validate payload shape
+  if (
+    !body.model ||
+    !Array.isArray(body.messages) ||
+    body.messages.length === 0
+  ) {
+    return res.status(400).json({
+      error: 'Payload must include a `model` string and a non-empty `messages` array'
+    });
+  }
+
+  // 3) Forward to OpenAI
   let openaiRes, data;
   try {
     openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -50,12 +64,12 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: 'Upstream request failed' });
   }
 
-  // 3) If OpenAI returned an error status, log it and forward it
+  // 4) If OpenAI returned an error, log it and forward
   if (!openaiRes.ok) {
     console.error('❌ OpenAI error:', data);
     return res.status(openaiRes.status).json(data);
   }
 
-  // 4) Success—send the completion response back
+  // 5) Success—send the completion response back
   return res.status(200).json(data);
 }
