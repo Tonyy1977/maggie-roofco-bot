@@ -1,0 +1,214 @@
+/* Chat toggle button */
+.chat-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #0078ff;
+  color: #fff;
+  font-size: 24px;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+/* Chat window wrapper */
+.chat-wrapper {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(0,0,0,0.2);
+  background: #fff;
+  z-index: 999;
+}
+
+/* Chat box layout */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Header styling */
+.chat-header {
+  flex: 0 0 auto;
+  padding: 12px;
+  background: #0078FF;
+  color: white;
+  font-weight: bold;
+}
+
+/* Body scroll area */
+.chat-body {
+  flex: 1 1 auto;
+  padding: 12px;
+  overflow-y: auto;
+  background: #f0f0f0;
+}
+
+/* Typing indicator */
+.typing-indicator {
+  font-style: italic;
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+/* Message row container */
+.message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+
+/* Bot vs user alignment */
+.bot-row { justify-content: flex-start; }
+.user-row { justify-content: flex-end; }
+
+/* Avatar */
+.avatar {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-top: 4px;
+  border: 1.5px solid #0078ff;   /* blue circle around avatar */
+}
+
+/* Message bubble container: auto-size to include timestamp */
+.message {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+/* Actual text within bubble */
+.message .message-text {
+  white-space: pre-wrap;
+  line-height: 1.4;
+}
+
+/* Timestamp inside bubble, aligned left */
+.message .timestamp {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #888; /* default grey for bot bubble */
+  align-self: flex-start;
+}
+
+/* Bubble styling (shared) */
+.bot-msg,
+.user-msg {
+  max-width: 75%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* User bubble */
+.user-msg {
+  background-color: #0084ff;
+  color: white;
+  border-bottom-right-radius: 0;
+}
+
+/* Bot bubble */
+.bot-msg {
+  background-color: #e4e6eb;
+  color: #000 !important;             /* bot text in black */
+  border-bottom-left-radius: 0;
+}
+
+/* Ensure inner text is also black */
+.bot-msg .message-text {
+  color: #000 !important;
+}
+
+/* Override timestamp color for user bubble */
+.user-msg .timestamp {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Follow-up buttons */
+.followup-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 0 40px;
+  justify-content: flex-start;
+}
+
+.followup-btn {
+  background-color: #0078ff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.followup-btn:hover {
+  background-color: #005bb5;
+}
+
+/* Footer with input and send button */
+.chat-footer {
+  flex: 0 0 auto;
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background: #fff;
+}
+
+.chat-footer input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 18px;
+  font-size: 14px;
+}
+
+.chat-footer button {
+  background: #0078ff;
+  color: white;
+  border: none;
+  padding: 0 16px;
+  font-size: 18px;
+  margin-left: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Welcome option buttons */
+.welcome-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.welcome-btn {
+  background-color: #0078ff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.welcome-btn:hover {
+  background-color: #005bb5;
+}
