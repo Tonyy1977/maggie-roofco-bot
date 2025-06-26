@@ -68,19 +68,15 @@ function App() {
 
   try {
     const res = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content: `You are Micah… FAQs: ${JSON.stringify(qaData)}`
-        },
-        { role: 'user', content: userRaw }
-      ]
-    })
-  });
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    model: 'gpt-4o',
+    messages: [
+      // system + user messages
+    ]
+  })
+});
     const js = await res.json();
     const reply = js.choices?.[0]?.message?.content ?? 'Sorry, something went wrong.';
     addMessage({ sender: 'bot', text: reply });
