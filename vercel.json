@@ -5,25 +5,9 @@
     { "src": "api/chat.js",   "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/chat", "dest": "api/chat.js" },
-    { "src": "/(.*)",      "dest": "/index.html" }
-  ]
-}
-{
-  "version": 2,
-  "builds": [
-    { "src": "package.json", "use": "@vercel/static-build" },
-    { "src": "api/chat.js",   "use": "@vercel/node" }
-  ],
-  "routes": [
-    // API route
-    { "src": "/api/(.*)", "dest": "api/chat.js" },
-
-    // Serve static assets directly
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/favicon.ico",  "dest": "/favicon.ico" },
-
-    // Fallback to index.html for SPA routes
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "/api/(.*)",   "dest": "api/chat.js" },
+    { "src": "/assets/(.*)","dest": "/assets/$1" },
+    { "src": "/favicon.ico","dest": "/favicon.ico" },
+    { "src": "/(.*)",       "dest": "/index.html" }
   ]
 }
