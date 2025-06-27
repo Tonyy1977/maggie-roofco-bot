@@ -13,7 +13,7 @@ const qaData = [
   ],
   followUps: {
     "when can i tour": "You can schedule a tour anytime using the link below.",
-    "how do i schedule a tour": "Please use this link to schedule your tour: https://ddtenterprise.org/schedule-a-tour/",
+    "how do i schedule a tour": "Please use this link to schedule your tour: <a href=\"https://ddtenterprise.org/schedule-a-tour/\" target=\"_blank\">Schedule a Tour</a>",
     "what to expect during tour": "During the tour, you can see all the features of the property and ask any questions you may have.",
   },
 },
@@ -104,7 +104,7 @@ const qaData = [
     keywords: ["tour", "schedule", "visit", "see", "home"],
     answer: [
       "Perfect, we are excited about conducting your tour. Please confirm the date and time that works best for you with the link provided below.",
-      "Please state what feature of the home stood out most to you?\nhttps://ddtenterprise.org/schedule-a-tour/",
+      "Please state what feature of the home stood out most to you?<a href=\"https://ddtenterprise.org/schedule-a-tour/\" target=\"_blank\">Schedule a Tour</a>",
     ],
   },
   {
@@ -116,7 +116,7 @@ const qaData = [
     keywords: ["apply", "submitted", "next step"],
     answer: [
       "Thank you for submitting your application. Are you interested in scheduling a tour of the home to determine if it's a great fit for you? If so, please select a date and time that works best using the link below.",
-      "https://ddtenterprise.org/schedule-a-tour/",
+      "<a href=\"https://ddtenterprise.org/schedule-a-tour/\" target=\"_blank\">Schedule a Tour</a>",
     ],
   },
   {
@@ -168,7 +168,7 @@ const qaData = [
     keywords: ["reschedule", "tour", "appointment", "change"],
     answer: [
       "Certainly, please choose a time that works with your schedule using the link below.",
-      "https://ddtenterprise.org/schedule-a-tour/",
+      "<a href=\"https://ddtenterprise.org/schedule-a-tour/\" target=\"_blank\">Schedule a Tour</a>",
     ],
   },
   {
@@ -342,10 +342,41 @@ const qaData = [
     ],
     keywords: ["speak", "person", "agent", "contact", "customer service"],
     answer: [
-      "We would love to hear from you. Please utilize your “contact us” icon or use the link below.",
-      "https://ddtenterprise.org/contact-us/",
+      "We would love to hear from you. Please utilize your “contact us” icon or use the link below.<br/><a href=\"https://ddtenterprise.org/contact-us/\" target=\"_blank\">Contact Us</a>",
     ],
   },
+  {
+    question: "What happens if I pay rent late or only partially?",
+    answer: "Yes, late payments are fine, however any payment made after the 5th of the month late fees will be assessed."
+  },
+
+  {
+    question: "What should I do in case of flooding, fire, death, or criminal activity?",
+    answer: "Please call DDT immediately on (757) 408-7241"
+  },
+
+  {
+    question: "Can I bring my pet when I come for a tour?",
+    answer: "Your fur-baby is a part of your family, and we want to ensure that they are comfortable with the home as well, their vote counts!"
+  },
+
+  {
+  question: ["What rentals are currently available?"],
+  answer: [
+    "Please visit: <a href=\"https://ddtenterprise.org/rental-properties/#rutherford\" target=\"_blank\">View Available Rentals</a>"
+  ]
+},
+
+  {
+    question: "How do I report emergency maintenance?",
+    answer: "For all personal maintenance calls, please log into your resident portal and place a ticket number."
+  },
+  {
+    question: ["I'm having trouble placing a maintenance request"],
+    answer: [
+      "Please use this link to place your request: <a href=\"https://ddtenterprise.managebuilding.com/manager/app/tasks/add?taskTypeId=2\" target=\"_blank\">Maintenance Request Form</a>"
+    ]
+    },
 ];
 
 export default qaData;

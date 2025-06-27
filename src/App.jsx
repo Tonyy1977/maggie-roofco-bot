@@ -1,29 +1,12 @@
-// src/App.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import qaData from './qaData';
-
-function OptionBoxes({ options, onSelect }) {
-  return (
-    <div className="option-box-container">
-      {options.map((opt) => (
-        <div
-          key={opt}
-          className="option-box"
-          onClick={() => onSelect(opt)}
-        >
-          {opt}
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function App() {
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
-      text: "Hi, I'm Micah, DDT's virtual assistant, how can I help you today?",
+      text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -31,6 +14,17 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
+  const [showPopup, setShowPopup] = useState(true);
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowPopup(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
 
   const addMessage = (msg) => {
     setMessages((prev) => [
@@ -48,32 +42,52 @@ function App() {
     addMessage({ sender: 'user', text: userRaw });
     setIsTyping(true);
 
-    const payload = {
-      model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'system',
-          content: `You are Micah, a friendly property-management expert helping U.S. Navy sailors. FAQs: ${JSON.stringify(qaData)}`
-        },
-        { role: 'user', content: userRaw }
-      ]
-    };
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
     try {
-      const res = await fetch('/api/chat', {
+      const messagesPayload = [
+        {
+          role: 'system',
+          content: `You are Micah, a friendly and helpful property-management expert for U.S. Navy sailors. Answer clearly, concisely, and professionally. Keep replies short—no more than 2–3 sentences unless absolutely necessary. FAQs: ${JSON.stringify(qaData)}`
+        },
+        { role: 'user', content: userRaw }
+      ];
+
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-4',
+          messages: messagesPayload,
+        }),
       });
 
-      const js = await res.json();
+      const text = await res.text();
+      let js;
+
+      try {
+        js = JSON.parse(text);
+      } catch {
+        console.error('❌ Failed to parse OpenAI response:', text);
+        addMessage({ sender: 'bot', text: 'Server returned invalid response. Try again.' });
+        return;
+      }
+
       if (!res.ok) {
-        addMessage({ sender: 'bot', text: `Error: ${js.error?.message || 'Unknown error'}` });
+        addMessage({
+          sender: 'bot',
+          text: `Error: ${js.error?.message || 'Unknown error'}`,
+        });
       } else {
         const reply = js.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
         addMessage({ sender: 'bot', text: reply });
       }
+
     } catch (err) {
+      console.error('❌ Network error:', err);
       addMessage({ sender: 'bot', text: 'Network error contacting GPT.' });
     } finally {
       setIsTyping(false);
@@ -82,52 +96,113 @@ function App() {
 
   return (
     <>
-      <button className="chat-toggle" onClick={() => setIsOpen(!isOpen)}>💬</button>
+      {/* Popup greeting */}
+      {showPopup && (
+        <div className="popup-message-row">
+          <img
+            src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
+            alt="avatar"
+            className="popup-avatar"
+          />
+          <div className="popup-message-bubble">
+            Hi, I'm Micah, DDT's virtual assistant. How can I help you today?
+          </div>
+        </div>
+      )}
+
+      {/* Avatar toggle */}
+      {!isOpen && (
+        <div className="avatar-toggle" onClick={() => setIsOpen(true)}>
+          <img
+            src="https://i.postimg.cc/rm65XBCx/Avatar.jpg"
+            alt="Micah avatar toggle"
+          />
+        </div>
+      )}
+
       {isOpen && (
-        <div className="chat-wrapper">
+        <div className="chat-wrapper" style={{ bottom: '82px' }}>
           <div className="chat-box">
-            <div className="chat-header">Virtual Assistant!</div>
-            <div className="chat-body">
-              {messages.map((m, i) => (
-                <div key={i} className={`message-row ${m.sender}-row`}>
-                  {m.sender === 'bot' && (
-                    <img
-                      src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
-                      alt="bot-avatar"
-                      className="avatar"
-                    />
-                  )}
-                  <div className={`message ${m.sender}-msg`}>
-                    <span className="message-text">{m.text}</span>
-                    <span className="timestamp">{m.timestamp}</span>
-                  </div>
+
+            {/* Header */}
+            <div className="chat-header no-blur">
+              <div className="header-left">
+                <img
+                  src="https://i.postimg.cc/MTJ120ZT/Avatar-2.png"
+                  alt="Micah Avatar"
+                  className="header-avatar no-blur square-avatar"
+                />
+                <div className="header-info">
+                  <span className="bot-name">Micah</span>
+                  <span className="ai-badge">AI</span>
                 </div>
-              ))}
-              {isTyping && <div className="typing-indicator">Micah is typing...</div>}
-              {showWelcomeOptions && (
-                <div className="welcome-options">
-                  {['Rent','Payment','Application','Tour','Emergency contact','Other'].map(opt => (
-                    <button
-                      key={opt}
-                      className="welcome-btn"
-                      onClick={() => handleSend(opt)}
+              </div>
+              <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
+            </div>
+
+            {/* Chat content */}
+            <div className="chat-content-card">
+              <div className="chat-body">
+                {messages.map((m, i) => (
+                  <div key={i} className={`message-row ${m.sender}-row`}>
+                    {m.sender === 'bot' && (
+                      <img
+                        src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
+                        alt="bot-avatar"
+                        className="avatar no-blur"
+                      />
+                    )}
+                    <div
+                      className={`message ${m.sender}-msg`}
+                      style={{
+                        fontFamily: m.sender === 'bot'
+                          ? "'Cormorant Garamond', serif"
+                          : "'Times New Roman', serif"
+                      }}
                     >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              )}
+                      <div
+                        className="message-text"
+                        dangerouslySetInnerHTML={{
+                          __html: Array.isArray(m.text)
+                            ? m.text.map(str => `<div>${str}</div>`).join('')
+                            : `<div>${m.text}</div>`
+                        }}
+                      ></div>
+                      <span className="timestamp">{m.timestamp}</span>
+                    </div>
+                  </div>
+                ))}
+
+                {isTyping && <div className="typing-indicator">Micah is typing...</div>}
+                <div ref={messagesEndRef} />
+                {showWelcomeOptions && (
+                  <div className="welcome-options">
+                    {['Rent', 'Payment', 'Application', 'Tour', 'Emergency contact', 'Other'].map(opt => (
+                      <button
+                        key={opt}
+                        className="welcome-btn"
+                        onClick={() => handleSend(opt)}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="chat-footer">
+                <input
+                  type="text"
+                  placeholder="Type your message..."
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleSend()}
+                />
+                <button onClick={() => handleSend()}>➤</button>
+              </div>
             </div>
-            <div className="chat-footer">
-              <input
-                type="text"
-                placeholder="Type your message..."
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSend()}
-              />
-              <button onClick={() => handleSend()}>➤</button>
-            </div>
+
           </div>
         </div>
       )}
