@@ -100,7 +100,7 @@ function App() {
       {showPopup && (
         <div className="popup-message-row">
           <img
-            src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
+            src="/bot-avatar.png"
             alt="avatar"
             className="popup-avatar"
           />
@@ -147,7 +147,7 @@ function App() {
                   <div key={i} className={`message-row ${m.sender}-row`}>
                     {m.sender === 'bot' && (
                       <img
-                        src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
+                        src="/bot-avatar.png"
                         alt="bot-avatar"
                         className="avatar no-blur"
                       />
