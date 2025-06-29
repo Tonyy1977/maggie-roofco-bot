@@ -100,7 +100,7 @@ function App() {
       {showPopup && (
         <div className="popup-message-row">
           <img
-            src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
+            src="/bot-avatar.png"
             alt="avatar"
             className="popup-avatar"
           />
@@ -114,7 +114,7 @@ function App() {
       {!isOpen && (
         <div className="avatar-toggle" onClick={() => setIsOpen(true)}>
           <img
-            src="https://i.postimg.cc/rm65XBCx/Avatar.jpg"
+            src="/micah-toggle.jpg"
             alt="Micah avatar toggle"
           />
         </div>
@@ -128,7 +128,7 @@ function App() {
             <div className="chat-header no-blur">
               <div className="header-left">
                 <img
-                  src="https://i.postimg.cc/MTJ120ZT/Avatar-2.png"
+                  src="/micah-header.png"
                   alt="Micah Avatar"
                   className="header-avatar no-blur square-avatar"
                 />
@@ -147,7 +147,7 @@ function App() {
                   <div key={i} className={`message-row ${m.sender}-row`}>
                     {m.sender === 'bot' && (
                       <img
-                        src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
+                        src="/bot-avatar.png"
                         alt="bot-avatar"
                         className="avatar no-blur"
                       />
