@@ -100,7 +100,7 @@ function App() {
       {showPopup && (
         <div className="popup-message-row">
           <img
-            src="/bot-avatar.png"
+            src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
             alt="avatar"
             className="popup-avatar"
           />
@@ -147,7 +147,7 @@ function App() {
                   <div key={i} className={`message-row ${m.sender}-row`}>
                     {m.sender === 'bot' && (
                       <img
-                        src="/bot-avatar.png"
+                        src="https://i.postimg.cc/wT5gNFQ9/2.jpg"
                         alt="bot-avatar"
                         className="avatar no-blur"
                       />
@@ -177,14 +177,8 @@ function App() {
                 <div ref={messagesEndRef} />
                 {showWelcomeOptions && (
                   <div className="welcome-options">
-                    {['Rent', 'Payment', 'Application', 'Tour', 'Emergency contact', 'Other'].map(opt => (
-                      <button
-                        key={opt}
-                        className="welcome-btn"
-                        onClick={() => handleSend(opt)}
-                      >
-                        {opt}
-                      </button>
+                    {['I have a question about rent', 'I’d like to ask about payment options', 'I need help with the application process', 'I’d like to schedule a property tour', 'I have an urgent or emergency concern', 'Thomas Inspections'].map((opt) => (
+                      <div key={opt} className="option-box" onClick={() => handleSend(opt)}>{opt}</div>
                     ))}
                   </div>
                 )}

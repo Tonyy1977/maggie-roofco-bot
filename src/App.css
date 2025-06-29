@@ -203,10 +203,11 @@ max-width: 75%;
 /* Welcome option buttons */
 .welcome-options {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;       /* stack vertically */
+  align-items: flex-end;        /* align to right */
   gap: 10px;
   margin-top: 10px;
-  justify-content: center;
+  margin-right: 10px;           /* spacing from right side */
 }
 
 .welcome-btn {
@@ -384,6 +385,55 @@ max-width: 75%;
 .message-text a:hover {
   text-decoration: none;
 }
+.option-box {
+  background-color: white;
+  color: #333;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 999px; /* pill shape */
+  text-align: center;
+  cursor: pointer;
+  font-size: 15px;
+  width: fit-content;         /* <- fits text */
+  max-width: 100%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  white-space: nowrap;        /* keep on one line */
+}
+.option-box:hover {
+  background-color: #0078ff;  /* Messenger blue */
+  color: white;
+}
+.followup-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 10px 10px 0 0;
+}
+
+.followup-btn {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.followup-btn:hover {
+  background-color: #0078ff;
+  color: white;
+}
+
+
+
+
 
 
 
