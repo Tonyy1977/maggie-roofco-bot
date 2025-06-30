@@ -363,10 +363,6 @@ const qaData = [
     ]
   },
 
-  {
-    question: ["How do I report emergency maintenance?",],
-    answer: ["For all personal maintenance calls, please log into your resident portal and place a ticket number."],
-  },
     {
     question: ["I'm having trouble placing a maintenance request",
                 "I can't request maintenance",
@@ -542,7 +538,7 @@ const qaData = [
       "agreement"
     ],
     "answer": [
-      "Either party may cancel with 30 days\u2019 notice. The agreement can also be terminated immediately for serious issues."
+      "Either party may cancel with 30 days notice. The agreement can also be terminated immediately for serious issues."
     ]
   },
   {
@@ -567,6 +563,10 @@ const qaData = [
 {
   question: ["Is Micah a real person?"],
   answer: ["Yes, my name is Micah Thomas from Marion, Arkansas"],
+},
+{
+  question: ["What is DDT Enterprise's vacancy rate?"],
+  answer: ["DDT Enterprise averages a 17 day (or less) vacany rate on average. We pride ourselves on ensuring we keep the best residents in the best homes at all times."],
 },
 ];
 
