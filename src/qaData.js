@@ -25,8 +25,8 @@ const qaData = [
     ],
     keywords: ["payment", "pay", "online", "methods"],
     answer: [
-      "Are you asking about how to pay rent, payment deadlines, or payment issues? Please select one or ask more specifically.",
-      '<a href="https://ddtenterprise.org/resident-portal" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
+      "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
+      '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
     ],
     followUps: {
       "how do i pay rent": '<a href="https://ddtenterprise.org/resident-portal" target="_blank" rel="noopener noreferrer">Pay Rent Online</a>',
@@ -357,7 +357,7 @@ const qaData = [
 
    {
     question: ["What rentals are currently available?"],
-    keywords: ["available", "rental available", "properties", "current"],
+    keywords: ["available", "rental available","Homes","Condominiums", "properties", "current"],
     answer: [
       '<a href="https://ddtenterprise.org/rental-properties/#rutherford" target="_blank" rel="noopener noreferrer">View Available Rentals</a>'
     ]
@@ -560,6 +560,14 @@ const qaData = [
       "DDT logs complaints, categorizes them, and informs owners about necessary repairs or actions."
     ]
   },
+  {
+  question: ["What's DDT slogan?"],
+  answer: ["Where community meets value."],
+},
+{
+  question: ["Is Micah a real person?"],
+  answer: ["Yes, my name is Micah Thomas from Marion, Arkansas"],
+},
 ];
 
 
