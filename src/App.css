@@ -16,10 +16,11 @@
 /* Chat window wrapper */
 .chat-wrapper {
   position: fixed;
-  bottom: 80px;
+  bottom: 40px;
   right: 20px;
   width: 350px;
   height: 500px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   background: transparent;
@@ -367,13 +368,10 @@ max-width: 75%;
   line-height: 1.4;
 }
 .chat-content-card {
-  margin: 10px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  background: white;
   overflow: hidden;
 }
 .message-text a {
@@ -430,10 +428,3 @@ max-width: 75%;
   background-color: #0078ff;
   color: white;
 }
-
-
-
-
-
-
-

@@ -196,7 +196,7 @@ const qaData = [
       "My AC is only blowing hot air, what do I do?",
       "The air conditioner isn't cooling — help?",
     ],
-    keywords: ["AC", "air conditioner", "cooling", "hot air"],
+    keywords: ["AC", "air conditioner", "cooling", "hot air", "oven", "stove"],
     answer: [
       "Thank you for the proper communication. Please place your maintenance issue in your Resident portal for more efficient updates and repair statuses.",
     ],
@@ -567,6 +567,10 @@ const qaData = [
 {
   question: ["What is DDT Enterprise's vacancy rate?"],
   answer: ["DDT Enterprise averages a 17 day (or less) vacany rate on average. We pride ourselves on ensuring we keep the best residents in the best homes at all times."],
+},
+{
+  question: ["My toilet is backed up."],
+  answer: ["I'm sorry to hear about that. Please place your maintenance issue in your Resident Portal for efficient updates and repair statuses. If it's an emergency, don't hesitate to call us directly at (757) 408-7241."],
 },
 ];
 
