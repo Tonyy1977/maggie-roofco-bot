@@ -18,16 +18,22 @@
   position: fixed;
   bottom: 40px;
   right: 20px;
-  width: 400px;              /* ⬅️ wider than the ghost */
-  height: 520px;             /* ⬅️ taller to cover shadow */
+  width: 350px;
+  height: 500px;
   max-height: 90vh;
-  z-index: 9999;
   display: flex;
   flex-direction: column;
-  background-color: white;   /* ⬅️ solid background to mask ghost */
-  border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  border-radius: 20px; /* ← ROUND IT */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   overflow: hidden;
+  z-index: 999;
+  transform: none !important;
+  zoom: 1 !important;
+  scale: 1 !important;
+  font-size: 16px !important;
+  min-width: 350px;
+  min-height: 500px;
 }
 
 /* Chat box layout */
@@ -35,7 +41,6 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%;
 }
 
 /* Header styling */
