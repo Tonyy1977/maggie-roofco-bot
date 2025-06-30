@@ -377,9 +377,10 @@ max-width: 75%;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  background: white;
+  background: transparent !important;
   overflow: hidden;
 }
+
 .message-text a {
   color: #007bff;
   text-decoration: underline;
@@ -433,4 +434,7 @@ max-width: 75%;
 .followup-btn:hover {
   background-color: #0078ff;
   color: white;
+}
+html, body, #root {
+  background: transparent !important;
 }
