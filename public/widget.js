@@ -10,9 +10,8 @@
   iframe.style.zIndex = "2147483647";
   iframe.style.borderRadius = "20px";
   iframe.style.boxShadow = "0 4px 16px rgba(0,0,0,0.2)";
-  iframe.style.backgroundColor = "none";  // 👈 force iframe background to be transparent
-  iframe.style.background = "none";       // 👈 double down
-  iframe.allowTransparency = "true";             // 👈 legacy fix
+  iframe.style.background = "transparent"; // ✅ correct value
+  iframe.allowTransparency = "true";       // ✅ enables legacy support
   iframe.setAttribute("frameborder", "0");
   iframe.setAttribute("allowtransparency", "true");
   iframe.style.pointerEvents = "auto";

@@ -444,5 +444,7 @@ max-width: 75%;
   color: white;
 }
 html, body, #root {
-  background: transparent !important;
+  background: none !important; /* ← THIS is the real fix */
+  box-shadow: none !important;
+  border: none !important;
 }
