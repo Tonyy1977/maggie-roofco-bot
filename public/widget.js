@@ -10,9 +10,15 @@
   iframe.style.zIndex = "2147483647";
   iframe.style.borderRadius = "20px";
   iframe.style.boxShadow = "0 4px 16px rgba(0,0,0,0.2)";
-  iframe.style.background = "transparent"; // 👈 this removes the white background
-  iframe.allowTransparency = "true";       // 👈 older browser support
+  iframe.style.backgroundColor = "transparent";  // 👈 force iframe background to be transparent
+  iframe.style.background = "transparent";       // 👈 double down
+  iframe.allowTransparency = "true";             // 👈 legacy fix
+  iframe.setAttribute("frameborder", "0");
+  iframe.setAttribute("allowtransparency", "true");
+  iframe.style.pointerEvents = "auto";
+  iframe.style.overflow = "hidden";
   iframe.style.transform = "scale(1)";
   iframe.style.zoom = "1";
+
   document.body.appendChild(iframe);
 })();

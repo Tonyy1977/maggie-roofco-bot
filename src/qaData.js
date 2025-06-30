@@ -383,7 +383,7 @@ const qaData = [
     keywords: ["inspection", "thomas", "partner"],
     answer: [
       "DDT Enterprise partners with Thomas Inspections, a Nation wide Home Inspection Company to over-deliver on your property management needs.",
-      '<a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Thomas Inspections</a>'
+      '<a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Thomas Inspection</a>'
     ]
   },
 {
