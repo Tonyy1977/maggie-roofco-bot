@@ -168,7 +168,7 @@ const qaData = [
     ],
     keywords: ["not chosen", "rejected", "denied", "approval"],
     answer: [
-      "At DDT Enterprise we conduct a best fit assessment based off all applicants. We chose an applicant we felt suited the home in a more extremis situation. I will keep you in mind when our next rental comes available. Please sign up for our waitlist.",
+      "At DDT Enterprise we conduct a best fit assessment off all applicants. We chose an applicant we determined to be a better fit for the home and in a more extremis situation. I will keep you in mind when our next rental comes available. Please sign up for our waitlist.",
     ],
   },
   {
@@ -208,7 +208,7 @@ const qaData = [
     ],
     keywords: ["inspection", "move-in", "deadline"],
     answer: [
-      "Within (5) business days.",
+      "Within (5) business days of move in date.",
     ],
   },
   {
@@ -233,6 +233,7 @@ const qaData = [
       "Security deposits will be released within (30) days of the departure date.",
       "Place lights and water out of your name on the day after your departure.",
       "Notify the manager of any issues that you may have prior to your departure date.",
+      "Ensure all utilites remain on in the resident until the day after your lease concludes.",
       "The cost for missing a service call is $85.00.",
     ],
   },
@@ -259,7 +260,7 @@ const qaData = [
     ],
     keywords: ["selection", "approval", "rental", "decision"],
     answer: [
-      "My staff and I will decide based on a best fit assessment at least (3) days before leased availability date.",
+      "DDT Enterprise chooses resident(s) on a best fit assessment at least (3) days before leased availability date.",
     ],
   },
   {
@@ -281,7 +282,7 @@ const qaData = [
   ],
   keywords: ["management", "fee", "cost", "charge"],
   answer: [
-    "8% of monthly rent – 2% lower than market standard.",
+    "8% of monthly rent, which is 2% lower than market standard.",
   ],
 },
 {
@@ -326,7 +327,7 @@ const qaData = [
   ],
   keywords: ["demetrice", "thomas", "background"],
   answer: [
-    "He is a Navy veteran with over a decade of real estate business in both commercial and residential.",
+    "He is a Navy veteran with over a decade of commercial and residential real estate experience.",
   ],
 },
    {
@@ -380,13 +381,13 @@ const qaData = [
       "Does DDT partner with any companies?",
       "partner inspection",
       "who do you work with for inspections",
-      "thomas inspections",
+      "Thomas inspections, a nation wide Home Inspection Company",
       "inspection partner"
     ],
     keywords: ["inspection", "thomas", "partner"],
     answer: [
-      "We proudly partner with Thomas Inspection Services to ensure your property meets high standards.",
-      '<a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Thomas Inspection</a>'
+      "DDT Enterprise partners with Thomas Inspections, a Nation wide Home Inspection Company to over-deliver on your property management needs.",
+      '<a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Thomas Inspections</a>'
     ]
   },
 {
@@ -395,11 +396,11 @@ const qaData = [
     "cleaning receipt",
     "cleaning proof",
     "how to get security deposit back",
-    "cleaning for deposit"
+    "great question, to receive your full security deposit you will need a professional cleaning (receipt required) as well as a Move Out Inspection"
   ],
   keywords: ["receipt", "deposit", "cleaning", "proof"],
   answer: [
-    "To receive your full security deposit, please provide a cleaning receipt from a professional service.",
+    "To receive your full security deposit, please provide a cleaning receipt from a professional cleaning service.",
     "Make sure the receipt includes date, address, and detailed services."
   ]
 },
@@ -453,7 +454,7 @@ const qaData = [
   ],
   keywords: ["location", "address", "physical", "office"],
   answer: [
-    "DDT does not have a physical location; it is a completely remote property management company with local Agents and Brokers operating nationwide."
+    "DDT does not have a physical location; it is a completely remote property management company with local Agents and Brokers operating throughout the entire nation."
   ],
 },
 {
@@ -481,7 +482,7 @@ const qaData = [
       "lease agreements"
     ],
     "answer": [
-      "Yes, DDT Enterprise is authorized to sign leases, accept deposits, and complete property checklists for tenants."
+      "Yes, DDT Enterprise is authorized to sign leases, accept deposits, and complete property checklists for residents."
     ]
   },
   {
@@ -497,7 +498,7 @@ const qaData = [
       "move-out"
     ],
     "answer": [
-      "Yes, DDT Enterprise performs inspections at move-in, move-out, and conducts semiannual interior checks."
+      "Yes, DDT Enterprise performs inspections at move-in, move-out, and conducts semiannual inspections."
     ]
   },
   {
@@ -512,7 +513,7 @@ const qaData = [
       "maintenance"
     ],
     "answer": [
-      "DDT handles repair coordination and may conduct emergency repairs up to $800 without prior owner approval."
+      "DDT handles repair coordination and may conduct emergency repairs up to $800 without Property owner approval."
     ]
   },
   {
