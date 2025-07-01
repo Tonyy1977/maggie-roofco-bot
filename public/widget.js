@@ -10,7 +10,7 @@
   iframe.style.zIndex = "2147483647";
   iframe.style.borderRadius = "20px";
   iframe.style.boxShadow = "0 4px 16px rgba(0,0,0,0.2)";
-  iframe.style.background = "transparent";
+  iframe.style.background = "none";
   iframe.style.backgroundColor = "transparent";
   iframe.setAttribute("allowtransparency", "true");
   iframe.setAttribute("frameborder", "0");

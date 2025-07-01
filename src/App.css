@@ -62,7 +62,7 @@
   flex: 1 1 auto;
   padding: 12px;
   overflow-y: auto;
-  background: transparent;
+  background: #f0f0f0;
 }
 
 /* Typing indicator */

@@ -372,20 +372,20 @@ const qaData = [
       '<a href="https://ddtenterprise.managebuilding.com/manager/app/tasks/add?taskTypeId=2" target="_blank" rel="noopener noreferrer">Submit Maintenance Request</a>'
     ]
   },
- {
-    question: [
-      "Does DDT partner with any companies?",
-      "partner inspection",
-      "who do you work with for inspections",
-      "Thomas inspections, a nation wide Home Inspection Company",
-      "inspection partner"
-    ],
-    keywords: ["inspection", "thomas", "partner"],
-    answer: [
-      "DDT Enterprise partners with Thomas Inspections, a Nation wide Home Inspection Company to over-deliver on your property management needs.",
-      '<a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Thomas Inspection</a>'
-    ]
-  },
+    {
+  question: [
+    "Does DDT partner with any companies?",
+    "partner inspection",
+    "who do you work with for inspections",
+    "Thomas inspections, a nation wide Home Inspection Company",
+    "inspection partner"
+  ],
+  keywords: ["inspection", "thomas", "partner"],
+  answer: [
+    "Yes! DDT Enterprise proudly partners with Thomas Inspections, a nationwide home inspection company that helps us deliver exceptional service.",
+    '<a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Visit Thomas Inspections</a>'
+  ]
+},
 {
   question: [
     "I cleaned, how can I receive my deposit?",
