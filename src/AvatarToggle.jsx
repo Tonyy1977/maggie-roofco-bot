@@ -15,6 +15,7 @@ export default function AvatarToggle() {
         borderRadius: '50%',
         backgroundImage: 'url("https://i.postimg.cc/280hGJcN/1.jpg")',
         backgroundSize: 'cover',
+        backgroundPosition: 'center',
         cursor: 'pointer',
       }}
     />
