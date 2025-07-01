@@ -1,11 +1,13 @@
 (function () {
   const iframe = document.createElement("iframe");
   iframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
+
+  // Shrunk size (chat-toggle size)
   iframe.style.position = "fixed";
-  iframe.style.bottom = "20px";
-  iframe.style.right = "20px";
-  iframe.style.width = "60px";   // Start as small as avatar
-  iframe.style.height = "60px";
+  iframe.style.bottom = "0px";
+  iframe.style.right = "0px";
+  iframe.style.width = "100px";
+  iframe.style.height = "100px";
   iframe.style.border = "none";
   iframe.style.zIndex = "2147483647";
   iframe.style.borderRadius = "50%";
@@ -17,8 +19,8 @@
   iframe.style.overflow = "hidden";
   iframe.style.transform = "scale(1)";
   iframe.style.zoom = "1";
-  iframe.style.transition = "all 0.3s ease-in-out";
 
+  // Safety patch for late iframe background
   iframe.onload = () => {
     try {
       const doc = iframe.contentWindow.document;
@@ -33,15 +35,19 @@
 
   document.body.appendChild(iframe);
 
-  // Toggle function for expansion and shrink
+  // Add toggle function to expand/shrink iframe
   window.toggleMicahChat = function (open = true) {
     if (open) {
       iframe.style.width = "330px";
       iframe.style.height = "520px";
+      iframe.style.bottom = "0px";
+      iframe.style.right = "0px";
       iframe.style.borderRadius = "20px";
     } else {
-      iframe.style.width = "60px";
-      iframe.style.height = "60px";
+      iframe.style.width = "100px";
+      iframe.style.height = "100px";
+      iframe.style.bottom = "0px";
+      iframe.style.right = "0px";
       iframe.style.borderRadius = "50%";
     }
   };
