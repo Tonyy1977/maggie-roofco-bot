@@ -9,7 +9,6 @@
   iframe.style.border = "none";
   iframe.style.zIndex = "2147483647";
   iframe.style.borderRadius = "20px";
-  iframe.style.boxShadow = "0 4px 16px rgba(0,0,0,0.2)";
   iframe.style.background = "none";
   iframe.style.backgroundColor = "transparent";
   iframe.setAttribute("allowtransparency", "true");
@@ -19,7 +18,7 @@
   iframe.style.transform = "scale(1)";
   iframe.style.zoom = "1";
 
-  // ⬇️ Force transparency after iframe finishes loading
+  // Optional safety patch for late background loads
   iframe.onload = () => {
     try {
       const doc = iframe.contentWindow.document;
@@ -28,7 +27,7 @@
         doc.documentElement.style.background = "transparent";
       }
     } catch (e) {
-      console.warn("Could not access iframe document:", e);
+      console.warn("Could not access iframe for transparency patch:", e);
     }
   };
 
