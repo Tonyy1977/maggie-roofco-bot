@@ -1,45 +1,43 @@
 (function () {
-  // Avatar toggle iframe (small button)
+  // Avatar iframe (toggle button)
   const avatarIframe = document.createElement("iframe");
   avatarIframe.src = "https://ddt-chatbot-gy6g.vercel.app/toggle";
   avatarIframe.style.position = "fixed";
-  avatarIframe.style.bottom = "20px";
-  avatarIframe.style.right = "20px";
-  avatarIframe.style.width = "64px";
-  avatarIframe.style.height = "60px";
+  avatarIframe.style.bottom = "0px";
+  avatarIframe.style.right = "0px";
+  avatarIframe.style.width = "100px";
+  avatarIframe.style.height = "100px";
   avatarIframe.style.border = "none";
-  avatarIframe.style.zIndex = "1000003";
+  avatarIframe.style.zIndex = "2147483646";
   avatarIframe.style.borderRadius = "50%";
-  avatarIframe.style.backgroundColor = "transparent";
-  avatarIframe.style.pointerEvents = "auto";
-  avatarIframe.style.display = "block";
+  avatarIframe.style.background = "transparent";
   avatarIframe.setAttribute("allowtransparency", "true");
   avatarIframe.setAttribute("frameborder", "0");
 
-  // Chatbox iframe (expanded view)
+  // Chat iframe (starts hidden)
   const chatIframe = document.createElement("iframe");
   chatIframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
   chatIframe.style.position = "fixed";
-  chatIframe.style.bottom = "98px"; // distance from bottom to float above avatar
-  chatIframe.style.right = "20px";
-  chatIframe.style.width = "300px";
-  chatIframe.style.height = "407px";
+  chatIframe.style.bottom = "0px";
+  chatIframe.style.right = "0px";
+  chatIframe.style.width = "330px";
+  chatIframe.style.height = "520px";
   chatIframe.style.border = "none";
-  chatIframe.style.zIndex = "1000002";
-  chatIframe.style.borderRadius = "18px";
-  chatIframe.style.backgroundColor = "transparent";
-  chatIframe.style.pointerEvents = "auto";
+  chatIframe.style.zIndex = "2147483647";
+  chatIframe.style.borderRadius = "20px";
+  chatIframe.style.boxShadow = "0 4px 16px rgba(0,0,0,0.2)";
   chatIframe.style.display = "none";
   chatIframe.setAttribute("allowtransparency", "true");
   chatIframe.setAttribute("frameborder", "0");
 
-  // Append both iframes
   document.body.appendChild(avatarIframe);
   document.body.appendChild(chatIframe);
 
-  // Toggle logic
-  window.toggleMicahChat = function (open = true) {
-    avatarIframe.style.display = open ? "none" : "block";
-    chatIframe.style.display = open ? "block" : "none";
-  };
+  // Listen for toggle message
+  window.addEventListener("message", (event) => {
+    if (event.data === "toggle-chat") {
+      chatIframe.style.display =
+        chatIframe.style.display === "none" ? "block" : "none";
+    }
+  });
 })();
