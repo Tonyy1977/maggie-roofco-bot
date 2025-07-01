@@ -378,10 +378,10 @@ const qaData = [
     "Does DDT partner with any companies?",
     "partner inspection",
     "who do you work with for inspections",
-    "Thomas inspections, a nation wide Home Inspection Company",
+    "Thomas Inspections, a nation wide Home Inspection Company",
     "inspection partner"
   ],
-  keywords: ["inspection", "thomas", "partner"],
+  keywords: ["Thomas Inspections", "partner"],
   answer: [
     "Yes! DDT Enterprise proudly partners with Thomas Inspections, a nationwide home inspection company that helps us deliver exceptional service.",
     '<a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Visit Thomas Inspections</a>'
