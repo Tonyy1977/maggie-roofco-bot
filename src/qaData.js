@@ -35,18 +35,17 @@ const qaData = [
     }
   },
 
-{
+  {
   question: [
     "inspection",
     "move-in inspection",
     "home inspection",
     "inspection deadline",
-    "inspection process",
+    "inspection process"
   ],
   keywords: ["inspection", "move-in", "deadline", "process"],
   answer: [
-    "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
-    '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
+    "Are you asking about when your move-in inspection is due, how often inspections are done, or what the inspection process includes? Please select one or ask more specifically."
   ],
   followUps: {
     "when do i need to complete move-in inspection": "You need to complete the move-in inspection within 5 business days after moving in.",
@@ -63,7 +62,8 @@ const qaData = [
   ],
   keywords: ["rent", "payment", "house", "miss"],
   answer: [
-    "Are you asking about when rent is due, how to pay rent, or what happens if you miss rent? Please select one or ask more specifically.",
+    "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
+    '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
   ],
   followUps: {
     "when is rent due": [
