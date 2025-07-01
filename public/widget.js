@@ -13,12 +13,11 @@
   iframe.style.backgroundColor = "transparent";
   iframe.setAttribute("allowtransparency", "true");
   iframe.setAttribute("frameborder", "0");
-  iframe.style.pointerEvents = "auto";
+  iframe.style.pointerEvents = "none"; // 🔥 start disabled
   iframe.style.overflow = "hidden";
   iframe.style.transform = "scale(1)";
   iframe.style.zoom = "1";
 
-  // Optional safety patch for late background loads
   iframe.onload = () => {
     try {
       const doc = iframe.contentWindow.document;
@@ -32,4 +31,9 @@
   };
 
   document.body.appendChild(iframe);
+
+  // 🔧 Add toggle function to control pointer behavior
+  window.toggleMicahChat = function (open = true) {
+    iframe.style.pointerEvents = open ? "auto" : "none";
+  };
 })();

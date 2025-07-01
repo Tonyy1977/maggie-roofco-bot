@@ -375,6 +375,7 @@ const qaData = [
   },
     {
   question: [
+    "Thomas Inspections",
     "Does DDT partner with any companies?",
     "partner inspection",
     "who do you work with for inspections",
