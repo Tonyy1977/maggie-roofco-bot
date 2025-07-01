@@ -1,49 +1,45 @@
 (function () {
-  // Avatar iframe (small one)
+  // Avatar toggle iframe (small button)
   const avatarIframe = document.createElement("iframe");
-  avatarIframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
+  avatarIframe.src = "https://ddt-chatbot-gy6g.vercel.app/toggle";
   avatarIframe.style.position = "fixed";
-  avatarIframe.style.bottom = "0px";
-  avatarIframe.style.right = "0px";
-  avatarIframe.style.width = "100px";
-  avatarIframe.style.height = "100px";
+  avatarIframe.style.bottom = "20px";
+  avatarIframe.style.right = "20px";
+  avatarIframe.style.width = "64px";
+  avatarIframe.style.height = "60px";
   avatarIframe.style.border = "none";
-  avatarIframe.style.zIndex = "2147483646"; // one layer below chat
+  avatarIframe.style.zIndex = "1000003";
   avatarIframe.style.borderRadius = "50%";
-  avatarIframe.style.background = "transparent";
+  avatarIframe.style.backgroundColor = "transparent";
   avatarIframe.style.pointerEvents = "auto";
+  avatarIframe.style.display = "block";
   avatarIframe.setAttribute("allowtransparency", "true");
   avatarIframe.setAttribute("frameborder", "0");
 
-  // Chatbox iframe (large one)
+  // Chatbox iframe (expanded view)
   const chatIframe = document.createElement("iframe");
   chatIframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
   chatIframe.style.position = "fixed";
-  chatIframe.style.bottom = "0px";
-  chatIframe.style.right = "0px";
-  chatIframe.style.width = "330px";
-  chatIframe.style.height = "520px";
+  chatIframe.style.bottom = "98px"; // distance from bottom to float above avatar
+  chatIframe.style.right = "20px";
+  chatIframe.style.width = "300px";
+  chatIframe.style.height = "407px";
   chatIframe.style.border = "none";
-  chatIframe.style.zIndex = "2147483647";
-  chatIframe.style.borderRadius = "20px";
-  chatIframe.style.background = "transparent";
+  chatIframe.style.zIndex = "1000002";
+  chatIframe.style.borderRadius = "18px";
+  chatIframe.style.backgroundColor = "transparent";
   chatIframe.style.pointerEvents = "auto";
-  chatIframe.style.display = "none"; // start hidden
+  chatIframe.style.display = "none";
   chatIframe.setAttribute("allowtransparency", "true");
   chatIframe.setAttribute("frameborder", "0");
 
-  // Append both to page
+  // Append both iframes
   document.body.appendChild(avatarIframe);
   document.body.appendChild(chatIframe);
 
-  // Expose control to chatbot app inside iframe
+  // Toggle logic
   window.toggleMicahChat = function (open = true) {
-    if (open) {
-      avatarIframe.style.display = "none";
-      chatIframe.style.display = "block";
-    } else {
-      avatarIframe.style.display = "block";
-      chatIframe.style.display = "none";
-    }
+    avatarIframe.style.display = open ? "none" : "block";
+    chatIframe.style.display = open ? "block" : "none";
   };
 })();
