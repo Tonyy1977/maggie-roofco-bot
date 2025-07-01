@@ -4,11 +4,11 @@
   avatarBtn.style.position = "fixed";
   avatarBtn.style.bottom = "20px";
   avatarBtn.style.right = "20px";
-  avatarBtn.style.zIndex = "2147483646"; // one under iframe
+  avatarBtn.style.zIndex = "2147483646"; // one layer under iframe
   avatarBtn.style.cursor = "pointer";
 
   const avatarImg = document.createElement("img");
-  avatarImg.src = "https://i.postimg.cc/280hGJcN/1.jpg"; // your avatar
+  avatarImg.src = "https://i.postimg.cc/280hGJcN/1.jpg";
   avatarImg.style.width = "60px";
   avatarImg.style.aspectRatio = "1 / 1";
   avatarImg.style.objectFit = "cover";
@@ -20,7 +20,7 @@
   let iframe = null;
   let isOpen = false;
 
-  window.toggleMicahChat = function () {
+  function toggleMicahChat() {
     if (!iframe) {
       iframe = document.createElement("iframe");
       iframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
@@ -49,7 +49,7 @@
             doc.documentElement.style.background = "transparent";
           }
         } catch (e) {
-          console.warn("Iframe transparency error:", e);
+          console.warn("Transparency patch failed:", e);
         }
       };
 
@@ -65,9 +65,9 @@
       }
       isOpen = !isOpen;
     }
-  };
+  }
 
-  avatarBtn.addEventListener("click", () => {
-    window.toggleMicahChat();
-  });
+  window.toggleMicahChat = toggleMicahChat;
+
+  avatarBtn.addEventListener("click", toggleMicahChat);
 })();
