@@ -10,10 +10,14 @@
   iframe.style.zIndex = "2147483647";
   iframe.style.borderRadius = "20px";
   iframe.style.boxShadow = "0 4px 16px rgba(0,0,0,0.2)";
-  iframe.style.background = "transparent"; // ✅ correct value
-  iframe.allowTransparency = "true";       // ✅ enables legacy support
-  iframe.setAttribute("frameborder", "0");
+  
+  // 👇 THE KEY TRANSPARENCY LINES
+  iframe.style.background = "transparent";
+  iframe.style.backgroundColor = "transparent";
   iframe.setAttribute("allowtransparency", "true");
+  iframe.allowTransparency = "true";
+
+  iframe.setAttribute("frameborder", "0");
   iframe.style.pointerEvents = "auto";
   iframe.style.overflow = "hidden";
   iframe.style.transform = "scale(1)";
