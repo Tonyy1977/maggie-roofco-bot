@@ -45,7 +45,8 @@ const qaData = [
   ],
   keywords: ["inspection", "move-in", "deadline", "process"],
   answer: [
-    "Are you asking about move-in inspection deadlines, process, or scheduling? Please select one or ask more specifically.",
+    "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
+    '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
   ],
   followUps: {
     "when do i need to complete move-in inspection": "You need to complete the move-in inspection within 5 business days after moving in.",

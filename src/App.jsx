@@ -18,7 +18,7 @@ function App() {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowPopup(false), 3000);
+    const timer = setTimeout(() => setShowPopup(false), 5000);
     return () => clearTimeout(timer);
   }, []);
 
