@@ -113,15 +113,21 @@ no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
         </div>
       )}
 
-      {/* Avatar toggle */}
-      {!isOpen && (
-        <div className="avatar-toggle" onClick={() => setIsOpen(true)}>
-          <img
-            src="/micah-toggle.jpg"
-            alt="Micah avatar toggle"
-          />
-        </div>
-      )}
+     {/* Avatar toggle */}
+{!isOpen && (
+  <div
+    className="avatar-toggle"
+    onClick={() => {
+      setIsOpen(true);
+      window.toggleMicahChat?.(true); // 👈 expand iframe
+    }}
+  >
+    <img
+      src="/micah-toggle.jpg"
+      alt="Micah avatar toggle"
+    />
+  </div>
+)}
 
       {isOpen && (
         <div className="chat-wrapper" style={{ bottom: '82px' }}>
@@ -140,7 +146,16 @@ no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
                   <span className="ai-badge">AI</span>
                 </div>
               </div>
-              <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
+              <button
+  className="close-btn"
+  onClick={() => {
+    setIsOpen(false);
+    window.toggleMicahChat?.(false); // 👈 this shrinks the iframe
+  }}
+>
+  ×
+</button>
+
             </div>
 
             {/* Chat content */}

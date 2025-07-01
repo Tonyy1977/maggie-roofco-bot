@@ -4,24 +4,20 @@
   iframe.style.position = "fixed";
   iframe.style.bottom = "0px";
   iframe.style.right = "0px";
-  iframe.style.width = "100px";         // 🔹 collapsed size
+  iframe.style.width = "100px"; // 👈 initial size (chat-toggle size)
   iframe.style.height = "100px";
   iframe.style.border = "none";
   iframe.style.zIndex = "2147483647";
   iframe.style.borderRadius = "20px";
   iframe.style.background = "none";
   iframe.style.backgroundColor = "transparent";
+  iframe.style.transition = "all 0.3s ease";
+  iframe.style.overflow = "hidden";
+  iframe.style.pointerEvents = "none"; // disabled at start
   iframe.setAttribute("allowtransparency", "true");
   iframe.setAttribute("frameborder", "0");
-  iframe.style.pointerEvents = "auto";
-  iframe.style.overflow = "hidden";
-  iframe.style.transform = "scale(1)";
-  iframe.style.transition = "all 0.3s ease"; // 🔹 smooth resize
-  iframe.style.zoom = "1";
 
-  let isOpen = false;
-
-  // Optional: Ensure iframe inside stays transparent
+  // Force transparent iframe contents
   iframe.onload = () => {
     try {
       const doc = iframe.contentWindow.document;
@@ -30,24 +26,22 @@
         doc.documentElement.style.background = "transparent";
       }
     } catch (e) {
-      console.warn("Could not access iframe for transparency patch:", e);
+      console.warn("Iframe patch error:", e);
     }
   };
 
-  // 🔁 Toggle open/close on click
-  iframe.addEventListener("click", (e) => {
-    // prevent link inside iframe from triggering toggle
-    if (e.target !== iframe) return;
+  document.body.appendChild(iframe);
 
-    isOpen = !isOpen;
-    if (isOpen) {
+  // ✅ Toggle function (call this from your React code)
+  window.toggleMicahChat = function (open = true) {
+    if (open) {
       iframe.style.width = "330px";
       iframe.style.height = "520px";
+      iframe.style.pointerEvents = "auto";
     } else {
       iframe.style.width = "100px";
       iframe.style.height = "100px";
+      iframe.style.pointerEvents = "none";
     }
-  });
-
-  document.body.appendChild(iframe);
+  };
 })();
