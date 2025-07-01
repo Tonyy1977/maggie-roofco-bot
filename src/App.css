@@ -23,7 +23,7 @@
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  background: none;
+  background: transparent;
   border-radius: 20px; /* ← ROUND IT */
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   overflow: hidden;
@@ -43,7 +43,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: none !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -62,7 +62,7 @@
   flex: 1 1 auto;
   padding: 12px;
   overflow-y: auto;
-  background: #f0f0f0;
+  background: transparent;
 }
 
 /* Typing indicator */
@@ -382,7 +382,7 @@ max-width: 75%;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  background: none !important;
+  background: transparent !important;
   box-shadow: none !important;
   border: none !important;
   overflow: hidden;
