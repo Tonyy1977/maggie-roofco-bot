@@ -1,57 +1,28 @@
 (function () {
-  // Create wrapper
-  const wrapper = document.createElement("div");
-  wrapper.style.position = "fixed";
-  wrapper.style.bottom = "20px";
-  wrapper.style.right = "20px";
-  wrapper.style.width = "64px";  // Start small
-  wrapper.style.height = "64px";
-  wrapper.style.zIndex = "2147483647";
-  wrapper.style.borderRadius = "50%";
-  wrapper.style.cursor = "pointer";
-  wrapper.style.transition = "all 0.3s ease";
-  wrapper.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.2)";
+  let isOpen = false;
 
   // Create iframe
   const iframe = document.createElement("iframe");
   iframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
+  iframe.style.position = "fixed";
+  iframe.style.bottom = "20px";
+  iframe.style.right = "20px";
+  iframe.style.width = "60px"; // Avatar size
+  iframe.style.height = "60px";
   iframe.style.border = "none";
-  iframe.style.borderRadius = "50%";
-  iframe.style.background = "transparent";
+  iframe.style.zIndex = "2147483647";
+  iframe.style.borderRadius = "50%"; // Circular when minimized
+  iframe.style.background = "none";
   iframe.style.backgroundColor = "transparent";
   iframe.setAttribute("allowtransparency", "true");
   iframe.setAttribute("frameborder", "0");
   iframe.style.pointerEvents = "auto";
+  iframe.style.overflow = "hidden";
+  iframe.style.transform = "scale(1)";
+  iframe.style.zoom = "1";
   iframe.style.transition = "all 0.3s ease";
 
-  wrapper.appendChild(iframe);
-  document.body.appendChild(wrapper);
-
-  let isOpen = false;
-
-  // Toggle chat size and appearance
-  function toggleMicahChat(open = !isOpen) {
-    isOpen = open;
-
-    if (isOpen) {
-      wrapper.style.width = "440px";           // 👈 bigger expanded size
-      wrapper.style.height = "660px";
-      wrapper.style.borderRadius = "20px";
-      iframe.style.borderRadius = "20px";
-    } else {
-      wrapper.style.width = "64px";
-      wrapper.style.height = "64px";
-      wrapper.style.borderRadius = "50%";
-      iframe.style.borderRadius = "50%";
-    }
-  }
-
-  // Allow toggle on avatar click
-  wrapper.addEventListener("click", () => toggleMicahChat());
-
-  // Patch iframe transparency
+  // Background patch
   iframe.onload = () => {
     try {
       const doc = iframe.contentWindow.document;
@@ -60,33 +31,24 @@
         doc.documentElement.style.background = "transparent";
       }
     } catch (e) {
-      console.warn("Iframe transparency patch failed:", e);
+      console.warn("Could not access iframe for transparency patch:", e);
     }
   };
 
-  // Drag logic
-  let isDragging = false, offsetX = 0, offsetY = 0;
+  // Toggle open/close on click
+  iframe.addEventListener("click", () => {
+    isOpen = !isOpen;
 
-  wrapper.addEventListener("mousedown", (e) => {
-    isDragging = true;
-    offsetX = e.clientX - wrapper.getBoundingClientRect().left;
-    offsetY = e.clientY - wrapper.getBoundingClientRect().top;
-    e.preventDefault();
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (isDragging) {
-      wrapper.style.left = `${e.clientX - offsetX}px`;
-      wrapper.style.top = `${e.clientY - offsetY}px`;
-      wrapper.style.right = "auto";
-      wrapper.style.bottom = "auto";
+    if (isOpen) {
+      iframe.style.width = "440px";
+      iframe.style.height = "660px";
+      iframe.style.borderRadius = "20px";
+    } else {
+      iframe.style.width = "60px";
+      iframe.style.height = "60px";
+      iframe.style.borderRadius = "50%";
     }
   });
 
-  document.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
-
-  // Expose toggle function globally (optional)
-  window.toggleMicahChat = toggleMicahChat;
+  document.body.appendChild(iframe);
 })();
