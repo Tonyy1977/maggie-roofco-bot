@@ -2,8 +2,8 @@
   const iframe = document.createElement("iframe");
   iframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
   iframe.style.position = "fixed";
-  iframe.style.bottom = "0px";
-  iframe.style.right = "0px";
+  iframe.style.bottom = "20px";
+  iframe.style.right = "20px";
   iframe.style.width = "100px"; // 👈 initial size (chat-toggle size)
   iframe.style.height = "100px";
   iframe.style.border = "none";
@@ -13,7 +13,7 @@
   iframe.style.backgroundColor = "transparent";
   iframe.style.transition = "all 0.3s ease";
   iframe.style.overflow = "hidden";
-  iframe.style.pointerEvents = "none"; // disabled at start
+  iframe.style.pointerEvents = "auto"; // disabled at start
   iframe.setAttribute("allowtransparency", "true");
   iframe.setAttribute("frameborder", "0");
 
