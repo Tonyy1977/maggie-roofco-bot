@@ -1,16 +1,14 @@
 (function () {
   const iframe = document.createElement("iframe");
   iframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
-
-  // Shrunk size (chat-toggle size)
   iframe.style.position = "fixed";
   iframe.style.bottom = "0px";
   iframe.style.right = "0px";
-  iframe.style.width = "100px";
+  iframe.style.width = "100px";         // 🔹 collapsed size
   iframe.style.height = "100px";
   iframe.style.border = "none";
   iframe.style.zIndex = "2147483647";
-  iframe.style.borderRadius = "50%";
+  iframe.style.borderRadius = "20px";
   iframe.style.background = "none";
   iframe.style.backgroundColor = "transparent";
   iframe.setAttribute("allowtransparency", "true");
@@ -18,9 +16,12 @@
   iframe.style.pointerEvents = "auto";
   iframe.style.overflow = "hidden";
   iframe.style.transform = "scale(1)";
+  iframe.style.transition = "all 0.3s ease"; // 🔹 smooth resize
   iframe.style.zoom = "1";
 
-  // Safety patch for late iframe background
+  let isOpen = false;
+
+  // Optional: Ensure iframe inside stays transparent
   iframe.onload = () => {
     try {
       const doc = iframe.contentWindow.document;
@@ -33,22 +34,20 @@
     }
   };
 
-  document.body.appendChild(iframe);
+  // 🔁 Toggle open/close on click
+  iframe.addEventListener("click", (e) => {
+    // prevent link inside iframe from triggering toggle
+    if (e.target !== iframe) return;
 
-  // Add toggle function to expand/shrink iframe
-  window.toggleMicahChat = function (open = true) {
-    if (open) {
+    isOpen = !isOpen;
+    if (isOpen) {
       iframe.style.width = "330px";
       iframe.style.height = "520px";
-      iframe.style.bottom = "0px";
-      iframe.style.right = "0px";
-      iframe.style.borderRadius = "20px";
     } else {
       iframe.style.width = "100px";
       iframe.style.height = "100px";
-      iframe.style.bottom = "0px";
-      iframe.style.right = "0px";
-      iframe.style.borderRadius = "50%";
     }
-  };
+  });
+
+  document.body.appendChild(iframe);
 })();
