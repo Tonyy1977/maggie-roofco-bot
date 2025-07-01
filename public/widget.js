@@ -1,35 +1,71 @@
 (function () {
-  // Create a wrapper
+  // Create wrapper
   const wrapper = document.createElement("div");
   wrapper.style.position = "fixed";
-  wrapper.style.bottom = "80px";
+  wrapper.style.bottom = "20px";
   wrapper.style.right = "20px";
-  wrapper.style.width = "350px";
-  wrapper.style.height = "500px";
+  wrapper.style.width = "64px";  // Start small
+  wrapper.style.height = "64px";
   wrapper.style.zIndex = "2147483647";
-  wrapper.style.borderRadius = "20px";
-  wrapper.style.cursor = "move";
+  wrapper.style.borderRadius = "50%";
+  wrapper.style.cursor = "pointer";
+  wrapper.style.transition = "all 0.3s ease";
+  wrapper.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.2)";
 
-  // Create the iframe
+  // Create iframe
   const iframe = document.createElement("iframe");
   iframe.src = "https://ddt-chatbot-gy6g.vercel.app/";
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";
-  iframe.style.borderRadius = "20px";
+  iframe.style.borderRadius = "50%";
   iframe.style.background = "transparent";
   iframe.style.backgroundColor = "transparent";
-  iframe.style.pointerEvents = "auto";
   iframe.setAttribute("allowtransparency", "true");
   iframe.setAttribute("frameborder", "0");
+  iframe.style.pointerEvents = "auto";
+  iframe.style.transition = "all 0.3s ease";
 
-  // Append iframe to wrapper
   wrapper.appendChild(iframe);
   document.body.appendChild(wrapper);
 
+  let isOpen = false;
+
+  // Toggle chat size and appearance
+  function toggleMicahChat(open = !isOpen) {
+    isOpen = open;
+
+    if (isOpen) {
+      wrapper.style.width = "440px";           // 👈 bigger expanded size
+      wrapper.style.height = "660px";
+      wrapper.style.borderRadius = "20px";
+      iframe.style.borderRadius = "20px";
+    } else {
+      wrapper.style.width = "64px";
+      wrapper.style.height = "64px";
+      wrapper.style.borderRadius = "50%";
+      iframe.style.borderRadius = "50%";
+    }
+  }
+
+  // Allow toggle on avatar click
+  wrapper.addEventListener("click", () => toggleMicahChat());
+
+  // Patch iframe transparency
+  iframe.onload = () => {
+    try {
+      const doc = iframe.contentWindow.document;
+      if (doc?.body) {
+        doc.body.style.background = "transparent";
+        doc.documentElement.style.background = "transparent";
+      }
+    } catch (e) {
+      console.warn("Iframe transparency patch failed:", e);
+    }
+  };
+
   // Drag logic
-  let isDragging = false;
-  let offsetX = 0, offsetY = 0;
+  let isDragging = false, offsetX = 0, offsetY = 0;
 
   wrapper.addEventListener("mousedown", (e) => {
     isDragging = true;
@@ -51,16 +87,6 @@
     isDragging = false;
   });
 
-  // Optional transparent patch
-  iframe.onload = () => {
-    try {
-      const doc = iframe.contentWindow.document;
-      if (doc?.body) {
-        doc.body.style.background = "transparent";
-        doc.documentElement.style.background = "transparent";
-      }
-    } catch (e) {
-      console.warn("Could not access iframe:", e);
-    }
-  };
+  // Expose toggle function globally (optional)
+  window.toggleMicahChat = toggleMicahChat;
 })();
