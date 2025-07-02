@@ -113,22 +113,6 @@ no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
         </div>
       )}
 
-     {/* Avatar toggle */}
-{!isOpen && (
-  <div
-    className="avatar-toggle"
-    onClick={() => {
-      setIsOpen(true);
-      window.toggleMicahChat?.(true); // 👈 expand iframe
-    }}
-  >
-    <img
-      src="/micah-toggle.jpg"
-      alt="Micah avatar toggle"
-    />
-  </div>
-)}
-
       {isOpen && (
         <div className="chat-wrapper" style={{ bottom: '82px' }}>
           <div className="chat-box">
