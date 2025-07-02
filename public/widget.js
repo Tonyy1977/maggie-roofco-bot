@@ -11,7 +11,6 @@ avatarIframe.style.width = "320px";
 avatarIframe.style.height = "200px";
 avatarIframe.style.border = "none";
 avatarIframe.style.zIndex = "2147483646";
-avatarIframe.style.borderRadius = "20px"; // Rectangle style, not oval
 avatarIframe.style.background = "transparent";
 avatarIframe.style.pointerEvents = "auto";
 avatarIframe.allowTransparency = "true";

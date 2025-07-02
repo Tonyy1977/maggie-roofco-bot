@@ -20,8 +20,8 @@ const ChatToggle = () => {
     height: '100%',
     background: 'transparent',
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    alignItems: 'flex-end',     // 👈 vertical: bottom
+    justifyContent: 'flex-end', // 👈 horizontal: right
     padding: '10px',
     boxSizing: 'border-box',
     overflow: 'visible',
@@ -46,7 +46,7 @@ const ChatToggle = () => {
         </div>
       )}
 
-      <button
+  <button
   onClick={handleClick}
   style={{
     width: '60px',
