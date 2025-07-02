@@ -29,7 +29,10 @@ const qaData = [
       '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
     ],
     followUps: {
-      "how do i pay rent": '<a href="https://ddtenterprise.org/resident-portal" target="_blank" rel="noopener noreferrer">Pay Rent Online</a>',
+      "how do i pay rent": [
+      "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
+      '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
+    ],
       "when is payment due": "Rent payment is due on the 5th of each month. Late fees apply after that date.",
       "what payment methods are accepted": "We accept debit cards, credit cards, and bank transfers through the Resident Portal."
     }
@@ -71,7 +74,8 @@ const qaData = [
       "The late fee of $10 per day rent is late.",
     ],
     "how do i pay rent": [
-      "You can pay rent online through the Resident Portal.",
+      "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
+      '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
     ],
     "what happens if i miss rent": [
       "If you miss rent, you will be issued a 21 day eviction notice.",
