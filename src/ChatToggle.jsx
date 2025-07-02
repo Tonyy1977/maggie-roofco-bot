@@ -50,7 +50,7 @@ const ChatToggle = () => {
         style={{
           width: '60px',
           height: '60px',
-          borderRadius: '0%',
+          borderRadius: '50%',
           backgroundImage: 'url(/micah-toggle.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',

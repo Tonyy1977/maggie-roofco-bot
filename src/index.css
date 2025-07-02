@@ -6,7 +6,7 @@ html, body, #root {
   background: none !important;
   box-shadow: none !important;
   border: none !important;
-  overflow: hidden;
-  box-sizing: border-box;
   border-radius: 0 !important;
+  overflow: visible !important;     /* ✅ THIS LINE FIXES THE CLIP */
+  box-sizing: border-box;
 }
