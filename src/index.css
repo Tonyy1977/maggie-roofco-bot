@@ -1,9 +1,4 @@
 html, body, #root {
-  background: none !important; /* 👈 instead of transparent */
-  box-shadow: none !important;
-  border: none !important;
-}
-html, body, #root {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -13,4 +8,5 @@ html, body, #root {
   border: none !important;
   overflow: hidden;
   box-sizing: border-box;
+  border-radius: 0 !important;
 }
