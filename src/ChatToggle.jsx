@@ -11,15 +11,16 @@ const ChatToggle = () => {
         position: 'relative',
         width: '100%',
         height: '100%',
-        background: 'transparent',
+        display: 'flex',
+        alignItems: 'flex-end',  // 👈 push down
+        justifyContent: 'flex-end', // 👈 push right
+        padding: '10px', // 👈 space from edges
+        boxSizing: 'border-box',
       }}
     >
       <button
         onClick={handleClick}
         style={{
-          position: 'absolute',
-          bottom: '10px',   // ← Pin it to bottom-right
-          right: '10px',
           width: '60px',
           height: '60px',
           borderRadius: '50%',
