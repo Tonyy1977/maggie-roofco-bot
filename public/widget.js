@@ -8,7 +8,7 @@
   avatarIframe.style.bottom = "20px";
   avatarIframe.style.right = "20px";
   avatarIframe.style.width = "320px";
-  avatarIframe.style.height = "200px";
+  avatarIframe.style.height = "150px";
   avatarIframe.style.border = "none";
   avatarIframe.style.zIndex = "2147483646";
   avatarIframe.style.background = "transparent";
@@ -22,7 +22,7 @@
   chatIframe.src = `${CHAT_URL}/?mode=chat`;
   chatIframe.style.position = "fixed";
   chatIframe.style.bottom = "80px";
-  chatIframe.style.right = "50px";
+  chatIframe.style.right = "0px";
   chatIframe.style.width = "400px";
   chatIframe.style.height = "500px";
   chatIframe.style.border = "none";
