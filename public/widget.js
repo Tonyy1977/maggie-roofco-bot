@@ -22,8 +22,8 @@
   const chatIframe = document.createElement("iframe");
   chatIframe.src = `${CHAT_URL}/?mode=chat`;
   chatIframe.style.position = "fixed";
-  chatIframe.style.bottom = "0px";
-  chatIframe.style.right = "0px";
+  chatIframe.style.bottom = "80px";
+  chatIframe.style.right = "50px";
   chatIframe.style.width = "330px";
   chatIframe.style.height = "450px";
   chatIframe.style.border = "none";
