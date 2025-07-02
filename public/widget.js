@@ -1,21 +1,22 @@
 (function () {
   const CHAT_URL = "https://ddt-chatbot-gy6g.vercel.app";
 
-  // Small Avatar Toggle iframe
-  const avatarIframe = document.createElement("iframe");
-  avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
-  avatarIframe.style.position = "fixed";
-  avatarIframe.style.bottom = "20px";
-  avatarIframe.style.right = "20px";
-  avatarIframe.style.width = "320px";
-  avatarIframe.style.height = "100px";
-  avatarIframe.style.border = "none";
-  avatarIframe.style.zIndex = "2147483646";
-  avatarIframe.style.background = "transparent";
-  avatarIframe.style.pointerEvents = "auto";
-  avatarIframe.allowTransparency = "true";
-  avatarIframe.setAttribute("frameborder", "0");
-  document.body.appendChild(avatarIframe);
+// Small Avatar Toggle iframe
+const avatarIframe = document.createElement("iframe");
+avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
+avatarIframe.style.position = "fixed";
+avatarIframe.style.bottom = "20px";
+avatarIframe.style.right = "20px";
+avatarIframe.style.width = "320px";
+avatarIframe.style.height = "200px";
+avatarIframe.style.border = "none";
+avatarIframe.style.zIndex = "2147483646";
+avatarIframe.style.borderRadius = "20px"; // Rectangle style, not oval
+avatarIframe.style.background = "transparent";
+avatarIframe.style.pointerEvents = "auto";
+avatarIframe.allowTransparency = "true";
+avatarIframe.setAttribute("frameborder", "0");
+
 
   // Chat Box iframe (hidden by default)
   const chatIframe = document.createElement("iframe");
