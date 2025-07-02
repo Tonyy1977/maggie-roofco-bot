@@ -5,8 +5,8 @@
   const avatarIframe = document.createElement("iframe");
   avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
   avatarIframe.style.position = "fixed";
-  avatarIframe.style.bottom = "0px";
-  avatarIframe.style.right = "0px";
+  avatarIframe.style.bottom = "20px";
+  avatarIframe.style.right = "20px";
   avatarIframe.style.width = "60px";
   avatarIframe.style.height = "60px";
   avatarIframe.style.border = "none";
@@ -25,7 +25,7 @@
   chatIframe.style.bottom = "0px";
   chatIframe.style.right = "0px";
   chatIframe.style.width = "330px";
-  chatIframe.style.height = "520px";
+  chatIframe.style.height = "450px";
   chatIframe.style.border = "none";
   chatIframe.style.zIndex = "2147483647";
   chatIframe.style.borderRadius = "20px";
