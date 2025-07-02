@@ -20,8 +20,8 @@ const ChatToggle = () => {
     height: '100%',
     background: 'transparent',
     display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start', // 👈 move button to the left
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     padding: '10px',
     boxSizing: 'border-box',
     overflow: 'visible',
@@ -47,21 +47,21 @@ const ChatToggle = () => {
       )}
 
       <button
-        onClick={handleClick}
-        style={{
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          backgroundImage: 'url(/micah-toggle.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          border: 'none',
-          cursor: 'pointer',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-        }}
-        aria-label="Open chat"
-      />
+  onClick={handleClick}
+  style={{
+    width: '60px',
+    height: '60px',
+    borderRadius: '50%',
+    backgroundImage: 'url(/micah-toggle.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    border: 'none',
+    cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+  }}
+  aria-label="Open chat"
+/>
     </div>
   );
 };

@@ -7,11 +7,10 @@
   avatarIframe.style.position = "fixed";
   avatarIframe.style.bottom = "20px";
   avatarIframe.style.right = "20px";
-  avatarIframe.style.width = "300px";
-  avatarIframe.style.height = "120px";
+  avatarIframe.style.width = "320px";
+  avatarIframe.style.height = "100px";
   avatarIframe.style.border = "none";
   avatarIframe.style.zIndex = "2147483646";
-  avatarIframe.style.borderRadius = "50%";
   avatarIframe.style.background = "transparent";
   avatarIframe.style.pointerEvents = "auto";
   avatarIframe.allowTransparency = "true";
