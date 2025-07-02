@@ -8,17 +8,18 @@ const ChatToggle = () => {
   return (
     <div
       style={{
+        position: 'relative',
         width: '100%',
         height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         background: 'transparent',
       }}
     >
       <button
         onClick={handleClick}
         style={{
+          position: 'absolute',
+          bottom: '10px',   // ← Pin it to bottom-right
+          right: '10px',
           width: '60px',
           height: '60px',
           borderRadius: '50%',
