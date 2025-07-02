@@ -14,18 +14,19 @@ const ChatToggle = () => {
 
   return (
     <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
-        padding: '10px',
-        boxSizing: 'border-box',
-        overflow: 'visible',
-      }}
-    >
+  style={{
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    background: 'transparent',
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start', // 👈 move button to the left
+    padding: '10px',
+    boxSizing: 'border-box',
+    overflow: 'visible',
+  }}
+>
       {showPopup && (
         <div
           style={{

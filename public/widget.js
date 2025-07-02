@@ -8,7 +8,7 @@
   avatarIframe.style.bottom = "20px";
   avatarIframe.style.right = "20px";
   avatarIframe.style.width = "300px";
-  avatarIframe.style.height = "150px";
+  avatarIframe.style.height = "120px";
   avatarIframe.style.border = "none";
   avatarIframe.style.zIndex = "2147483646";
   avatarIframe.style.borderRadius = "50%";
