@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import qaData from './qaData';
 
-function App() {
+function FullChat() {
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
@@ -11,7 +11,6 @@ function App() {
     },
   ]);
   const [input, setInput] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [showPopup, setShowPopup] = useState(true);
@@ -99,113 +98,100 @@ no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
 
   return (
     <>
-      {/* Popup greeting */}
       {showPopup && (
         <div className="popup-message-row">
-          <img
-            src="/bot-avatar.png"
-            alt="avatar"
-            className="popup-avatar"
-          />
+          <img src="/bot-avatar.png" alt="avatar" className="popup-avatar" />
           <div className="popup-message-bubble">
             Hi, I'm Micah, DDT's virtual assistant. How can I help you today?
           </div>
         </div>
       )}
 
-      {isOpen && (
-        <div className="chat-wrapper" style={{ bottom: '82px' }}>
-          <div className="chat-box">
+      <div className="chat-wrapper" style={{ bottom: '0px' }}>
+        <div className="chat-box">
 
-            {/* Header */}
-            <div className="chat-header no-blur">
-              <div className="header-left">
-                <img
-                  src="/micah-header.png"
-                  alt="Micah Avatar"
-                  className="header-avatar no-blur square-avatar"
-                />
-                <div className="header-info">
-                  <span className="bot-name">Micah</span>
-                  <span className="ai-badge">AI</span>
-                </div>
+          {/* Header */}
+          <div className="chat-header no-blur">
+            <div className="header-left">
+              <img src="/micah-header.png" alt="Micah Avatar" className="header-avatar no-blur square-avatar" />
+              <div className="header-info">
+                <span className="bot-name">Micah</span>
+                <span className="ai-badge">AI</span>
               </div>
-              <button
-  className="close-btn"
-  onClick={() => {
-    setIsOpen(false);
-    window.toggleMicahChat?.(false); // optional for internal state
-    window.parent.postMessage('close-chat', '*'); // 👈 NEW: tells main site to hide the iframe
-  }}
->
-  ×
-</button>
-
-
             </div>
+            <button
+              className="close-btn"
+              onClick={() => {
+                window.parent.postMessage('close-chat', '*');
+              }}
+            >
+              ×
+            </button>
+          </div>
 
-            {/* Chat content */}
-            <div className="chat-content-card">
-              <div className="chat-body">
-                {messages.map((m, i) => (
-                  <div key={i} className={`message-row ${m.sender}-row`}>
-                    {m.sender === 'bot' && (
-                      <img
-                        src="/bot-avatar.png"
-                        alt="bot-avatar"
-                        className="avatar no-blur"
-                      />
-                    )}
+          {/* Chat Content */}
+          <div className="chat-content-card">
+            <div className="chat-body">
+              {messages.map((m, i) => (
+                <div key={i} className={`message-row ${m.sender}-row`}>
+                  {m.sender === 'bot' && (
+                    <img src="/bot-avatar.png" alt="bot-avatar" className="avatar no-blur" />
+                  )}
+                  <div
+                    className={`message ${m.sender}-msg`}
+                    style={{
+                      fontFamily: m.sender === 'bot'
+                        ? "'Cormorant Garamond', serif"
+                        : "'Times New Roman', serif"
+                    }}
+                  >
                     <div
-                      className={`message ${m.sender}-msg`}
-                      style={{
-                        fontFamily: m.sender === 'bot'
-                          ? "'Cormorant Garamond', serif"
-                          : "'Times New Roman', serif"
+                      className="message-text"
+                      dangerouslySetInnerHTML={{
+                        __html: Array.isArray(m.text)
+                          ? m.text.map(str => `<div>${str}</div>`).join('')
+                          : `<div>${m.text}</div>`
                       }}
-                    >
-                      <div
-                        className="message-text"
-                        dangerouslySetInnerHTML={{
-                          __html: Array.isArray(m.text)
-                            ? m.text.map(str => `<div>${str}</div>`).join('')
-                            : `<div>${m.text}</div>`
-                        }}
-                      ></div>
-                      <span className="timestamp">{m.timestamp}</span>
-                    </div>
+                    ></div>
+                    <span className="timestamp">{m.timestamp}</span>
                   </div>
-                ))}
+                </div>
+              ))}
 
-                {isTyping && <div className="typing-indicator">Micah is typing...</div>}
-                <div ref={messagesEndRef} />
-                {showWelcomeOptions && (
-                  <div className="welcome-options">
-                    {['I have a question about rent', 'I’d like to ask about payment options', 'I need help with the application process', 'I’d like to schedule a property tour', 'I have an urgent or emergency concern', 'Thomas Inspections'].map((opt) => (
-                      <div key={opt} className="option-box" onClick={() => handleSend(opt)}>{opt}</div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Footer */}
-              <div className="chat-footer">
-                <input
-                  type="text"
-                  placeholder="Type your message..."
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSend()}
-                />
-                <button onClick={() => handleSend()}>➤</button>
-              </div>
+              {isTyping && <div className="typing-indicator">Micah is typing...</div>}
+              <div ref={messagesEndRef} />
+              {showWelcomeOptions && (
+                <div className="welcome-options">
+                  {[
+                    'I have a question about rent',
+                    'I’d like to ask about payment options',
+                    'I need help with the application process',
+                    'I’d like to schedule a property tour',
+                    'I have an urgent or emergency concern',
+                    'Thomas Inspections'
+                  ].map((opt) => (
+                    <div key={opt} className="option-box" onClick={() => handleSend(opt)}>{opt}</div>
+                  ))}
+                </div>
+              )}
             </div>
 
+            {/* Footer */}
+            <div className="chat-footer">
+              <input
+                type="text"
+                placeholder="Type your message..."
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSend()}
+              />
+              <button onClick={() => handleSend()}>➤</button>
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
 
-export default App;
+export default FullChat;

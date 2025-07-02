@@ -2,7 +2,6 @@ import React from 'react';
 
 const ChatToggle = () => {
   const handleClick = () => {
-    // Send a message to the parent page to toggle the chat box iframe
     window.parent.postMessage('toggle-chat', '*');
   };
 
