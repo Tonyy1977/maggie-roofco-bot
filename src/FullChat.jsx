@@ -4,7 +4,7 @@ import './App.css';
 import qaData from './qaData';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_BASE = 'http://localhost:4000';
+const API_BASE = 'https://micah-admin.onrender.com';
 function FullChat() {
   const [messages, setMessages] = useState([]);
   const [user, setUser] = useState(() => {
