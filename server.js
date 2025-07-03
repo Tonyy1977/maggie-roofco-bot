@@ -2,8 +2,15 @@ import express from 'express';
 import dotenv from 'dotenv';
 import fetch from 'node-fetch';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 dotenv.config();
+
+app.use(cors({
+  origin: 'https://ddt-chatbot-gy6g.vercel.app',  // ✅ allow your frontend
+  credentials: true
+}));
+
 
 // ✅ Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
