@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import './App.css';
 import qaData from './qaData';
+import { v4 as uuidv4 } from 'uuid';
 
 function FullChat() {
-  const [messages, setMessages] = useState([
-    {
-      sender: 'bot',
-      text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
+  const [user, setUser] = useState(() => {
+  const stored = localStorage.getItem('micah-user');
+  return stored ? JSON.parse(stored) : null;
+});
+const [awaitingLogin, setAwaitingLogin] = useState(!user);
+const [loginInput, setLoginInput] = useState({ name: '', password: '' });
+  const sessionId = user ? `${user.name}-${user.password}` : 'guest';
   const [input, setInput] = useState('');
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
@@ -24,77 +27,115 @@ function FullChat() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
+  useEffect(() => {
+  const sessionId = 'guest'; // Or customize per user
 
-  const addMessage = (msg) => {
-    setMessages((prev) => [
-      ...prev,
-      { ...msg, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
-    ]);
-  };
-
-  const handleSend = async (text = input) => {
-    const userRaw = text.trim();
-    if (!userRaw) return;
-
-    setInput('');
-    setShowWelcomeOptions(false);
-    addMessage({ sender: 'user', text: userRaw });
-    setIsTyping(true);
-
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  axios.get(`/api/history?sessionId=${sessionId}`)
+    .then((res) => {
+      if (Array.isArray(res.data)) {
+        const history = res.data.map(msg => ({
+          sender: msg.sender,
+          text: msg.text,
+          timestamp: msg.timestamp,
+        }));
+        setMessages(history.length > 0 ? history : [{
+          sender: 'bot',
+          text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+        }]);
+      }
+    })
+    .catch((err) => {
+      console.error('❌ Failed to load chat history:', err);
+      setMessages([{
+        sender: 'bot',
+        text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+      }]);
+    });
+}, []);
+useEffect(() => {
+  const fetchHistory = async () => {
+    if (!user) return;
 
     try {
-      const messagesPayload = [
-        {
-          role: 'system',
-          content: `You are Micah, a friendly and helpful property-management expert for DDT Enterprise, a nationwide property management company. 
+      const res = await axios.get('/api/history', {
+        params: { sessionId },
+      });
+
+      const history = res.data.map((msg) => ({
+        sender: msg.sender,
+        text: msg.text,
+        timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      }));
+
+      setMessages(history.length > 0 ? history : [{
+        sender: 'bot',
+        text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+      }]);
+    } catch (err) {
+      console.error('❌ Failed to load chat history:', err);
+    }
+  };
+
+  fetchHistory();
+}, [user]); // run only after user logs in
+
+
+  const addMessage = (msg) => {
+  const fullMsg = {
+    ...msg,
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  };
+  setMessages((prev) => [...prev, fullMsg]);
+
+  // Save to MongoDB
+  axios.post('/api/history', {
+    sessionId,
+    ...msg,
+  }).catch(err => {
+    console.error('❌ Failed to save message to DB:', err);
+  });
+};
+
+  const handleSend = async (text = input) => {
+  const userRaw = text.trim();
+  if (!userRaw) return;
+
+  setInput('');
+  setShowWelcomeOptions(false);
+  addMessage({ sender: 'user', text: userRaw });
+  setIsTyping(true);
+
+  const messagesPayload = [
+    {
+      role: 'system',
+      content: `You are Micah, a friendly and helpful property-management expert for DDT Enterprise, a nationwide property management company. 
 Speak like a warm, professional Caucasian woman from Marion, Arkansas — with a light Southern charm and polite hospitality, 
 but keep it professional and easy to understand for all customers. Be clear, concise, and helpful. Keep answers short — 
 no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
-        },
-        { role: 'user', content: userRaw }
-      ];
+    },
+    { role: 'user', content: userRaw }
+  ];
 
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: messagesPayload,
-        }),
-      });
+  try {
+    const res = await axios.post('/api/chat', {
+      messages: messagesPayload,
+      sessionId,
+    });
 
-      const text = await res.text();
-      let js;
+    const reply = res.data.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
+    addMessage({ sender: 'bot', text: reply });
+  } catch (err) {
+    console.error('❌ Server error:', err);
+    addMessage({ sender: 'bot', text: 'Server error, please try again.' });
+  } finally {
+    setIsTyping(false);
+  }
+};
 
-      try {
-        js = JSON.parse(text);
-      } catch {
-        console.error('❌ Failed to parse OpenAI response:', text);
-        addMessage({ sender: 'bot', text: 'Server returned invalid response. Try again.' });
-        return;
-      }
-
-      if (!res.ok) {
-        addMessage({
-          sender: 'bot',
-          text: `Error: ${js.error?.message || 'Unknown error'}`,
-        });
-      } else {
-        const reply = js.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
-        addMessage({ sender: 'bot', text: reply });
-      }
-
-    } catch (err) {
-      console.error('❌ Network error:', err);
-      addMessage({ sender: 'bot', text: 'Network error contacting GPT.' });
-    } finally {
-      setIsTyping(false);
-    }
-  };
+  const showMainOptions = () => setShowWelcomeOptions(true);
 
   return (
     <>
@@ -132,6 +173,46 @@ no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
           {/* Chat Content */}
           <div className="chat-content-card">
             <div className="chat-body">
+            {awaitingLogin && (
+  <div className="message-row bot-row">
+    <img src="/bot-avatar.png" alt="bot-avatar" className="avatar no-blur" />
+    <div className="message bot-msg">
+      <div className="message-text">
+        <div>Would you like to save this conversation or resume a previous one?</div>
+        <div>Please enter your <b>name</b> and <b>password</b> below:</div>
+        <input
+          type="text"
+          placeholder="Name"
+          value={loginInput.name}
+          onChange={e => setLoginInput({ ...loginInput, name: e.target.value })}
+          style={{ width: '100%', marginTop: '8px' }}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={loginInput.password}
+          onChange={e => setLoginInput({ ...loginInput, password: e.target.value })}
+          style={{ width: '100%', marginTop: '8px' }}
+        />
+        <button
+          className="option-box"
+          style={{ marginTop: '10px' }}
+          onClick={() => {
+            const trimmedName = loginInput.name.trim();
+            const trimmedPass = loginInput.password.trim();
+            if (!trimmedName || !trimmedPass) return alert('Both fields required');
+            const newUser = { name: trimmedName, password: trimmedPass };
+            localStorage.setItem('micah-user', JSON.stringify(newUser));
+            setUser(newUser);
+            setAwaitingLogin(false);
+          }}
+        >
+          Save & Continue
+        </button>
+      </div>
+    </div>
+  </div>
+)}
               {messages.map((m, i) => (
                 <div key={i} className={`message-row ${m.sender}-row`}>
                   {m.sender === 'bot' && (
@@ -174,6 +255,14 @@ no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
                   ))}
                 </div>
               )}
+              {!showWelcomeOptions && (
+  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+    <div className="option-box" onClick={showMainOptions}>
+      Other
+    </div>
+  </div>
+)}
+
             </div>
 
             {/* Footer */}

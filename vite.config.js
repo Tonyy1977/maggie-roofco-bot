@@ -7,11 +7,11 @@ export default defineConfig({
     host: true,
     port: 3000,
     proxy: {
-      '/api': {
-        target: 'http://localhost:4000',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
+  '/api': {
+    target: 'https://your-backend.onrender.com',
+    changeOrigin: true,
+    secure: false,
+  },
+}
   },
 });
