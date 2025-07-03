@@ -25,6 +25,7 @@ app.use(cors({
   },
   credentials: true
 }));
+app.options('*', cors());
 app.use(express.json());
 
 // ✅ Connect to MongoDB
@@ -152,6 +153,7 @@ app.get('/api/admin/messages', async (req, res) => {
 });
 
 // ✅ Start server
-app.listen(4000, () => {
-  console.log('✅ Server listening on http://localhost:4000');
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`✅ Server listening on port ${PORT}`);
 });
