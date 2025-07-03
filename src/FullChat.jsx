@@ -75,17 +75,12 @@ function FullChat() {
   }, [user]);
 
   const addMessage = (msg) => {
-    const fullMsg = {
-      ...msg,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-    setMessages((prev) => [...prev, fullMsg]);
-    axios.post(`${API_BASE}/api/history`, {
-  sessionId,
-  ...msg,
-    })
-    .catch(err => console.error('❌ Failed to save message to DB:', err));
+  const fullMsg = {
+    ...msg,
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
   };
+  setMessages((prev) => [...prev, fullMsg]);
+};
 
   const handleSend = async (text = input) => {
     const userRaw = text.trim();

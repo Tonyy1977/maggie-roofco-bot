@@ -10,8 +10,19 @@ dotenv.config();
 const app = express();
 
 // ✅ CORS must be before any route
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://ddt-chatbot-gy6g.vercel.app',
+];
+
 app.use(cors({
-  origin: 'https://ddt-chatbot-gy6g.vercel.app',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed from this origin'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());
@@ -92,7 +103,27 @@ app.post('/api/chat', async (req, res) => {
     res.status(500).json({ error: 'Something went wrong' });
   }
 });
+app.post('/api/history', async (req, res) => {
+  try {
+    const { sessionId, messages } = req.body;
 
+    if (!sessionId || !messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'Invalid payload' });
+    }
+
+    const saved = await Chat.insertMany(messages.map(msg => ({
+      sender: msg.sender,
+      text: msg.text,
+      timestamp: new Date(),
+      sessionId,
+    })));
+
+    res.json({ success: true, saved });
+  } catch (err) {
+    console.error('❌ Failed to save history:', err);
+    res.status(500).json({ error: 'Failed to save history' });
+  }
+});
 // ✅ GET /api/history
 app.get('/api/history', async (req, res) => {
   try {
