@@ -6,11 +6,15 @@ import cors from 'cors';
 
 dotenv.config();
 
+// ✅ Setup Express FIRST
+const app = express();
+
+// ✅ CORS must be before any route
 app.use(cors({
-  origin: 'https://ddt-chatbot-gy6g.vercel.app',  // ✅ allow your frontend
+  origin: 'https://ddt-chatbot-gy6g.vercel.app',
   credentials: true
 }));
-
+app.use(express.json());
 
 // ✅ Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -29,24 +33,18 @@ const chatSchema = new mongoose.Schema({
   timestamp: Date,
   sessionId: String,
 });
-
 const Chat = mongoose.model('Chat', chatSchema);
 
-// ✅ Setup Express
-const app = express();
-app.use(express.json());
-
-// 🔐 Log loaded key (for debug)
+// 🔐 Debug key
 console.log("🔑 Loaded API Key:", process.env.VITE_OPENAI_API_KEY);
 
-// ✅ Chat handler: receive, talk to GPT, and log both user + bot messages
+// ✅ POST /api/chat
 app.post('/api/chat', async (req, res) => {
   try {
     const { messages, sessionId = 'guest' } = req.body;
     const apiKey = process.env.VITE_OPENAI_API_KEY;
 
     if (!apiKey) {
-      console.error('❌ OPENAI_API_KEY is missing.');
       return res.status(500).json({ error: 'Missing OpenAI API key' });
     }
 
@@ -63,8 +61,6 @@ app.post('/api/chat', async (req, res) => {
     });
 
     const text = await response.text();
-    console.log("🔁 Raw OpenAI response:", text);
-
     if (!response.ok) {
       return res.status(response.status).json({ error: `OpenAI error: ${text}` });
     }
@@ -72,7 +68,7 @@ app.post('/api/chat', async (req, res) => {
     const data = JSON.parse(text);
     const reply = data.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
 
-    // Save user message
+    // Save messages
     if (messages.length > 0) {
       const userMsg = messages[messages.length - 1];
       await Chat.create({
@@ -83,7 +79,6 @@ app.post('/api/chat', async (req, res) => {
       });
     }
 
-    // Save bot message
     await Chat.create({
       sender: 'bot',
       text: reply,
@@ -98,7 +93,7 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// ✅ History handler
+// ✅ GET /api/history
 app.get('/api/history', async (req, res) => {
   try {
     const sessionId = req.query.sessionId;
@@ -113,7 +108,8 @@ app.get('/api/history', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch chat history' });
   }
 });
-// ✅ Admin messages handler
+
+// ✅ GET /api/admin/messages
 app.get('/api/admin/messages', async (req, res) => {
   try {
     const allMessages = await Chat.find({}).sort({ timestamp: 1 });
@@ -123,7 +119,6 @@ app.get('/api/admin/messages', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch admin messages' });
   }
 });
-
 
 // ✅ Start server
 app.listen(4000, () => {
