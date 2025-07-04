@@ -691,6 +691,8 @@ html, body, #root {
   align-items: flex-start;
   margin-bottom: 10px;
   padding: 0 12px;
+  gap: 10px;
+  padding-left: 0px;
 }
 .tab-icon {
   width: 18px;
