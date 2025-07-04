@@ -5,7 +5,9 @@ import qaData from './qaData';
 import { v4 as uuidv4 } from 'uuid';
 
 const API_BASE = 'https://micah-admin.onrender.com';
+
 function FullChat() {
+  const [activeTab, setActiveTab] = useState('home');
   const [messages, setMessages] = useState([]);
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem('micah-user');
@@ -17,22 +19,34 @@ function FullChat() {
     }
     return null;
   });
-  const [awaitingLogin, setAwaitingLogin] = useState(() => {
-    const stored = localStorage.getItem('micah-user');
-    try {
-      const parsed = JSON.parse(stored);
-      return !(parsed?.name && parsed?.password);
-    } catch {
-      return true;
-    }
-  });
+
   const [loginInput, setLoginInput] = useState({ name: '', password: '' });
-  const sessionId = user ? `${user.name}-${user.password}` : 'guest';
   const [input, setInput] = useState('');
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [showPopup, setShowPopup] = useState(true);
   const messagesEndRef = useRef(null);
+  const chatBodyRef = useRef(null);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
+  const sessionIdRef = useRef(null);
+
+if (!sessionIdRef.current) {
+  if (user) {
+    sessionIdRef.current = `${user.name}-${user.password}`;
+  } else {
+    let guestId = localStorage.getItem('micah-guest-session');
+    if (!guestId) {
+      guestId = `guest-${uuidv4()}`;
+      localStorage.setItem('micah-guest-session', guestId);
+    }
+    sessionIdRef.current = guestId;
+  }
+}
+
+const sessionId = sessionIdRef.current;
+
+  const userDisplayName = user?.name || 'Guest';
 
   useEffect(() => {
     const timer = setTimeout(() => setShowPopup(false), 5000);
@@ -40,16 +54,18 @@ function FullChat() {
   }, []);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+  if (activeTab === 'messages' && chatBodyRef.current) {
+    const body = chatBodyRef.current;
+    body.scrollTop = body.scrollHeight;
+  }
+}, [messages.length, activeTab]);
 
   useEffect(() => {
     const fetchHistory = async () => {
-      if (!user) return;
       try {
         const res = await axios.get(`${API_BASE}/api/history`, {
-  params: { sessionId },
-});
+          params: { sessionId },
+        });
 
         const history = res.data.map((msg) => ({
           sender: msg.sender,
@@ -59,10 +75,15 @@ function FullChat() {
             minute: '2-digit',
           }),
         }));
-        setMessages(history.length > 0 ? history : [{
-          sender: 'bot',
-          text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
-        }]);
+
+        setMessages(
+          history.length > 0
+            ? history
+            : [{
+                sender: 'bot',
+                text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+              }]
+        );
       } catch (err) {
         console.error('❌ Failed to load chat history:', err);
         setMessages([{
@@ -72,15 +93,15 @@ function FullChat() {
       }
     };
     fetchHistory();
-  }, [user]);
+  }, [sessionId]);
 
   const addMessage = (msg) => {
-  const fullMsg = {
-    ...msg,
-    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    const fullMsg = {
+      ...msg,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+    setMessages((prev) => [...prev, fullMsg]);
   };
-  setMessages((prev) => [...prev, fullMsg]);
-};
 
   const handleSend = async (text = input) => {
     const userRaw = text.trim();
@@ -89,18 +110,20 @@ function FullChat() {
     setShowWelcomeOptions(false);
     addMessage({ sender: 'user', text: userRaw });
     setIsTyping(true);
+
     const messagesPayload = [
       {
         role: 'system',
-        content: `You are Micah, a friendly and helpful property-management expert for DDT Enterprise, a nationwide property management company. Speak like a warm, professional Caucasian woman from Marion, Arkansas — with a light Southern charm and polite hospitality, but keep it professional and easy to understand for all customers. Be clear, concise, and helpful. Keep answers short — no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
+        content: `You are Micah, a helpful assistant for DDT Enterprise, a property management company. Be warm, concise, and professional. FAQs: ${JSON.stringify(qaData)}`
       },
       { role: 'user', content: userRaw }
     ];
+
     try {
       const res = await axios.post(`${API_BASE}/api/chat`, {
-  messages: messagesPayload,
-  sessionId,
-});
+        messages: messagesPayload,
+        sessionId,
+      });
       const reply = res.data.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
       addMessage({ sender: 'bot', text: reply });
     } catch (err) {
@@ -111,98 +134,258 @@ function FullChat() {
     }
   };
 
+  const handleLogin = () => {
+    const trimmedName = loginInput.name.trim();
+    const trimmedPass = loginInput.password.trim();
+    if (!trimmedName || !trimmedPass) return alert('Both fields required');
+    const newUser = { name: trimmedName, password: trimmedPass };
+    localStorage.setItem('micah-user', JSON.stringify(newUser));
+    setUser(newUser);
+    setActiveTab('messages');
+  };
+
   const showMainOptions = () => setShowWelcomeOptions(true);
 
   return (
-    <>
-      {showPopup && (
-        <div className="popup-message-row">
-          <img src="/bot-avatar.png" alt="avatar" className="popup-avatar" />
-          <div className="popup-message-bubble">
-            Hi, I'm Micah, DDT's virtual assistant. How can I help you today?
+  <div className="chat-wrapper">
+    <div className="chat-box" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      
+      {/* Header */}
+      {activeTab === 'messages' && (
+        <div className="chat-header no-blur">
+          <div className="header-left">
+            <img src="/micah-header.png" alt="Micah Avatar" className="header-avatar no-blur square-avatar" />
+            <div className="header-info">
+              <span className="bot-name">Micah</span>
+              <span className="ai-badge">AI</span>
+            </div>
           </div>
+          <button className="close-btn" onClick={() => window.parent.postMessage('close-chat', '*')}>×</button>
         </div>
       )}
 
-      <div className="chat-wrapper" style={{ bottom: '0px' }}>
-        <div className="chat-box">
-          <div className="chat-header no-blur">
-            <div className="header-left">
-              <img src="/micah-header.png" alt="Micah Avatar" className="header-avatar no-blur square-avatar" />
-              <div className="header-info">
-                <span className="bot-name">Micah</span>
-                <span className="ai-badge">AI</span>
-              </div>
-            </div>
-            <button className="close-btn" onClick={() => window.parent.postMessage('close-chat', '*')}>×</button>
-          </div>
+      {/* Main scrollable area */}
+      <div
+  ref={chatBodyRef}
+  className={`chat-body ${activeTab === 'home' ? 'home-tab-wrapper home-fade' : ''}`}
+  style={{
+    ...(activeTab === 'home'
+      ? {
+          background: 'linear-gradient(to bottom, #000428, #004e92)',
+          color: 'white',
+          position: 'relative',
+          paddingBottom: '80px', // give room for the blur
+        }
+      : {}),
+    flex: 1,
+    overflowY: 'auto',
+    padding: '16px',
+  }}
+>
 
-          <div className="chat-content-card">
-            <div className="chat-body">
-              {awaitingLogin && (
-                <div className="message-row bot-row">
-                  <img src="/bot-avatar.png" alt="bot-avatar" className="avatar no-blur" />
-                  <div className="message bot-msg">
-                    <div className="message-text">
-                      <div>Would you like to save this conversation or resume a previous one?</div>
-                      <div>Please enter your <b>name</b> and <b>password</b> below:</div>
-                      <input type="text" placeholder="Name" value={loginInput.name} onChange={e => setLoginInput({ ...loginInput, name: e.target.value })} style={{ width: '100%', marginTop: '8px' }} />
-                      <input type="password" placeholder="Password" value={loginInput.password} onChange={e => setLoginInput({ ...loginInput, password: e.target.value })} style={{ width: '100%', marginTop: '8px' }} />
-                      <button className="option-box" style={{ marginTop: '10px' }} onClick={() => {
-                        const trimmedName = loginInput.name.trim();
-                        const trimmedPass = loginInput.password.trim();
-                        if (!trimmedName || !trimmedPass) return alert('Both fields required');
-                        const newUser = { name: trimmedName, password: trimmedPass };
-                        localStorage.setItem('micah-user', JSON.stringify(newUser));
-                        setUser(newUser);
-                        setAwaitingLogin(false);
-                      }}>Save & Continue</button>
-                    </div>
-                  </div>
-                </div>
-              )}
+        {/* Home tab content */}
+        {activeTab === 'home' && (
+  <>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <img src="/ddt-logo.png" alt="DDT Logo" style={{ height: '42px', objectFit: 'contain' }} />
+      <div className="avatar-row" style={{ marginTop: '2px', display: 'flex', alignItems: 'center' }}>
+        <img
+          src="/micah-toggle.jpg"
+          alt="Support"
+          style={{ height: '44px', width: '44px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', marginRight: '-4px' }}
+        />
+        <img
+          src="/Demetrice-toggle.jpg"
+          alt="Agent"
+          style={{ height: '44px', width: '44px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', marginRight: '6px' }}
+        />
+        <div className="user-initial-circle">{user?.name?.[0] || 'G'}</div>
+      </div>
+    </div>
 
-              {messages.map((m, i) => (
-                <div key={i} className={`message-row ${m.sender}-row`}>
-                  {m.sender === 'bot' && <img src="/bot-avatar.png" alt="bot-avatar" className="avatar no-blur" />}
-                  <div className={`message ${m.sender}-msg`} style={{ fontFamily: m.sender === 'bot' ? "'Cormorant Garamond', serif" : "'Times New Roman', serif" }}>
-                    <div className="message-text" dangerouslySetInnerHTML={{
-                      __html: Array.isArray(m.text)
-                        ? m.text.map(str => `<div>${str}</div>`).join('')
-                        : `<div>${m.text}</div>`
-                    }}></div>
+    <div style={{ marginTop: '50px', marginBottom: '20px' }}>
+      <h2 style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: '24px', marginBottom: '4px' }}>
+        Hello {userDisplayName.split(' ')[0]}!
+      </h2>
+      <p style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: '24px', margin: 0 }}>
+        How can we help?
+      </p>
+    </div>
+
+    <div className="welcome-card">
+  {!showLoginForm ? (
+    <>
+      <p>
+        <strong>Welcome to DDT Enterprise Assistant!</strong><br />
+        You may optionally enter your <strong>name</strong> and <strong>password</strong> to resume a saved chat.
+      </p>
+      <div className="welcome-buttons">
+        <button onClick={() => setShowLoginForm(true)}>Login Info</button>
+        <button className="start-anon-btn" onClick={() => setActiveTab('messages')}>
+          Guest
+        </button>
+      </div>
+    </>
+  ) : (
+    <>
+      <input
+        type="text"
+        placeholder="Name"
+        value={loginInput.name}
+        onChange={e => setLoginInput({ ...loginInput, name: e.target.value })}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={loginInput.password}
+        onChange={e => setLoginInput({ ...loginInput, password: e.target.value })}
+      />
+      <button onClick={handleLogin}>Save & Continue</button>
+      <button className="start-anon-btn" onClick={() => setActiveTab('messages')}>
+        Continue as Guest
+      </button>
+    </>
+  )}
+</div>
+
+    <a
+  href="https://www.thomasinspectionsva.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="file-card-link"
+>
+  <div className="file-card">
+    <img
+      src="/ThomasInspection.png" // Replace with your actual icon path
+      alt="Thomas Inspection Icon"
+      style={{
+        width: '26px',
+        height: '26px',
+        marginRight: '12px',
+        objectFit: 'contain',
+      }}
+    />
+    <div className="file-text">
+      <div className="file-title">Thomas Inspections</div>
+      <div className="file-desc">Property inspections across Virginia</div>
+    </div>
+  </div>
+</a>
+  </>
+)}
+
+        {/* Messages tab content */}
+        {activeTab === 'messages' && (
+          <>
+            {messages.map((m, i) => {
+              const isBot = m.sender === 'bot';
+              return (
+                <div key={i} className={`message-row ${isBot ? 'bot-row' : 'user-row'}`}>
+                  {isBot && <img src="/bot-avatar.png" alt="bot-avatar" className="avatar no-blur" />}
+                  <div className={`message ${isBot ? 'bot-msg' : 'user-msg'}`}>
+                    <div
+                      className="message-text"
+                      dangerouslySetInnerHTML={{
+                        __html: Array.isArray(m.text)
+                          ? m.text.map(str => `<div>${str}</div>`).join('')
+                          : `<div>${m.text}</div>`,
+                      }}
+                    />
                     <span className="timestamp">{m.timestamp}</span>
                   </div>
                 </div>
-              ))}
+              );
+            })}
 
-              {isTyping && <div className="typing-indicator">Micah is typing...</div>}
-              <div ref={messagesEndRef} />
+            {isTyping && <div className="typing-indicator">Micah is typing...</div>}
+            <div ref={messagesEndRef} />
 
-              {showWelcomeOptions && (
-                <div className="welcome-options">
-                  {["I have a question about rent", "I’d like to ask about payment options", "I need help with the application process", "I’d like to schedule a property tour", "I have an urgent or emergency concern", "Thomas Inspections"].map((opt) => (
-                    <div key={opt} className="option-box" onClick={() => handleSend(opt)}>{opt}</div>
-                  ))}
-                </div>
-              )}
+            {showWelcomeOptions && (
+              <div className="welcome-options">
+                {[
+                  "I have a question about rent",
+                  "I’d like to ask about payment options",
+                  "I need help with the application process",
+                  "I’d like to schedule a property tour",
+                  "I have an urgent or emergency concern",
+                ].map(opt => (
+                  <div key={opt} className="option-box" onClick={() => handleSend(opt)}>
+                    {opt}
+                  </div>
+                ))}
+              </div>
+            )}
 
-              {!showWelcomeOptions && (
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                  <div className="option-box" onClick={showMainOptions}>Other</div>
-                </div>
-              )}
-            </div>
-
-            <div className="chat-footer">
-              <input type="text" placeholder="Type your message..." value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSend()} />
-              <button onClick={() => handleSend()}>➤</button>
-            </div>
-          </div>
-        </div>
+            {!showWelcomeOptions && (
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                <div className="option-box" onClick={showMainOptions}>Main Menu</div>
+              </div>
+            )}
+          </>
+        )}
       </div>
-    </>
-  );
+
+      {/* Chat input always pinned at bottom */}
+      {activeTab === 'messages' && (
+        <div className="chat-footer">
+          <input
+            type="text"
+            placeholder="Type your message..."
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSend()}
+          />
+          <button onClick={() => handleSend()}>➤</button>
+        </div>
+      )}
+
+      {/* Tab bar */}
+      <div className="tab-bar-custom">
+  <div
+    className={`tab-item ${activeTab === 'home' ? 'active-tab' : ''}`}
+    onClick={() => setActiveTab('home')}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke={activeTab === 'home' ? '#007550' : '#888'}
+      className="tab-icon"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+      />
+    </svg>
+    <div className="tab-label" style={{ color: activeTab === 'home' ? '#007550' : '#888' }}>Home</div>
+  </div>
+
+  <div
+    className={`tab-item ${activeTab === 'messages' ? 'active-tab' : ''}`}
+    onClick={() => setActiveTab('messages')}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke={activeTab === 'messages' ? '#007550' : '#888'}
+      className="tab-icon"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"
+      />
+    </svg>
+    <div className="tab-label" style={{ color: activeTab === 'messages' ? '#007550' : '#888' }}>Messages</div>
+  </div>
+</div>
+    </div>
+  </div>
+);
 }
 
 export default FullChat;
