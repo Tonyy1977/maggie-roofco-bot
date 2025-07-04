@@ -24,7 +24,7 @@
   chatIframe.style.bottom = "80px";
   chatIframe.style.right = "0px";
   chatIframe.style.width = "400px";
-  chatIframe.style.height = "500px";
+  chatIframe.style.height = "800px";
   chatIframe.style.border = "none";
   chatIframe.style.zIndex = "2147483647";
   chatIframe.style.borderRadius = "20px";
