@@ -134,15 +134,49 @@ const sessionId = sessionIdRef.current;
     }
   };
 
-  const handleLogin = () => {
-    const trimmedName = loginInput.name.trim();
-    const trimmedPass = loginInput.password.trim();
-    if (!trimmedName || !trimmedPass) return alert('Both fields required');
-    const newUser = { name: trimmedName, password: trimmedPass };
-    localStorage.setItem('micah-user', JSON.stringify(newUser));
-    setUser(newUser);
-    setActiveTab('messages');
-  };
+  const handleLogin = async () => {
+  const trimmedName = loginInput.name.trim();
+  const trimmedPass = loginInput.password.trim();
+  if (!trimmedName || !trimmedPass) return alert('Both fields required');
+
+  const newUser = { name: trimmedName, password: trimmedPass };
+  localStorage.setItem('micah-user', JSON.stringify(newUser));
+  setUser(newUser);
+  setActiveTab('messages');
+
+  // ✅ Fix: These lines must be INSIDE the function
+  sessionIdRef.current = `${trimmedName}-${trimmedPass}`;
+
+  try {
+    const res = await axios.get(`${API_BASE}/api/history`, {
+      params: { sessionId: sessionIdRef.current },
+    });
+
+    const history = res.data.map((msg) => ({
+      sender: msg.sender,
+      text: msg.text,
+      timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    }));
+
+    setMessages(
+      history.length > 0
+        ? history
+        : [{
+            sender: 'bot',
+            text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+          }]
+    );
+  } catch (err) {
+    console.error('❌ Failed to load chat history after login:', err);
+    setMessages([{
+      sender: 'bot',
+      text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+    }]);
+  }
+};
 
   const showMainOptions = () => setShowWelcomeOptions(true);
 
