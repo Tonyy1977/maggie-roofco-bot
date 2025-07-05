@@ -221,7 +221,7 @@ const sessionId = sessionIdRef.current;
         {activeTab === 'home' && (
   <>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-      <img src="/ddt-logo.png" alt="DDT Logo" style={{ height: '42px', objectFit: 'contain' }} />
+      <img src="/bot-avatar(2).png" alt="DDT Logo" style={{ height: '42px', objectFit: 'contain' }} />
       <div className="avatar-row" style={{ marginTop: '2px', display: 'flex', alignItems: 'center' }}>
         <img
           src="/micah-toggle.jpg"
@@ -234,13 +234,13 @@ const sessionId = sessionIdRef.current;
     </div>
 
     <div style={{ marginTop: '50px', marginBottom: '20px' }}>
-      <h2 style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: '24px', marginBottom: '4px' }}>
-        Hello {userDisplayName.split(' ')[0]}!
-      </h2>
-      <p style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: '24px', margin: 0 }}>
-        How can we help?
-      </p>
-    </div>
+  <h2 style={{ fontFamily: 'Cormorant Garamond', fontWeight: '600', fontSize: '24px', marginBottom: '4px' }}>
+    Hello {userDisplayName.split(' ')[0]}!
+  </h2>
+  <p style={{ fontFamily: 'Cormorant Garamond', fontWeight: '600', fontSize: '24px', margin: 0 }}>
+    How can we help?
+  </p>
+</div>
 
     <div className="welcome-card">
   {!showLoginForm ? (
