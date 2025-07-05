@@ -762,6 +762,8 @@ html, body, #root {
   padding: 8px 14px;
   border-radius: 12px;
   font-weight: bold;
+  background: #011638;
+  color: white;
 }
 .welcome-buttons {
   display: flex;
@@ -775,14 +777,15 @@ html, body, #root {
   font-weight: bold;
   border-radius: 8px;
   border: 1px solid #333;
-  background: white;
+  background: #011638;
   cursor: pointer;
+  color: white
 }
 .chat-close-btn {
   background: transparent;
   border: none;
   font-size: 20px;
-  color: #ffffff;
+  color: #000000;
   cursor: pointer;
   padding: 4px;
   margin-left: 12px;

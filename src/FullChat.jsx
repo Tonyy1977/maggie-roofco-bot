@@ -237,7 +237,7 @@ const sessionId = sessionIdRef.current;
   <h2 style={{ fontFamily: 'Cormorant Garamond', fontWeight: '600', fontSize: '24px', marginBottom: '4px' }}>
     Hello {userDisplayName.split(' ')[0]}!
   </h2>
-  <p style={{ fontFamily: 'Cormorant Garamond', fontWeight: '600', fontSize: '24px', margin: 0 }}>
+  <p style={{ fontFamily: 'Cormorant Garamond', fontWeight: '600', fontSize: 'px', margin: 0 }}>
     How can we help?
   </p>
 </div>
@@ -270,7 +270,9 @@ const sessionId = sessionIdRef.current;
         value={loginInput.password}
         onChange={e => setLoginInput({ ...loginInput, password: e.target.value })}
       />
-      <button onClick={handleLogin}>Save & Continue</button>
+      <button className="login-btn" onClick={handleLogin}>
+  Save & Continue
+</button>
       <button className="start-anon-btn" onClick={() => setActiveTab('messages')}>
         Continue as Guest
       </button>
