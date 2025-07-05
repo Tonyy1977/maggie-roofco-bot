@@ -228,12 +228,8 @@ const sessionId = sessionIdRef.current;
           alt="Support"
           style={{ height: '44px', width: '44px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', marginRight: '-4px' }}
         />
-        <img
-          src="/Demetrice-toggle.jpg"
-          alt="Agent"
-          style={{ height: '44px', width: '44px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', marginRight: '6px' }}
-        />
         <div className="user-initial-circle">{user?.name?.[0] || 'G'}</div>
+        <button className="chat-close-btn" onClick={() => window.parent.postMessage('close-chat', '*')}>×</button>
       </div>
     </div>
 
@@ -250,11 +246,11 @@ const sessionId = sessionIdRef.current;
   {!showLoginForm ? (
     <>
       <p>
-        <strong>Welcome to DDT Enterprise Assistant!</strong><br />
+        <strong>Welcome to DDT Enterprise!</strong><br />
         You may optionally enter your <strong>name</strong> and <strong>password</strong> to resume a saved chat.
       </p>
       <div className="welcome-buttons">
-        <button onClick={() => setShowLoginForm(true)}>Login Info</button>
+        <button onClick={() => setShowLoginForm(true)}>Login</button>
         <button className="start-anon-btn" onClick={() => setActiveTab('messages')}>
           Guest
         </button>
@@ -301,7 +297,7 @@ const sessionId = sessionIdRef.current;
     />
     <div className="file-text">
       <div className="file-title">Thomas Inspections</div>
-      <div className="file-desc">Property inspections across Virginia</div>
+      <div className="file-desc">A nationwide home inspection company</div>
     </div>
   </div>
 </a>
