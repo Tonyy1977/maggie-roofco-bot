@@ -36,7 +36,7 @@
     chatIframe.style.top = "0px";
     chatIframe.style.left = "0px";
     chatIframe.style.width = "100vw";
-    chatIframe.style.height = "100vh";
+    chatIframe.style.height = "100dvh";
   } else {
     chatIframe.style.bottom = "80px";
     chatIframe.style.right = "0px";
