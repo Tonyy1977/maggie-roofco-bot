@@ -18,31 +18,29 @@
   avatarIframe.setAttribute("frameborder", "0");
   document.body.appendChild(avatarIframe);
 
-  // Chat Box iframe (hidden by default)
+  if (isMobile) {
+    // 👉 On mobile, tapping avatar redirects to /fullscreen
+    avatarIframe.addEventListener("click", () => {
+      window.location.href = `${CHAT_URL}/fullscreen`;
+    });
+    return; // Skip loading desktop chat box iframe
+  }
+
+  // Chat Box iframe (desktop only)
   const chatIframe = document.createElement("iframe");
   chatIframe.src = `${CHAT_URL}/?mode=chat`;
   chatIframe.style.position = "fixed";
+  chatIframe.style.bottom = "80px";
+  chatIframe.style.right = "0px";
+  chatIframe.style.width = "400px";
+  chatIframe.style.height = "800px";
   chatIframe.style.border = "none";
-  chatIframe.style.zIndex = "2147483647";
-  chatIframe.style.borderRadius = isMobile ? "0" : "20px";
+  chatIframe.style.borderRadius = "20px";
   chatIframe.style.display = "none";
   chatIframe.style.background = "transparent";
   chatIframe.allowTransparency = "true";
   chatIframe.setAttribute("frameborder", "0");
   document.body.appendChild(chatIframe);
-
-  // Set default position
-  if (isMobile) {
-    chatIframe.style.top = "0px";
-    chatIframe.style.left = "0px";
-    chatIframe.style.width = "100vw";
-    chatIframe.style.height = "100dvh";
-  } else {
-    chatIframe.style.bottom = "80px";
-    chatIframe.style.right = "0px";
-    chatIframe.style.width = "400px";
-    chatIframe.style.height = "800px";
-  }
 
   // Toggle/close logic
   window.addEventListener("message", (event) => {
