@@ -63,10 +63,24 @@ const sessionId = sessionIdRef.current;
 
 useEffect(() => {
   const isMobile = window.innerWidth <= 768;
-  if (isMobile) {
-    setIsOpen(true);
+  if (isMobile && activeTab === 'messages') {
+    const wrapper = document.querySelector('.chat-wrapper');
+    if (wrapper) {
+      wrapper.classList.add('fullscreen-chat');
+    }
   }
-}, []);
+}, [activeTab]);
+
+useEffect(() => {
+  const wrapper = document.querySelector('.chat-wrapper');
+  if (wrapper) {
+    if (window.innerWidth <= 768 && activeTab === 'messages') {
+      wrapper.classList.add('fullscreen-chat');
+    } else {
+      wrapper.classList.remove('fullscreen-chat');
+    }
+  }
+}, [activeTab]);
 
   useEffect(() => {
     const fetchHistory = async () => {
