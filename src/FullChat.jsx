@@ -60,6 +60,13 @@ const sessionId = sessionIdRef.current;
   }
 }, [messages.length, activeTab]);
 
+useEffect(() => {
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    setIsOpen(true);
+  }
+}, []);
+
   useEffect(() => {
     const fetchHistory = async () => {
       try {

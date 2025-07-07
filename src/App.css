@@ -813,3 +813,14 @@ html, body, #root {
 .file-text {
   font-family: 'Cormorant Garamond', serif !important;
 }
+@media (max-width: 768px) {
+  .chat-wrapper {
+    height: 100dvh; /* Full dynamic height on modern browsers */
+    height: 100vh;  /* Fallback */
+    width: 100vw;
+    border-radius: 0;
+    bottom: 0;
+    right: 0;
+    max-height: none;
+  }
+}
