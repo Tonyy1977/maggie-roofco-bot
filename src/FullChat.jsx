@@ -28,6 +28,7 @@ function FullChat() {
   const messagesEndRef = useRef(null);
   const chatBodyRef = useRef(null);
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const sessionIdRef = useRef(null);
 
