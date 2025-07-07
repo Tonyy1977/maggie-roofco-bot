@@ -817,12 +817,12 @@ html, body, #root {
 @media (max-width: 768px) {
   .fullscreen-chat {
     width: 100vw !important;
-    height: 100dvh !important;
-    position: fixed !important;
-    top: 0 !important;
+    height: 92vh !important;       /* ← was 80vh */
+    bottom: 0 !important;          /* ← was 10px */
     left: 0 !important;
     right: 0 !important;
-    border-radius: 0 !important;
+    position: fixed !important;
+    border-radius: 20px 20px 0 0 !important;
     z-index: 9999;
   }
 }
