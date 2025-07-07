@@ -28,7 +28,6 @@ function FullChat() {
   const messagesEndRef = useRef(null);
   const chatBodyRef = useRef(null);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   const sessionIdRef = useRef(null);
 
@@ -60,20 +59,6 @@ const sessionId = sessionIdRef.current;
     body.scrollTop = body.scrollHeight;
   }
 }, [messages.length, activeTab]);
-
-useEffect(() => {
-  const wrapper = document.querySelector('.chat-wrapper');
-  const isMobileScreen = window.innerWidth <= 768;
-  const isMobileDevice = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  if (wrapper) {
-    if (isMobileScreen && isMobileDevice && activeTab === 'messages') {
-      wrapper.classList.add('fullscreen-chat');
-    } else {
-      wrapper.classList.remove('fullscreen-chat');
-    }
-  }
-}, [activeTab]);
 
   useEffect(() => {
     const fetchHistory = async () => {

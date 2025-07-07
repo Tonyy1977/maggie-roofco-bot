@@ -813,19 +813,3 @@ html, body, #root {
 .file-text {
   font-family: 'Cormorant Garamond', serif !important;
 }
-/* Fullscreen on mobile */
-@media (max-width: 768px) {
-  .fullscreen-chat {
-    width: 100vw !important;
-    height: 94vh !important;          /* ← increased from 92vh */
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    position: fixed !important;
-    border-radius: 20px 20px 0 0 !important;
-    z-index: 9999;
-    padding-bottom: env(safe-area-inset-bottom);  /* for iOS notch devices */
-  }
-}
-
-
