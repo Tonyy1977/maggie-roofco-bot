@@ -63,10 +63,11 @@ const sessionId = sessionIdRef.current;
 
 useEffect(() => {
   const wrapper = document.querySelector('.chat-wrapper');
-  const isMobile = window.innerWidth <= 768;
+  const isMobileScreen = window.innerWidth <= 768;
+  const isMobileDevice = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   if (wrapper) {
-    if (isMobile && activeTab === 'messages') {
+    if (isMobileScreen && isMobileDevice && activeTab === 'messages') {
       wrapper.classList.add('fullscreen-chat');
     } else {
       wrapper.classList.remove('fullscreen-chat');
