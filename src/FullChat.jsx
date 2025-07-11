@@ -112,19 +112,30 @@ const sessionId = sessionIdRef.current;
   setIsTyping(true);
 
   // 🧠 Step 1: Get last 8 messages for short-term memory
-  const recentContext = messages
-    .slice(-8)
-    .map(m => `${m.sender === 'user' ? 'User' : 'Micah'}: ${m.text}`)
-    .join('\n');
+ const recentContext = messages
+  .filter(m => {
+    // Convert message text to plain string (flatten arrays and strip tags)
+    const rawText = Array.isArray(m.text)
+      ? m.text.join(' ')
+      : String(m.text).replace(/<[^>]*>/g, '').toLowerCase();
+
+    // Skip any bot message that contains the contact line
+    return !(m.sender === 'bot' && rawText.includes('contact me directly at (757)'));
+  })
+  .slice(-8)
+  .map(m => `${m.sender === 'user' ? 'User' : 'Micah'}: ${
+    Array.isArray(m.text) ? m.text.join(' ') : String(m.text).replace(/<[^>]*>/g, '')
+  }`)
+  .join('\n');
 
   // 🧠 Step 2: Inject conversation history into GPT system prompt
   const messagesPayload = [
     {
       role: 'system',
       content: `You are Micah, a friendly and helpful property-management expert for DDT Enterprise, a nationwide property management company. 
-Speak like a warm, professional Caucasian woman from Marion, Arkansas — with a light Southern charm and polite hospitality, 
-but keep it professional and easy to understand for all customers. Be clear, concise, and helpful. Keep answers short — 
-no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
+You speak with the polite charm of a 27-year-old from Marion, Arkansas — warm, professional, and respectful with a light Southern tone. 
+Avoid referring to yourself with gendered language or personal stories. Focus on helping the customer clearly and concisely. 
+Keep responses short (2–3 sentences max unless necessary). FAQs: ${JSON.stringify(qaData)}`
     },
     { role: 'user', content: userRaw }
   ];
@@ -138,13 +149,19 @@ no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
     let reply = res.data.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
 
     // Optional: agent reference override
-    reply = reply.replace(
-      /local real estate agent|a local realtor|real estate professional|local property manager|a local market analysis|consult with.*?agent|check with.*?agent|check with.*?realtor/gi,
-      'me directly at (757) 408 - 7241'
-    );
-    if (!reply.includes('757')) {
-      reply += ' For more accurate info, please contact me directly at (757) 408 - 7241.';
-    }
+    // Replace generic agent references with your number
+reply = reply.replace(
+  /local real estate agent|a local realtor|real estate professional|local property manager|a local market analysis|consult with.*?agent|check with.*?agent|check with.*?realtor/gi,
+  'me directly at (757) 408 - 7241'
+);
+
+// Smart contact logic: only add if user's message is about properties AND we haven't already added it
+const propertyIntent = /rent|price|property|schedule|tour|home|apartment|house|unit|listing|available/i.test(userRaw);
+const contactLineAlreadyPresent = /757[\s\-)]*408[\s\-)]*7241/.test(reply);
+
+if (propertyIntent && !contactLineAlreadyPresent) {
+  reply += ' For more accurate info, please contact me directly at (757) 408 - 7241.';
+}
 
     addMessage({ sender: 'bot', text: reply });
 
