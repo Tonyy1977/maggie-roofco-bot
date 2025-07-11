@@ -104,35 +104,57 @@ const sessionId = sessionIdRef.current;
   };
 
   const handleSend = async (text = input) => {
-    const userRaw = text.trim();
-    if (!userRaw) return;
-    setInput('');
-    setShowWelcomeOptions(false);
-    addMessage({ sender: 'user', text: userRaw });
-    setIsTyping(true);
+  const userRaw = text.trim();
+  if (!userRaw) return;
+  setInput('');
+  setShowWelcomeOptions(false);
+  addMessage({ sender: 'user', text: userRaw });
+  setIsTyping(true);
 
-    const messagesPayload = [
-      {
-        role: 'system',
-        content: `You are Micah, a helpful assistant for DDT Enterprise, a property management company. Be warm, concise, and professional. FAQs: ${JSON.stringify(qaData)}`
-      },
-      { role: 'user', content: userRaw }
-    ];
+  // 🧠 Step 1: Get last 8 messages for short-term memory
+  const recentContext = messages
+    .slice(-8)
+    .map(m => `${m.sender === 'user' ? 'User' : 'Micah'}: ${m.text}`)
+    .join('\n');
 
-    try {
-      const res = await axios.post(`${API_BASE}/api/chat`, {
-        messages: messagesPayload,
-        sessionId,
-      });
-      const reply = res.data.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
-      addMessage({ sender: 'bot', text: reply });
-    } catch (err) {
-      console.error('❌ Server error:', err);
-      addMessage({ sender: 'bot', text: 'Server error, please try again.' });
-    } finally {
-      setIsTyping(false);
+  // 🧠 Step 2: Inject conversation history into GPT system prompt
+  const messagesPayload = [
+    {
+      role: 'system',
+      content: `You are Micah, a friendly and helpful property-management expert for DDT Enterprise, a nationwide property management company. 
+Speak like a warm, professional Caucasian woman from Marion, Arkansas — with a light Southern charm and polite hospitality, 
+but keep it professional and easy to understand for all customers. Be clear, concise, and helpful. Keep answers short — 
+no more than 2–3 sentences unless necessary. FAQs: ${JSON.stringify(qaData)}`
+    },
+    { role: 'user', content: userRaw }
+  ];
+
+  try {
+    const res = await axios.post(`${API_BASE}/api/chat`, {
+      messages: messagesPayload,
+      sessionId,
+    });
+
+    let reply = res.data.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
+
+    // Optional: agent reference override
+    reply = reply.replace(
+      /local real estate agent|a local realtor|real estate professional|local property manager|a local market analysis|consult with.*?agent|check with.*?agent|check with.*?realtor/gi,
+      'me directly at (757) 408 - 7241'
+    );
+    if (!reply.includes('757')) {
+      reply += ' For more accurate info, please contact me directly at (757) 408 - 7241.';
     }
-  };
+
+    addMessage({ sender: 'bot', text: reply });
+
+  } catch (err) {
+    console.error('❌ Server error:', err);
+    addMessage({ sender: 'bot', text: 'Server error, please try again.' });
+  } finally {
+    setIsTyping(false);
+  }
+};
 
   const handleLogin = async () => {
   const trimmedName = loginInput.name.trim();
@@ -208,12 +230,14 @@ const sessionId = sessionIdRef.current;
           background: 'linear-gradient(to bottom, #000428, #004e92)',
           color: 'white',
           position: 'relative',
-          paddingBottom: '80px', // give room for the blur
         }
       : {}),
     flex: 1,
     overflowY: 'auto',
-    padding: '16px',
+    paddingTop: '16px',
+    paddingLeft: '16px',
+    paddingRight: '16px',
+    paddingBottom: activeTab === 'home' ? '80px' : '16px',
   }}
 >
 

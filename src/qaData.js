@@ -578,6 +578,10 @@ const qaData = [
   question: ["My toilet is backed up."],
   answer: ["I'm sorry to hear about that. Please place your maintenance issue in your Resident Portal for efficient updates and repair statuses. If it's an emergency, don't hesitate to call us directly at (757) 408-7241."],
 },
+{
+  question: ["How much is kept in the reserve account?"],
+  answer: ["	DDT Enterprise typically maintains a reserve amount of $800 for each property to handle any unexpected expenses or necessary repairs. This helps ensure prompt attention to any urgent maintenance issues. If you have any more questions about property management details, feel free to ask!"],
+},
 ];
 
 
