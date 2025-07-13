@@ -30,6 +30,10 @@ export default async function handler(req, res) {
   let body;
   try {
     body = await parseJsonBody(req);
+
+// Extract sessionId separately
+const sessionId = body.sessionId || 'guest';
+delete body.sessionId; // remove it from the OpenAI payload
   } catch (err) {
     console.error('❌ JSON parse error:', err.message);
     return res.status(400).json({ error: 'Invalid JSON' });
