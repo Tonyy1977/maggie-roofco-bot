@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   await dbConnect();
 
   if (req.method === 'POST') {
-    console.log("💾 Saving message:", { sessionId, sender, text });
     const { sessionId, sender, text } = req.body;
+    console.log("💾 Saving message:", { sessionId, sender, text });
 
     try {
       const msg = await Message.create({ sessionId, sender, text });
