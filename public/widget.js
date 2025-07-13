@@ -2,8 +2,10 @@
   const CHAT_URL = "https://ddt-chatbot-gy6g.vercel.app";
   const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
 
-  // Small Avatar Toggle iframe
-  const avatarIframe = document.createElement("iframe");
+  let avatarIframe = null;
+
+if (!isMobile) {
+  avatarIframe = document.createElement("iframe");
   avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
   avatarIframe.style.position = "fixed";
   avatarIframe.style.bottom = "20px";
@@ -17,6 +19,7 @@
   avatarIframe.allowTransparency = "true";
   avatarIframe.setAttribute("frameborder", "0");
   document.body.appendChild(avatarIframe);
+}
 
   // Desktop Chat iframe
   const chatIframe = document.createElement("iframe");
