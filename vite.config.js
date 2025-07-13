@@ -6,12 +6,5 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000,
-    proxy: {
-  '/api': {
-    target: 'https://your-backend.onrender.com',
-    changeOrigin: true,
-    secure: false,
-  },
-}
   },
 });

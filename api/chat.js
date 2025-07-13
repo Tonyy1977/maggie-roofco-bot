@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import dbConnect from '../../lib/dbConnect.js';
+import dbConnect from '@/lib/dbConnect.js';
 import Message from '../../models/Message.js';
 
 /**
