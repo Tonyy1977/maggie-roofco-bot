@@ -1,5 +1,5 @@
 // pages/api/history.js
-import dbConnect from '../../lib/dbConnect';
+import dbConnect from '../../lib/dbConnect.js';
 import Message from '../../models/Message';
 
 export default async function handler(req, res) {
