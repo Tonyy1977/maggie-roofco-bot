@@ -6,7 +6,18 @@ import { v4 as uuidv4 } from 'uuid';
 
 const API_BASE = 'https://micah-admin.onrender.com';
 
-function FullChat() {
+function FullChat({ fullscreen }) {
+  // Detect mobile and auto-redirect from ?mode=toggle → /fullscreen
+const isMobile = window.innerWidth <= 768;
+const queryParams = new URLSearchParams(window.location.search);
+const isToggleMode = queryParams.get('mode') === 'toggle';
+
+useEffect(() => {
+  if (isMobile && isToggleMode) {
+    window.location.href = '/fullscreen'; // Change to full URL if needed
+  }
+}, []);
+
   const [activeTab, setActiveTab] = useState('home');
   const [messages, setMessages] = useState([]);
   const [user, setUser] = useState(() => {
@@ -220,7 +231,18 @@ if (propertyIntent && !contactLineAlreadyPresent) {
   const showMainOptions = () => setShowWelcomeOptions(true);
 
   return (
-  <div className="chat-wrapper">
+  <div
+  className="chat-wrapper"
+  style={{
+    width: fullscreen ? '100vw' : '350px',
+    height: fullscreen ? '100vh' : '500px',
+    bottom: fullscreen ? '0' : '40px',
+    right: fullscreen ? '0' : '20px',
+    borderRadius: fullscreen ? '0px' : '20px',
+    zIndex: 9999,
+  }}
+>
+
     <div className="chat-box" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       
       {/* Header */}
