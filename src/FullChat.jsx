@@ -401,15 +401,20 @@ if (propertyIntent && !contactLineAlreadyPresent) {
       {/* Chat input always pinned at bottom */}
       {activeTab === 'messages' && (
         <div className="chat-footer">
-          <input
-            type="text"
-            placeholder="Type your message..."
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSend()}
-          />
-          <button onClick={() => handleSend()}>➤</button>
-        </div>
+  <div className="input-wrapper">
+    <input
+      type="text"
+      placeholder="Type your message..."
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+      onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+    />
+    <button className="send-arrow-btn" onClick={handleSend}>
+      <span className="send-arrow">➤</span>
+    </button>
+  </div>
+</div>
+
       )}
 
       {/* Tab bar */}
