@@ -5,22 +5,26 @@
   let avatarIframe = null;
 
   // ✅ Create avatar toggle iframe (desktop only)
-  if (!isMobile) {
-    avatarIframe = document.createElement("iframe");
-    avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
-    avatarIframe.style.position = "fixed";
-    avatarIframe.style.bottom = "20px";
-    avatarIframe.style.right = "20px";
-    avatarIframe.style.width = "320px";
-    avatarIframe.style.height = "150px";
-    avatarIframe.style.border = "none";
-    avatarIframe.style.zIndex = "2147483646";
-    avatarIframe.style.background = "transparent";
-    avatarIframe.style.pointerEvents = "auto";
-    avatarIframe.allowTransparency = "true";
-    avatarIframe.setAttribute("frameborder", "0");
-    document.body.appendChild(avatarIframe);
-  }
+  if (isMobile) {
+  // ✅ Auto-show mobile chat in fullscreen
+  mobileChatIframe.style.display = "block";
+} else {
+  // ✅ Show avatar toggle on desktop only
+  avatarIframe = document.createElement("iframe");
+  avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
+  avatarIframe.style.position = "fixed";
+  avatarIframe.style.bottom = "20px";
+  avatarIframe.style.right = "20px";
+  avatarIframe.style.width = "320px";
+  avatarIframe.style.height = "150px";
+  avatarIframe.style.border = "none";
+  avatarIframe.style.zIndex = "2147483646";
+  avatarIframe.style.background = "transparent";
+  avatarIframe.style.pointerEvents = "auto";
+  avatarIframe.allowTransparency = "true";
+  avatarIframe.setAttribute("frameborder", "0");
+  document.body.appendChild(avatarIframe);
+}
 
   // 💬 Desktop Chat iframe
   const chatIframe = document.createElement("iframe");
