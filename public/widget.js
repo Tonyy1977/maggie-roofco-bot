@@ -4,24 +4,25 @@
 
   let avatarIframe = null;
 
-if (!isMobile) {
-  avatarIframe = document.createElement("iframe");
-  avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
-  avatarIframe.style.position = "fixed";
-  avatarIframe.style.bottom = "20px";
-  avatarIframe.style.right = "20px";
-  avatarIframe.style.width = "320px";
-  avatarIframe.style.height = "150px";
-  avatarIframe.style.border = "none";
-  avatarIframe.style.zIndex = "2147483646";
-  avatarIframe.style.background = "transparent";
-  avatarIframe.style.pointerEvents = "auto";
-  avatarIframe.allowTransparency = "true";
-  avatarIframe.setAttribute("frameborder", "0");
-  document.body.appendChild(avatarIframe);
-}
+  // ✅ Create avatar toggle iframe (desktop only)
+  if (!isMobile) {
+    avatarIframe = document.createElement("iframe");
+    avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
+    avatarIframe.style.position = "fixed";
+    avatarIframe.style.bottom = "20px";
+    avatarIframe.style.right = "20px";
+    avatarIframe.style.width = "320px";
+    avatarIframe.style.height = "150px";
+    avatarIframe.style.border = "none";
+    avatarIframe.style.zIndex = "2147483646";
+    avatarIframe.style.background = "transparent";
+    avatarIframe.style.pointerEvents = "auto";
+    avatarIframe.allowTransparency = "true";
+    avatarIframe.setAttribute("frameborder", "0");
+    document.body.appendChild(avatarIframe);
+  }
 
-  // Desktop Chat iframe
+  // 💬 Desktop Chat iframe
   const chatIframe = document.createElement("iframe");
   chatIframe.src = `${CHAT_URL}/?mode=chat`;
   chatIframe.style.position = "fixed";
@@ -38,7 +39,7 @@ if (!isMobile) {
   chatIframe.setAttribute("frameborder", "0");
   document.body.appendChild(chatIframe);
 
-  // ✅ NEW: Mobile Fullscreen Chat iframe
+  // 📱 Mobile Fullscreen Chat iframe
   const mobileChatIframe = document.createElement("iframe");
   mobileChatIframe.src = `${CHAT_URL}/?mode=chat&fullscreen=true`;
   mobileChatIframe.style.position = "fixed";
@@ -54,30 +55,29 @@ if (!isMobile) {
   mobileChatIframe.setAttribute("frameborder", "0");
   document.body.appendChild(mobileChatIframe);
 
-  // Message listener: toggle and close logic
+  // ✅ Toggle and close logic
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
       const targetIframe = isMobile ? mobileChatIframe : chatIframe;
-      if (isMobile) {
-  const isOpen = mobileChatIframe.style.display === "block";
-  mobileChatIframe.style.display = isOpen ? "none" : "block";
-  avatarIframe.style.display = isOpen ? "block" : "none";
-} else {
-  const isOpen = chatIframe.style.display === "block";
-  chatIframe.style.display = isOpen ? "none" : "block";
-  avatarIframe.style.display = isOpen ? "block" : "none";
-}
+      const isOpen = targetIframe.style.display === "block";
+      targetIframe.style.display = isOpen ? "none" : "block";
+
+      // ✅ Only toggle avatar if it exists (desktop)
+      if (avatarIframe) {
+        avatarIframe.style.display = isOpen ? "block" : "none";
+      }
     }
+
     if (event.data === "close-chat") {
       chatIframe.style.display = "none";
       mobileChatIframe.style.display = "none";
-      avatarIframe.style.display = "block";
+      if (avatarIframe) avatarIframe.style.display = "block";
     }
 
     if (event.data === "openFullChat") {
       const targetIframe = isMobile ? mobileChatIframe : chatIframe;
       targetIframe.style.display = "block";
-      avatarIframe.style.display = "none";
+      if (avatarIframe) avatarIframe.style.display = "none";
     }
   });
 })();

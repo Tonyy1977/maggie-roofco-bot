@@ -23,9 +23,10 @@ app.use(cors({
       callback(new Error('CORS not allowed from this origin'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.options('*', cors());
 app.use(express.json());
 
 // ✅ Connect to MongoDB
