@@ -4,14 +4,9 @@ import './App.css';
 import qaData from './qaData';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_BASE = '';
+const API_BASE = 'https://micah-admin.onrender.com';
 
-function FullChat({ fullscreen }) {
-  // Detect mobile and auto-redirect from ?mode=toggle → /fullscreen
-const isMobile = window.innerWidth <= 768;
-const queryParams = new URLSearchParams(window.location.search);
-const isToggleMode = queryParams.get('mode') === 'toggle';
-
+function FullChat() {
   const [activeTab, setActiveTab] = useState('home');
   const [messages, setMessages] = useState([]);
   const [user, setUser] = useState(() => {
@@ -147,10 +142,9 @@ Keep responses short (2–3 sentences max unless necessary). FAQs: ${JSON.string
 
   try {
     const res = await axios.post(`${API_BASE}/api/chat`, {
-  model: 'gpt-4o',
-  messages: messagesPayload,
-  sessionId,
-});
+      messages: messagesPayload,
+      sessionId,
+    });
 
     let reply = res.data.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
 
@@ -226,25 +220,7 @@ if (propertyIntent && !contactLineAlreadyPresent) {
   const showMainOptions = () => setShowWelcomeOptions(true);
 
   return (
-  <div
-  className="chat-wrapper"
-  style={{
-    position: 'fixed',
-    top: fullscreen ? '0' : 'auto',
-    left: fullscreen ? '0' : 'auto',
-    right: fullscreen ? '0' : '20px',
-    bottom: fullscreen ? '0' : '40px',
-    width: fullscreen ? '100vw' : '350px',
-    height: fullscreen ? '100vh' : '500px',
-    borderRadius: fullscreen ? '0px' : '20px',
-    background: 'white',
-    zIndex: 2147483647,
-    display: 'flex',
-    flexDirection: 'column',
-  }}
->
-
-
+  <div className="chat-wrapper">
     <div className="chat-box" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       
       {/* Header */}
