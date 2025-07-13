@@ -1,4 +1,3 @@
-// api/chat.js
 import fetch from 'node-fetch';
 import dbConnect from '../../lib/dbConnect.js';
 import Message from '../../models/Message.js';
@@ -23,11 +22,11 @@ async function parseJsonBody(req) {
 
 export default async function handler(req, res) {
   await dbConnect();
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST allowed' });
   }
 
-  // 1) Parse the incoming JSON body
   let body;
   try {
     body = await parseJsonBody(req);
@@ -36,10 +35,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
-  // Log the body so we can inspect it in Vercel logs
   console.log('📨 Received body:', JSON.stringify(body));
 
-  // 2) Validate payload shape
   if (
     !body.model ||
     !Array.isArray(body.messages) ||
@@ -50,7 +47,6 @@ export default async function handler(req, res) {
     });
   }
 
-  // 3) Forward to OpenAI
   let openaiRes, data;
   try {
     openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -61,26 +57,34 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify(body),
     });
-    data = await openaiRes.json();
-    try {
-  const userMsg = body.messages[body.messages.length - 1];
 
-  await Message.create({ sessionId: body.sessionId || 'guest', sender: 'user', text: userMsg.content });
-  await Message.create({ sessionId: body.sessionId || 'guest', sender: 'bot', text: data.choices[0].message.content });
-} catch (err) {
-  console.error('⚠️ Failed to save chat:', err);
-}
+    data = await openaiRes.json();
+
+    const userMsg = body.messages[body.messages.length - 1];
+    const botMsg = data.choices?.[0]?.message?.content;
+
+    if (!botMsg) {
+      console.warn('⚠️ OpenAI response missing message content:', data);
+    }
+
+    // Only log if both are valid
+    if (userMsg?.content && botMsg) {
+      await Message.create({ sessionId: body.sessionId || 'guest', sender: 'user', text: userMsg.content });
+      await Message.create({ sessionId: body.sessionId || 'guest', sender: 'bot', text: botMsg });
+    }
+
   } catch (err) {
     console.error('❌ Network / fetch error:', err);
     return res.status(502).json({ error: 'Upstream request failed' });
   }
 
-  // 4) If OpenAI returned an error, log it and forward
   if (!openaiRes.ok) {
     console.error('❌ OpenAI error:', data);
-    return res.status(openaiRes.status).json(data);
+    return res.status(openaiRes.status).json({
+      error: 'OpenAI response failed',
+      details: data,
+    });
   }
 
-  // 5) Success—send the completion response back
   return res.status(200).json(data);
 }
