@@ -24,8 +24,8 @@ export default async function handler(req, res) {
       const messages = await Message.find({ sessionId }).sort({ timestamp: 1 });
       res.status(200).json(messages);
     } catch (err) {
-      console.error('❌ Error fetching history:', err);
-      res.status(500).json({ success: false, error: 'Failed to load messages' });
+      console.error('❌ Error fetching history:', err.stack); // show full stack trace
+      res.status(500).json({ success: false, error: err.message }); // send real error to frontend
     }
   }
 
