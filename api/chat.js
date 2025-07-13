@@ -1,5 +1,7 @@
 // api/chat.js
 import fetch from 'node-fetch';
+import dbConnect from '../../lib/dbConnect.js';
+import Message from '../../models/Message.js';
 
 /**
  * Read and parse the raw request body as JSON.
@@ -20,6 +22,7 @@ async function parseJsonBody(req) {
 }
 
 export default async function handler(req, res) {
+  await dbConnect();
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Only POST allowed' });
   }
@@ -59,6 +62,14 @@ export default async function handler(req, res) {
       body: JSON.stringify(body),
     });
     data = await openaiRes.json();
+    try {
+  const userMsg = body.messages[body.messages.length - 1];
+
+  await Message.create({ sessionId: body.sessionId || 'guest', sender: 'user', text: userMsg.content });
+  await Message.create({ sessionId: body.sessionId || 'guest', sender: 'bot', text: data.choices[0].message.content });
+} catch (err) {
+  console.error('⚠️ Failed to save chat:', err);
+}
   } catch (err) {
     console.error('❌ Network / fetch error:', err);
     return res.status(502).json({ error: 'Upstream request failed' });
