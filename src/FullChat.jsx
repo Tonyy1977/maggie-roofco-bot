@@ -147,9 +147,10 @@ Keep responses short (2–3 sentences max unless necessary). FAQs: ${JSON.string
 
   try {
     const res = await axios.post(`${API_BASE}/api/chat`, {
-      messages: messagesPayload,
-      sessionId,
-    });
+  model: 'gpt-4o',
+  messages: messagesPayload,
+  sessionId,
+});
 
     let reply = res.data.choices?.[0]?.message?.content || 'Sorry, something went wrong.';
 
