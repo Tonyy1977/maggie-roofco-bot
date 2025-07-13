@@ -7,7 +7,7 @@ function App() {
   const mode = params.get("mode");
   const fullscreen = params.get("fullscreen") === "true";
 
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
 
   // ✅ Auto-redirect mobile users from toggle to fullscreen chat
   if (mode === "toggle" && isMobile) {
