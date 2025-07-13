@@ -19,8 +19,8 @@ export default async function handler(req, res) {
   }
 
   else if (req.method === 'GET') {
-    console.log("📥 Loading history for:", sessionId);
     const { sessionId } = req.query;
+    console.log("📥 Loading history for:", sessionId);
 
     try {
       const messages = await Message.find({ sessionId }).sort({ timestamp: 1 });
