@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import dbConnect from '../../lib/dbConnect';
-import Message from '../../models/Message';
+import dbConnect from '../../lib/dbConnect.js';
+import Message from '../../models/Message.js';
 
 /**
  * Read and parse the raw request body as JSON.
