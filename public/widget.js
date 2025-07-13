@@ -55,11 +55,16 @@
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
       const targetIframe = isMobile ? mobileChatIframe : chatIframe;
-      const isOpen = targetIframe.style.display === "block";
-      targetIframe.style.display = isOpen ? "none" : "block";
-      avatarIframe.style.display = isOpen ? "block" : "none";
+      if (isMobile) {
+  const isOpen = mobileChatIframe.style.display === "block";
+  mobileChatIframe.style.display = isOpen ? "none" : "block";
+  avatarIframe.style.display = isOpen ? "block" : "none";
+} else {
+  const isOpen = chatIframe.style.display === "block";
+  chatIframe.style.display = isOpen ? "none" : "block";
+  avatarIframe.style.display = isOpen ? "block" : "none";
+}
     }
-
     if (event.data === "close-chat") {
       chatIframe.style.display = "none";
       mobileChatIframe.style.display = "none";
