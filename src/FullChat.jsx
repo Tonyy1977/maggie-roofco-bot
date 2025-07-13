@@ -4,7 +4,7 @@ import './App.css';
 import qaData from './qaData';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_BASE = 'http://localhost:3001';
+const API_BASE = '';
 
 function FullChat({ fullscreen }) {
   // Detect mobile and auto-redirect from ?mode=toggle → /fullscreen

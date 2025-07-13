@@ -17,8 +17,12 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://ddt-chatbot-gy6g.vercel.app',
+    ];
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin); // ✅ Use the actual origin
+      callback(null, origin); // ✅ return the incoming origin
     } else {
       callback(new Error('CORS not allowed from this origin'));
     }
