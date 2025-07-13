@@ -6,6 +6,7 @@ export default async function handler(req, res) {
   await dbConnect();
 
   if (req.method === 'POST') {
+    console.log("💾 Saving message:", { sessionId, sender, text });
     const { sessionId, sender, text } = req.body;
 
     try {
@@ -18,6 +19,7 @@ export default async function handler(req, res) {
   }
 
   else if (req.method === 'GET') {
+    console.log("📥 Loading history for:", sessionId);
     const { sessionId } = req.query;
 
     try {
