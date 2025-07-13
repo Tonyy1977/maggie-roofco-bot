@@ -234,12 +234,18 @@ if (propertyIntent && !contactLineAlreadyPresent) {
   <div
   className="chat-wrapper"
   style={{
+    position: 'fixed',
+    top: 0,
+    left: 0,
     width: fullscreen ? '100vw' : '350px',
     height: fullscreen ? '100vh' : '500px',
     bottom: fullscreen ? '0' : '40px',
     right: fullscreen ? '0' : '20px',
     borderRadius: fullscreen ? '0px' : '20px',
-    zIndex: 9999,
+    background: 'white',
+    zIndex: 2147483647,
+    display: 'flex',
+    flexDirection: 'column',
   }}
 >
 
