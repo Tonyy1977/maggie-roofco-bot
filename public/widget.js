@@ -1,6 +1,8 @@
 (function () {
   const CHAT_URL = "https://ddt-chatbot-gy6g.vercel.app";
 
+  const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent); // ✅ NEW
+
   // Small Avatar Toggle iframe
   const avatarIframe = document.createElement("iframe");
   avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
@@ -37,14 +39,42 @@
   // Message listener: toggle and close logic
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
+      if (isMobile) {
+        // ✅ NEW: Open fullscreen on mobile
+        chatIframe.src = `${CHAT_URL}/?mode=chat&fullscreen=true`;
+        chatIframe.style.position = "fixed";
+        chatIframe.style.top = "0";
+        chatIframe.style.left = "0";
+        chatIframe.style.bottom = "0";
+        chatIframe.style.right = "0";
+        chatIframe.style.width = "100vw";
+        chatIframe.style.height = "100vh";
+        chatIframe.style.borderRadius = "0";
+      }
+
       const isOpen = chatIframe.style.display === "block";
       chatIframe.style.display = isOpen ? "none" : "block";
-      avatarIframe.style.display = isOpen ? "block" : "none"; // 👈 hide toggle if chat open
+      avatarIframe.style.display = isOpen ? "block" : "none";
     }
 
     if (event.data === "close-chat") {
       chatIframe.style.display = "none";
-      avatarIframe.style.display = "block"; // 👈 show toggle again
+      avatarIframe.style.display = "block";
+    }
+
+    // ✅ NEW: Support manual fullscreen request from inside iframe
+    if (event.data === "openFullChat") {
+      chatIframe.src = `${CHAT_URL}/?mode=chat&fullscreen=true`;
+      chatIframe.style.display = "block";
+      chatIframe.style.position = "fixed";
+      chatIframe.style.top = "0";
+      chatIframe.style.left = "0";
+      chatIframe.style.bottom = "0";
+      chatIframe.style.right = "0";
+      chatIframe.style.width = "100vw";
+      chatIframe.style.height = "100vh";
+      chatIframe.style.borderRadius = "0";
+      avatarIframe.style.display = "none";
     }
   });
 })();

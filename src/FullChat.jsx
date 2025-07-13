@@ -12,12 +12,6 @@ const isMobile = window.innerWidth <= 768;
 const queryParams = new URLSearchParams(window.location.search);
 const isToggleMode = queryParams.get('mode') === 'toggle';
 
-useEffect(() => {
-  if (isMobile && isToggleMode) {
-    window.location.href = '/fullscreen'; // Change to full URL if needed
-  }
-}, []);
-
   const [activeTab, setActiveTab] = useState('home');
   const [messages, setMessages] = useState([]);
   const [user, setUser] = useState(() => {
@@ -235,12 +229,12 @@ if (propertyIntent && !contactLineAlreadyPresent) {
   className="chat-wrapper"
   style={{
     position: 'fixed',
-    top: 0,
-    left: 0,
+    top: fullscreen ? '0' : 'auto',
+    left: fullscreen ? '0' : 'auto',
+    right: fullscreen ? '0' : '20px',
+    bottom: fullscreen ? '0' : '40px',
     width: fullscreen ? '100vw' : '350px',
     height: fullscreen ? '100vh' : '500px',
-    bottom: fullscreen ? '0' : '40px',
-    right: fullscreen ? '0' : '20px',
     borderRadius: fullscreen ? '0px' : '20px',
     background: 'white',
     zIndex: 2147483647,
@@ -248,6 +242,7 @@ if (propertyIntent && !contactLineAlreadyPresent) {
     flexDirection: 'column',
   }}
 >
+
 
     <div className="chat-box" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       
