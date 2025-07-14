@@ -6,25 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 const API_BASE = 'http://localhost:4000';
 
-function FullChat({ fullscreen }) {
-  // Detect mobile and auto-redirect from ?mode=toggle → /fullscreen
-const isMobile = window.innerWidth <= 768;
-const queryParams = new URLSearchParams(window.location.search);
-const isToggleMode = queryParams.get('mode') === 'toggle';
-
-  const [activeTab, setActiveTab] = useState('home');
-  const [messages, setMessages] = useState([]);
-  const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem('micah-user');
-    try {
-      const parsed = JSON.parse(stored);
-      if (parsed?.name && parsed?.password) return parsed;
-    } catch {
-      return null;
-    }
-    return null;
-  });
-
   const [loginInput, setLoginInput] = useState({ name: '', password: '' });
   const [input, setInput] = useState('');
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
