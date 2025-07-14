@@ -4,9 +4,8 @@ import './App.css';
 import qaData from './qaData';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_BASE = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:4000'
-  : 'https://ddt-chatbot-gy6g.vercel.app';
+const API_BASE = '/api';
+
 
 function FullChat() {
 
@@ -66,7 +65,7 @@ const sessionId = sessionIdRef.current;
   useEffect(() => {
   const fetchHistory = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/history`, {
+      const res = await axios.get(`${API_BASE}/history`, {
         params: { sessionId },
       });
 
@@ -153,7 +152,7 @@ Keep responses short (2–3 sentences max unless necessary). FAQs: ${JSON.string
   ];
 
   try {
-    const res = await axios.post(`${API_BASE}/api/chat`, {
+    const res = await axios.post(`${API_BASE}/chat`, {
   model: 'gpt-4o',
   messages: messagesPayload,
   sessionId,
@@ -200,7 +199,7 @@ if (propertyIntent && !contactLineAlreadyPresent) {
   sessionIdRef.current = `${trimmedName}-${trimmedPass}`;
 
   try {
-    const res = await axios.get(`${API_BASE}/api/history`, {
+    const res = await axios.get(`${API_BASE}/history`, {
       params: { sessionId: sessionIdRef.current },
     });
 
