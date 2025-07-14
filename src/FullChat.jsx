@@ -421,7 +421,7 @@ if (propertyIntent && !contactLineAlreadyPresent) {
       onChange={(e) => setInput(e.target.value)}
       onKeyDown={(e) => e.key === 'Enter' && handleSend()}
     />
-    <button className="send-arrow-btn" onClick={handleSend}>
+    <button className="send-arrow-btn" onClick={() => handleSend()}>
       <span className="send-arrow">➤</span>
     </button>
   </div>
