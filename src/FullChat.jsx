@@ -4,7 +4,9 @@ import './App.css';
 import qaData from './qaData';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_BASE = 'http://localhost:4000';
+const API_BASE = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:4000'
+  : 'https://ddt-chatbot-gy6g.vercel.app';
 
 function FullChat() {
 
