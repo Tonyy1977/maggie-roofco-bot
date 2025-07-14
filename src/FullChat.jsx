@@ -231,25 +231,7 @@ if (propertyIntent && !contactLineAlreadyPresent) {
   const showMainOptions = () => setShowWelcomeOptions(true);
 
   return (
-  <div
-  className="chat-wrapper"
-  style={{
-    position: 'fixed',
-    top: fullscreen ? '0' : 'auto',
-    left: fullscreen ? '0' : 'auto',
-    right: fullscreen ? '0' : '20px',
-    bottom: fullscreen ? '0' : '40px',
-    width: fullscreen ? '100vw' : '350px',
-    height: fullscreen ? '100vh' : '500px',
-    borderRadius: fullscreen ? '0px' : '20px',
-    background: 'white',
-    zIndex: 2147483647,
-    display: 'flex',
-    flexDirection: 'column',
-  }}
->
-
-
+  <div className="chat-wrapper">
     <div className="chat-box" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       
       {/* Header */}
