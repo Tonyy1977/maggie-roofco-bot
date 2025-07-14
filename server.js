@@ -32,7 +32,7 @@ app.use(cors({
 app.use(express.json());
 
 // ✅ Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
@@ -51,13 +51,13 @@ const chatSchema = new mongoose.Schema({
 const Chat = mongoose.model('Chat', chatSchema);
 
 // 🔐 Debug key
-console.log("🔑 Loaded API Key:", process.env.VITE_OPENAI_API_KEY);
+console.log("🔑 Loaded API Key:", process.env.OPENAI_API_KEY);
 
 // ✅ POST /api/chat
 app.post('/api/chat', async (req, res) => {
   try {
     const { messages, sessionId = 'guest' } = req.body;
-    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({ error: 'Missing OpenAI API key' });

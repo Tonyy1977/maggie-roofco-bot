@@ -4,7 +4,7 @@ import './App.css';
 import qaData from './qaData';
 import { v4 as uuidv4 } from 'uuid';
 
-const API_BASE = '';
+const API_BASE = 'http://localhost:4000';
 
 function FullChat({ fullscreen }) {
   // Detect mobile and auto-redirect from ?mode=toggle → /fullscreen
@@ -66,39 +66,48 @@ const sessionId = sessionIdRef.current;
 }, [messages.length, activeTab]);
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/api/history`, {
-          params: { sessionId },
-        });
+  const fetchHistory = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/api/history`, {
+        params: { sessionId },
+      });
 
-        const history = res.data.map((msg) => ({
-          sender: msg.sender,
-          text: msg.text,
-          timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-        }));
+      console.log('📦 Fetched history:', res.data);
 
-        setMessages(
-          history.length > 0
-            ? history
-            : [{
-                sender: 'bot',
-                text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
-              }]
-        );
-      } catch (err) {
-        console.error('❌ Failed to load chat history:', err);
-        setMessages([{
-          sender: 'bot',
-          text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
-        }]);
+      // ✅ Validate response is an array before calling .map
+      if (!Array.isArray(res.data)) {
+        console.error('❌ Unexpected response:', res.data);
+        throw new Error('Expected an array from /api/history');
       }
-    };
-    fetchHistory();
-  }, [sessionId]);
+
+      const history = res.data.map((msg) => ({
+        sender: msg.sender,
+        text: msg.text,
+        timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      }));
+
+      setMessages(
+        history.length > 0
+          ? history
+          : [{
+              sender: 'bot',
+              text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+            }]
+      );
+    } catch (err) {
+      console.error('❌ Failed to load chat history:', err);
+      setMessages([{
+        sender: 'bot',
+        text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+      }]);
+    }
+  };
+
+  fetchHistory();
+}, [sessionId]);
 
   const addMessage = (msg) => {
     const fullMsg = {

@@ -1,14 +1,18 @@
+// pages/api/chat.js
 import fetch from 'node-fetch';
 import dbConnect from './lib/dbConnect.js';
 import Message from './models/Message.js';
 
-/**
- * Read and parse the raw request body as JSON.
- */
+export const config = {
+  api: {
+    bodyParser: false, // Required if manually parsing body
+  },
+};
+
 async function parseJsonBody(req) {
   return new Promise((resolve, reject) => {
     let data = '';
-    req.on('data', (chunk) => data += chunk);
+    req.on('data', chunk => data += chunk);
     req.on('end', () => {
       try {
         resolve(JSON.parse(data));
@@ -27,13 +31,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Only POST allowed' });
   }
 
-  let body;
+  let body, sessionId;
   try {
     body = await parseJsonBody(req);
-
-// Extract sessionId separately
-const sessionId = body.sessionId || 'guest';
-delete body.sessionId; // remove it from the OpenAI payload
+    sessionId = body.sessionId || 'guest';
+    delete body.sessionId;
   } catch (err) {
     console.error('❌ JSON parse error:', err.message);
     return res.status(400).json({ error: 'Invalid JSON' });
@@ -41,11 +43,7 @@ delete body.sessionId; // remove it from the OpenAI payload
 
   console.log('📨 Received body:', JSON.stringify(body));
 
-  if (
-    !body.model ||
-    !Array.isArray(body.messages) ||
-    body.messages.length === 0
-  ) {
+  if (!body.model || !Array.isArray(body.messages) || body.messages.length === 0) {
     return res.status(400).json({
       error: 'Payload must include a `model` string and a non-empty `messages` array'
     });
@@ -71,10 +69,9 @@ delete body.sessionId; // remove it from the OpenAI payload
       console.warn('⚠️ OpenAI response missing message content:', data);
     }
 
-    // Only log if both are valid
     if (userMsg?.content && botMsg) {
-      await Message.create({ sessionId: body.sessionId || 'guest', sender: 'user', text: userMsg.content });
-      await Message.create({ sessionId: body.sessionId || 'guest', sender: 'bot', text: botMsg });
+      await Message.create({ sessionId, sender: 'user', text: userMsg.content });
+      await Message.create({ sessionId, sender: 'bot', text: botMsg });
     }
 
   } catch (err) {
