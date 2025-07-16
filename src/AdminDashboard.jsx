@@ -11,12 +11,11 @@ function AdminDashboard() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [analytics, setAnalytics] = useState(null);
-  const BASE_API = 'https://micah-admin.vercel.app';
 
   // ✅ Define fetchMessages
   const fetchMessages = async () => {
     try {
-      const res = await axios.get('https://micah-admin.vercel.app/api/messages');
+      const res = await axios.get('/api/messages');
 console.log("📦 Full response:", res.data);
 const messages = Array.isArray(res.data) ? res.data : [];
 setMessages(messages);
@@ -31,7 +30,7 @@ setFiltered(messages);
   // ✅ Define fetchAnalytics
   const fetchAnalytics = async () => {
   try {
-    const res = await axios.get('https://micah-admin.vercel.app/api/analytics/summary');
+    const res = await axios.get('/api/analytics/summary');
     setAnalytics(res.data);
   } catch (err) {
     console.error('❌ Failed to load analytics summary:', err);
