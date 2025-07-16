@@ -75,6 +75,30 @@ setFiltered(messages);
     setFiltered(filteredData);
   }, [sender, sessionId, search, startDate, endDate, messages]);
 
+  const exportCSV = () => {
+  const rows = [['Session ID', 'Sender', 'Text', 'Timestamp', 'Topic']];
+
+  messages.forEach(msg => {
+    rows.push([
+      msg.sessionId || '',
+      msg.sender || '',
+      `"${msg.text?.toString().replace(/"/g, '""') || ''}"`,
+      msg.timestamp || '',
+      msg.topic || ''
+    ]);
+  });
+
+  const csvContent = rows.map(row => row.join(',')).join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', `Micah_Chat_History_${Date.now()}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Micah Admin Dashboard</h1>
@@ -85,6 +109,9 @@ setFiltered(messages);
   </button>
   <button onClick={() => setTab('graph')}>Graph</button>
 </div>
+{tab === 'history' && (
+  <button onClick={exportCSV} style={{ marginLeft: '10px' }}>Export CSV</button>
+)}
 
       {/* ✅ Quick Analytics Panel */}
       <div style={{ marginBottom: '20px', background: '#f3f3f3', padding: '15px', borderRadius: '10px' }}>
@@ -99,79 +126,75 @@ setFiltered(messages);
 {tab === 'graph' && <ChartPanel messages={filtered} />}
 {tab === 'history' && (
   <>
-    {/* Your Filter Panel */}
-    {/* Your Table Display */}
-  </>
-)}
-
-
-      {/* ✅ Filter Panel */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', marginBottom: '20px' }}>
-        <div>
-          <label><strong>Sender:</strong></label><br />
-          <select value={sender} onChange={e => setSender(e.target.value)}>
-            <option>All</option>
-            <option>User</option>
-            <option>Bot</option>
-          </select>
-        </div>
-
-        <div>
-          <label><strong>Session ID:</strong></label><br />
-          <select value={sessionId} onChange={e => setSessionId(e.target.value)}>
-            <option>All</option>
-            {uniqueSessions.map((sid, i) => (
-              <option key={i} value={sid}>{sid}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label><strong>Search:</strong></label><br />
-          <input
-            type="text"
-            placeholder="Enter keyword..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label><strong>Start Date:</strong></label><br />
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
-        </div>
-
-        <div>
-          <label><strong>End Date:</strong></label><br />
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
-        </div>
+    {/* ✅ Filter Panel */}
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', marginBottom: '20px' }}>
+      <div>
+        <label><strong>Sender:</strong></label><br />
+        <select value={sender} onChange={e => setSender(e.target.value)}>
+          <option>All</option>
+          <option>User</option>
+          <option>Bot</option>
+        </select>
       </div>
 
-      {/* ✅ Table Display */}
-      {filtered.length === 0 ? (
-        <p>No messages found.</p>
-      ) : (
-        <table border="1" cellPadding="10" style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>Session</th>
-              <th>Sender</th>
-              <th>Message</th>
-              <th>Time</th>
+      <div>
+        <label><strong>Session ID:</strong></label><br />
+        <select value={sessionId} onChange={e => setSessionId(e.target.value)}>
+          <option>All</option>
+          {uniqueSessions.map((sid, i) => (
+            <option key={i} value={sid}>{sid}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label><strong>Search:</strong></label><br />
+        <input
+          type="text"
+          placeholder="Enter keyword..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label><strong>Start Date:</strong></label><br />
+        <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+      </div>
+
+      <div>
+        <label><strong>End Date:</strong></label><br />
+        <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+      </div>
+    </div>
+
+    {/* ✅ Table Display */}
+    {filtered.length === 0 ? (
+      <p>No messages found.</p>
+    ) : (
+      <table border="1" cellPadding="10" style={{ width: '100%' }}>
+        <thead>
+          <tr>
+            <th>Session</th>
+            <th>Sender</th>
+            <th>Message</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filtered.map((msg, i) => (
+            <tr key={i}>
+              <td>{msg.sessionId}</td>
+              <td style={{ fontWeight: 'bold' }}>{msg.sender === 'bot' ? 'Bot' : 'User'}</td>
+              <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{msg.text}</td>
+              <td>{new Date(msg.timestamp).toLocaleString()}</td>
             </tr>
-          </thead>
-          <tbody>
-            {filtered.map((msg, i) => (
-              <tr key={i}>
-                <td>{msg.sessionId}</td>
-                <td style={{ fontWeight: 'bold' }}>{msg.sender === 'bot' ? 'Bot' : 'User'}</td>
-                <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{msg.text}</td>
-                <td>{new Date(msg.timestamp).toLocaleString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
+    )}
+  </>
+)}
     </div>
   );
 }
