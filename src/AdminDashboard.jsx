@@ -12,6 +12,7 @@ function AdminDashboard() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [analytics, setAnalytics] = useState(null);
+  const [tab, setTab] = useState('history');
 
   // ✅ Define fetchMessages
   const fetchMessages = async () => {
@@ -78,6 +79,13 @@ setFiltered(messages);
     <div style={{ padding: '20px' }}>
       <h1>Micah Admin Dashboard</h1>
 
+<div style={{ marginBottom: '20px' }}>
+  <button onClick={() => setTab('history')} style={{ marginRight: '10px' }}>
+    Chat History
+  </button>
+  <button onClick={() => setTab('graph')}>Graph</button>
+</div>
+
       {/* ✅ Quick Analytics Panel */}
       <div style={{ marginBottom: '20px', background: '#f3f3f3', padding: '15px', borderRadius: '10px' }}>
   <h3>📈 Quick Analytics</h3>
@@ -88,7 +96,13 @@ setFiltered(messages);
 </div>
 
 {/* ✅ Chart Display */}
-<ChartPanel messages={filtered} />
+{tab === 'graph' && <ChartPanel messages={filtered} />}
+{tab === 'history' && (
+  <>
+    {/* Your Filter Panel */}
+    {/* Your Table Display */}
+  </>
+)}
 
 
       {/* ✅ Filter Panel */}
