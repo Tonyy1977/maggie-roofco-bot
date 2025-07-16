@@ -3,10 +3,16 @@ export default function handler(req, res) {
 
   const { email, password } = req.body;
 
-  const validEmail = process.env.ADMIN_EMAIL;
-  const validPassword = process.env.ADMIN_PASSWORD;
+  const validUsers = [
+    { email: process.env.ADMIN_EMAIL_1, password: process.env.ADMIN_PASSWORD_1 },
+    { email: process.env.ADMIN_EMAIL_2, password: process.env.ADMIN_PASSWORD_2 }
+  ];
 
-  if (email === validEmail && password === validPassword) {
+  const isValid = validUsers.some(
+    user => user.email === email && user.password === password
+  );
+
+  if (isValid) {
     return res.status(200).json({ success: true });
   } else {
     return res.status(401).json({ success: false });
