@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ChartPanel from './ChartPanel';
 
 function AdminDashboard() {
   const [messages, setMessages] = useState([]);
@@ -85,6 +86,9 @@ setFiltered(messages);
   <p><strong>User Messages:</strong> {filtered.filter(msg => msg.sender === 'user').length}</p>
   <p><strong>Bot Messages:</strong> {filtered.filter(msg => msg.sender === 'bot').length}</p>
 </div>
+
+{/* ✅ Chart Display */}
+<ChartPanel messages={filtered} />
 
 
       {/* ✅ Filter Panel */}

@@ -120,6 +120,24 @@ const sessionId = sessionIdRef.current;
   setInput('');
   setShowWelcomeOptions(false);
   addMessage({ sender: 'user', text: userRaw });
+
+// 🧠 Call /api/classify to detect topic
+try {
+  const classifyRes = await axios.post(`${API_BASE}/classify`, { text: userRaw });
+  const topic = classifyRes.data.topic;
+
+  // 🔄 Save topic to backend if needed (optional)
+  await axios.post(`${API_BASE}/tag-topic`, {
+    sessionId,
+    sender: 'user',
+    text: userRaw,
+    topic
+  });
+
+  console.log('📌 Topic classified as:', topic);
+} catch (err) {
+  console.warn('❌ Topic classification failed:', err.message);
+}
   setIsTyping(true);
 
   // 🧠 Step 1: Get last 8 messages for short-term memory
