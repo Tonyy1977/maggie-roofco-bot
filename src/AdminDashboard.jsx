@@ -14,6 +14,27 @@ function AdminDashboard() {
   const [analytics, setAnalytics] = useState(null);
   const [tab, setTab] = useState('history');
 
+  const [authenticated, setAuthenticated] = useState(false);
+const [loginInput, setLoginInput] = useState({ email: '', password: '' });
+
+useEffect(() => {
+  const stored = localStorage.getItem('micah-admin-auth');
+  if (stored === 'true') setAuthenticated(true);
+}, []);
+
+const handleLogin = async () => {
+  try {
+    const res = await axios.post('/api/admin/login', loginInput);
+    if (res.data.success) {
+      localStorage.setItem('micah-admin-auth', 'true');
+      setAuthenticated(true);
+    } else {
+      alert('❌ Invalid credentials');
+    }
+  } catch {
+    alert('❌ Login failed');
+  }
+};
   // ✅ Define fetchMessages
   const fetchMessages = async () => {
     try {
@@ -98,6 +119,28 @@ setFiltered(messages);
   link.click();
   document.body.removeChild(link);
 };
+if (!authenticated) {
+  return (
+    <div style={{ padding: '20px' }}>
+      <h2>🔐 Admin Login</h2>
+      <input
+        type="email"
+        placeholder="Email"
+        value={loginInput.email}
+        onChange={(e) => setLoginInput({ ...loginInput, email: e.target.value })}
+        style={{ marginBottom: '10px', display: 'block' }}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={loginInput.password}
+        onChange={(e) => setLoginInput({ ...loginInput, password: e.target.value })}
+        style={{ marginBottom: '10px', display: 'block' }}
+      />
+      <button onClick={handleLogin}>Login</button>
+    </div>
+  );
+}
 
   return (
     <div style={{ padding: '20px' }}>
@@ -112,6 +155,26 @@ setFiltered(messages);
 {tab === 'history' && (
   <button onClick={exportCSV} style={{ marginLeft: '10px' }}>Export CSV</button>
 )}
+<button
+  onClick={() => {
+    localStorage.removeItem('micah-admin-auth');
+    window.location.href = '/?mode=admin';
+  }}
+  style={{
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: '#f44336',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '6px',
+    padding: '6px 12px',
+    cursor: 'pointer'
+  }}
+>
+  Logout
+</button>
+
 
       {/* ✅ Quick Analytics Panel */}
       <div style={{ marginBottom: '20px', background: '#f3f3f3', padding: '15px', borderRadius: '10px' }}>
