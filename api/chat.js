@@ -2,6 +2,7 @@
 import fetch from 'node-fetch';
 import dbConnect from './lib/dbConnect.js';
 import Message from './models/Message.js';
+import axios from 'axios';
 
 export const config = {
   api: {
@@ -69,8 +70,23 @@ export default async function handler(req, res) {
       console.warn('⚠️ OpenAI response missing message content:', data);
     }
 
-    if (userMsg?.content && botMsg) {
-      await Message.create({ sessionId, sender: 'user', text: userMsg.content });
+    // 🧠 Classify the user message
+    let topics = [];
+    if (userMsg?.content) {
+      try {
+        const classifyRes = await axios.post(`${process.env.BASE_URL || 'http://localhost:3000'}/api/classify`, {
+          text: userMsg.content
+        });
+        const topic = classifyRes.data.topic;
+        if (topic) topics = [topic];
+      } catch (err) {
+        console.error('⚠️ GPT classification failed:', err.message);
+      }
+
+      await Message.create({ sessionId, sender: 'user', text: userMsg.content, topics }); // ✅ Save with topics
+    }
+
+    if (botMsg) {
       await Message.create({ sessionId, sender: 'bot', text: botMsg });
     }
 
