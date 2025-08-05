@@ -77,14 +77,24 @@ const sessionId = sessionIdRef.current;
         throw new Error('Expected an array from /api/history');
       }
 
-      const history = res.data.map((msg) => ({
-        sender: msg.sender,
-        text: msg.text,
-        timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      }));
+      const history = res.data.map((msg) => {
+  let fixedText = msg.text;
+
+  // ✅ Replace agent references
+  fixedText = fixedText.replace(
+    /local real estate agent|a local realtor|real estate professional|local property manager|a local market analysis|consult with.*?agent|check with.*?agent|check with.*?realtor/gi,
+    'DDT Enterprise'
+  );
+
+  return {
+    sender: msg.sender,
+    text: fixedText,
+    timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+  };
+});
 
       setMessages(
         history.length > 0

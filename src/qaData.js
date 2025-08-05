@@ -582,6 +582,10 @@ const qaData = [
   question: ["How much is kept in the reserve account?"],
   answer: ["	DDT Enterprise typically maintains a reserve amount of $800 for each property to handle any unexpected expenses or necessary repairs. This helps ensure prompt attention to any urgent maintenance issues. If you have any more questions about property management details, feel free to ask!"],
 },
+{
+  question: ["Pet fee?"],
+  answer: ["The pet fee at DDT Enterprise is $575 for a non-refundable deposit. If you have more questions about bringing your fur-baby with you, feel free to ask!"],
+},
 ];
 
 
