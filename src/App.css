@@ -46,15 +46,18 @@
     left: 0 !important;
     bottom: 0 !important;
     right: 0 !important;
+
     width: 100vw !important;
-    height: 100vh !important;
+    height: 100dvh !important;   /* 👈 use dynamic vh instead of static vh */
     max-height: none !important;
     min-width: 0 !important;
     min-height: 0 !important;
+
     border-radius: 0 !important;
     margin: 0 !important;
     z-index: 99999 !important;
   }
+}
 
   .chat-header {
     font-size: 1.1rem;
