@@ -15,19 +15,19 @@
 
 /* Chat window wrapper */
 /* Default chatbox (desktop widget) */
+/* Default chatbox (desktop widget) */
 .chat-wrapper {
+  height: 100%;
   position: fixed;
   bottom: 40px;
   right: 20px;
   width: 350px;
   height: 500px;
   max-height: 90vh;
-  min-width: 350px;
-  min-height: 500px;
   display: flex;
   flex-direction: column;
   background: white;
-  border-radius: 20px; /* Rounded corners */
+  border-radius: 20px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   z-index: 999;
@@ -35,20 +35,24 @@
   zoom: 1 !important;
   scale: 1 !important;
   font-size: 16px !important;
+  min-width: 350px;
+  min-height: 500px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
 }
 
-/* 📱 Mobile override: auto expand */
+/* Mobile override: auto expand */
 @media (max-width: 768px) {
   .chat-wrapper {
     top: 0 !important;
     left: 0 !important;
     bottom: 0 !important;
     right: 0 !important;
-
     width: 100vw !important;
-    height: 100dvh !important;   /* 👈 use dynamic vh instead of static vh */
+
+    /* fallback then modern */
+    height: 100vh !important;
+    height: 100dvh !important;
+
     max-height: none !important;
     min-width: 0 !important;
     min-height: 0 !important;
@@ -57,7 +61,6 @@
     margin: 0 !important;
     z-index: 99999 !important;
   }
-}
 
   .chat-header {
     font-size: 1.1rem;
