@@ -40,36 +40,30 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Mobile override: auto expand */
-@media (max-width: 768px) {
+/* 📱 PHONE-ONLY override: won't trigger on laptops */
+@media (max-width: 600px) and (orientation: portrait) and (hover: none) and (pointer: coarse) {
   .chat-wrapper {
-    top: 0 !important;
+    position: fixed !important;
     left: 0 !important;
-    bottom: 0 !important;
     right: 0 !important;
+
+    /* pull it a bit down from the top; sit near bottom */
+    top: 56px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px) !important;
+
     width: 100vw !important;
-
-    /* fallback then modern */
-    height: 100vh !important;
-    height: 100dvh !important;
-
+    height: auto !important;     /* height controlled by top/bottom */
     max-height: none !important;
     min-width: 0 !important;
     min-height: 0 !important;
 
-    border-radius: 0 !important;
+    border-radius: 16px !important;
     margin: 0 !important;
     z-index: 99999 !important;
   }
 
-  .chat-header {
-    font-size: 1.1rem;
-    padding: 14px;
-  }
-
-  .chat-input {
-    padding: 12px;
-  }
+  .chat-header { font-size: 1.1rem; padding: 14px; }
+  .chat-input  { padding: 12px; }
 }
 
 /* Chat box layout */
