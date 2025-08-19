@@ -196,6 +196,19 @@ Keep responses short (2–3 sentences max unless necessary). FAQs: ${JSON.string
 
           {isTyping && <div className="typing-indicator">Micah is typing...</div>}
           <div ref={messagesEndRef} />
+          {!showWelcomeOptions && (
+  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+    <div
+      className="option-box"
+      onClick={() => {
+        setMenuStep(0);              // reset to top-level
+        setShowWelcomeOptions(true); // re-open the menu
+      }}
+    >
+      Main Menu
+    </div>
+  </div>
+)}
 
           {/* Tiered welcome options */}
           {showWelcomeOptions && (
@@ -213,7 +226,7 @@ Keep responses short (2–3 sentences max unless necessary). FAQs: ${JSON.string
                       addMessage({
                         sender: 'bot',
                         text:
-                          'Thomas Inspections is a nationwide home inspection company. Learn more at https://www.thomasinspectionsva.com/',
+                          'Thomas Inspections is a nationwide home inspection company. Learn more at <a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Visit Thomas Inspections</a>',
                       });
                       setShowWelcomeOptions(false);
                     }}

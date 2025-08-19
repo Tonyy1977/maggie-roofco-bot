@@ -854,3 +854,40 @@ html, body, #root {
 .send-arrow:hover {
   color: #005bb5;
 }
+/* Default chatbox (desktop widget) */
+.chatbox {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 330px;
+  height: 520px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+/* Mobile override: auto expand */
+@media (max-width: 768px) {
+  .chatbox {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0;
+    z-index: 99999; /* stays on top */
+  }
+}
+@media (max-width: 768px) {
+  .chat-header {
+    font-size: 1.1rem;
+    padding: 14px;
+  }
+  .chat-input {
+    padding: 12px;
+  }
+}
