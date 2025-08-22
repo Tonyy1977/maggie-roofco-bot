@@ -211,49 +211,61 @@ Keep responses short (2–3 sentences max unless necessary). FAQs: ${JSON.string
 )}
 
           {/* Tiered welcome options */}
-          {showWelcomeOptions && (
-            <div className="welcome-options">
-              {menuStep === 0 && (
-                <>
-                  <div className="option-box" onClick={() => setMenuStep(1)}>
-                    General Housing Help
-                  </div>
-                  <div
-                    className="option-box"
-                    onClick={() => {
-                      // Rule-based reply (no GPT call)
-                      addMessage({ sender: 'user', text: 'Thomas Inspection' });
-                      addMessage({
-                        sender: 'bot',
-                        text:
-                          'Thomas Inspections is a nationwide home inspection company. Learn more at <a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Visit Thomas Inspections</a>',
-                      });
-                      setShowWelcomeOptions(false);
-                    }}
-                  >
-                    Thomas Inspection
-                  </div>
-                </>
-              )}
+          {/* Tiered welcome options */}
+{showWelcomeOptions && (
+  <div className="welcome-options">
+    {menuStep === 0 && (
+      <>
+        <div className="option-box" onClick={() => setMenuStep(1)}>
+          General Housing Help
+        </div>
 
-              {menuStep === 1 && (
-                <>
-                  {[
-                    'I have a question about rent',
-                    'I’d like to ask about payment options',
-                    'I need help with the application process',
-                    'I’d like to schedule a property tour',
-                    'I have an urgent or emergency concern',
-                  ].map((opt) => (
-                    <div key={opt} className="option-box" onClick={() => handleSend(opt)}>
-                      {opt}
-                    </div>
-                  ))}
-                  <div className="option-box" onClick={() => setMenuStep(0)}>⬅ Back</div>
-                </>
-              )}
-            </div>
-          )}
+        <div
+          className="option-box"
+          onClick={() => {
+            // Rule-based reply (no GPT call)
+            addMessage({ sender: 'user', text: 'Thomas Inspection' });
+            addMessage({
+              sender: 'bot',
+              text:
+                'Thomas Inspections is a nationwide home inspection company. Learn more at <a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Visit Thomas Inspections</a>',
+            });
+            setShowWelcomeOptions(false);
+          }}
+        >
+          Thomas Inspection
+        </div>
+
+        <div
+          className="option-box"
+          onClick={() => {
+            setShowWelcomeOptions(false);
+            handleSend('Rental Availability'); // ← goes through qaData / GPT
+          }}
+        >
+          Rental Availability
+        </div>
+      </>
+    )}
+
+    {menuStep === 1 && (
+      <>
+        {[
+          'I have a question about rent',
+          'I’d like to ask about payment options',
+          'I need help with the application process',
+          'I’d like to schedule a property tour',
+          'I have an urgent or emergency concern',
+        ].map((opt) => (
+          <div key={opt} className="option-box" onClick={() => handleSend(opt)}>
+            {opt}
+          </div>
+        ))}
+        <div className="option-box" onClick={() => setMenuStep(0)}>⬅ Back</div>
+      </>
+    )}
+  </div>
+)}
         </div>
 
         {/* Footer input */}
