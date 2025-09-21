@@ -26,13 +26,13 @@
   chatIframe.style.position = "fixed";
   chatIframe.style.bottom = "0";
   chatIframe.style.right = "0";
-  chatIframe.style.width = "400px";
-  chatIframe.style.height = "800px";
+  chatIframe.style.width = "350px";
+  chatIframe.style.height = "500px";
   chatIframe.style.border = "none";
   chatIframe.style.zIndex = "2147483647"; // top layer
   chatIframe.style.borderRadius = "20px";
   chatIframe.style.display = "none";
-  chatIframe.style.background = "#fff"; // force clean background
+  chatIframe.style.background = "none"; // force clean background
   chatIframe.style.overflow = "hidden";
   chatIframe.style.isolation = "isolate";
   chatIframe.allowTransparency = "true";
