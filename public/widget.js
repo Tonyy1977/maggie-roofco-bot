@@ -70,11 +70,20 @@
   // --- Listener: toggle and close logic ---
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
-      const isOpen = chatIframe.style.display === "block";
-      chatIframe.style.display = isOpen ? "none" : "block";
-      avatarIframe.style.display = isOpen ? "block" : "none";
-      resizeChat(); // adjust size when opening
-    }
+  const isOpen = chatIframe.style.display === "block";
+  if (isOpen) {
+    // closing
+    chatIframe.style.display = "none";
+    avatarIframe.style.display = "block";
+    document.body.style.overflow = "auto"; // unlock page scroll
+  } else {
+    // opening
+    chatIframe.style.display = "block";
+    avatarIframe.style.display = "none"; // always hide avatar when open
+    resizeChat();
+    document.body.style.overflow = "hidden"; // lock page scroll
+  }
+}
 
     if (event.data === "close-chat") {
       chatIframe.style.display = "none";
