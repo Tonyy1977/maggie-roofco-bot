@@ -910,3 +910,11 @@ html, body, #root {
     height: calc(100vh - 100px); /* header + footer accounted */
   }
 }
+html, body, #root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  background: #fff !important; /* force isolation */
+}

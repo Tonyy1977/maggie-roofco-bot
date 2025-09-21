@@ -1,7 +1,7 @@
 (function () {
   const CHAT_URL = "https://ddt-chatbot-gy6g.vercel.app";
 
-  // Small Avatar Toggle iframe
+  // --- Avatar Toggle iframe ---
   const avatarIframe = document.createElement("iframe");
   avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
   avatarIframe.style.position = "fixed";
@@ -10,14 +10,17 @@
   avatarIframe.style.width = "320px";
   avatarIframe.style.height = "150px";
   avatarIframe.style.border = "none";
-  avatarIframe.style.zIndex = "2147483646";
+  avatarIframe.style.zIndex = "2147483646"; // right below chat
   avatarIframe.style.background = "transparent";
   avatarIframe.style.pointerEvents = "auto";
   avatarIframe.allowTransparency = "true";
   avatarIframe.setAttribute("frameborder", "0");
+  avatarIframe.setAttribute("scrolling", "no");
+  avatarIframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
+  avatarIframe.setAttribute("referrerpolicy", "no-referrer");
   document.body.appendChild(avatarIframe);
 
-  // Chat Box iframe (hidden by default)
+  // --- Chat Box iframe ---
   const chatIframe = document.createElement("iframe");
   chatIframe.src = `${CHAT_URL}/?mode=chat`;
   chatIframe.style.position = "fixed";
@@ -26,24 +29,37 @@
   chatIframe.style.width = "400px";
   chatIframe.style.height = "800px";
   chatIframe.style.border = "none";
-  chatIframe.style.zIndex = "2147483647";
+  chatIframe.style.zIndex = "2147483647"; // top layer
   chatIframe.style.borderRadius = "20px";
   chatIframe.style.display = "none";
-  chatIframe.style.background = "transparent";
+  chatIframe.style.background = "#fff"; // force clean background
+  chatIframe.style.overflow = "hidden";
+  chatIframe.style.isolation = "isolate";
   chatIframe.allowTransparency = "true";
   chatIframe.setAttribute("frameborder", "0");
+  chatIframe.setAttribute("scrolling", "no");
+  chatIframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
+  chatIframe.setAttribute("referrerpolicy", "no-referrer");
   document.body.appendChild(chatIframe);
 
-  // ✅ Function: adapt chat size on mobile
+  // --- Function: Resize Chat for Mobile/Desktop ---
   function resizeChat() {
     if (window.innerWidth <= 768) {
       chatIframe.style.width = "100vw";
       chatIframe.style.height = "100vh";
       chatIframe.style.borderRadius = "0";
+      chatIframe.style.top = "0";
+      chatIframe.style.left = "0";
+      chatIframe.style.right = "0";
+      chatIframe.style.bottom = "0";
     } else {
       chatIframe.style.width = "400px";
       chatIframe.style.height = "800px";
       chatIframe.style.borderRadius = "20px";
+      chatIframe.style.bottom = "0";
+      chatIframe.style.right = "0";
+      chatIframe.style.left = "auto";
+      chatIframe.style.top = "auto";
     }
   }
 
@@ -51,18 +67,18 @@
   resizeChat();
   window.addEventListener("resize", resizeChat);
 
-  // Message listener: toggle and close logic
+  // --- Listener: toggle and close logic ---
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
       const isOpen = chatIframe.style.display === "block";
       chatIframe.style.display = isOpen ? "none" : "block";
-      avatarIframe.style.display = isOpen ? "block" : "none"; // hide toggle if chat open
-      resizeChat(); // adjust size on open
+      avatarIframe.style.display = isOpen ? "block" : "none";
+      resizeChat(); // adjust size when opening
     }
 
     if (event.data === "close-chat") {
       chatIframe.style.display = "none";
-      avatarIframe.style.display = "block"; // show toggle again
+      avatarIframe.style.display = "block";
     }
   });
 })();
