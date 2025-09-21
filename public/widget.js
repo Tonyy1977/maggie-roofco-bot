@@ -71,23 +71,32 @@
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
   const isOpen = chatIframe.style.display === "block";
+
   if (isOpen) {
-    // closing
+    // ✅ Closing chat
     chatIframe.style.display = "none";
     avatarIframe.style.display = "block";
-    document.body.style.overflow = "auto"; // unlock page scroll
+    document.body.style.overflow = "auto"; // unlock scroll on close
   } else {
-    // opening
+    // ✅ Opening chat
     chatIframe.style.display = "block";
-    avatarIframe.style.display = "none"; // always hide avatar when open
+    avatarIframe.style.display = "none";
     resizeChat();
-    document.body.style.overflow = "hidden"; // lock page scroll
+
+    // ✅ Lock scroll ONLY on mobile full-screen
+    if (window.innerWidth <= 768) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto"; // desktop stays scrollable
+    }
   }
 }
 
-    if (event.data === "close-chat") {
-      chatIframe.style.display = "none";
-      avatarIframe.style.display = "block";
-    }
+if (event.data === "close-chat") {
+  // ✅ Always reset scroll when user closes chat
+  chatIframe.style.display = "none";
+  avatarIframe.style.display = "block";
+  document.body.style.overflow = "auto";
+}
   });
 })();
