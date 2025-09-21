@@ -8,10 +8,7 @@ const qaData = [
       "how do i schedule a tour"
     ],
     keywords: ["tour", "schedule", "visit", "home"],
-    answer: [
-      "You can schedule a tour anytime using the link below:",
-      '<a href="https://ddtenterprise.org/schedule-a-tour/" target="_blank" rel="noopener noreferrer">Schedule a Tour</a>',
-      "During the tour, you can see all the features of the property and ask any questions you may have."
+    answer: ["__BOOKING_TOUR_NEW__"
     ]
   },
 
@@ -104,19 +101,16 @@ const qaData = [
     "When is the tour available?"
   ],
   keywords: ["tour", "schedule", "visit", "see", "home"],
-  answer: [
-    "Perfect, we’re excited to give you a tour! Please confirm the date and time that works best for you using the link below.",
-    'What feature of the home stood out most to you? <a href="https://ddtenterprise.org/schedule-a-tour/" target="_blank" rel="noopener noreferrer">Schedule a Tour</a>'
-  ]
+  answer: "__BOOKING_TOUR_AVAIL__" // availability
 },
   {
-    question: ["I just applied. What now?", "What happens after submitting the application?"],
-    keywords: ["apply", "submitted", "next step"],
-    answer: [
-      "Thank you for submitting your application. Are you interested in scheduling a tour?",
-      '<a href="https://ddtenterprise.org/schedule-a-tour/" target="_blank" rel="noopener noreferrer">Schedule a Tour</a>'
-    ]
-  },
+  question: [
+    "I just applied. What now?",
+    "What happens after submitting the application?"
+  ],
+  keywords: ["apply", "submitted", "next step"],
+  answer: "__BOOKING_TOUR_NEW__" // 👈 triggers the booking flow
+},
   {
     question: [
       "I paid the deposit — what now?",
@@ -161,11 +155,29 @@ const qaData = [
   {
     question: ["I missed my tour — can I reschedule?", "I wasn’t able to make my appointment. Can I set another time?"],
     keywords: ["reschedule", "tour", "appointment", "change"],
-    answer: [
-      "Certainly, please choose a time that works with your schedule using the link below.",
-      '<a href="https://ddtenterprise.org/schedule-a-tour/" target="_blank" rel="noopener noreferrer">Schedule a Tour</a>'
-    ]
+    answer: "__BOOKING_TOUR_RESCHEDULE__" // reschedule
   },
+  // --- MEETINGS ---
+{
+  question: [
+    "schedule meeting",
+    "book a meeting",
+    "set up a meeting with Demetrice",
+    "I want to meet Demetrice",
+    "appointment with Micah"
+  ],
+  keywords: ["meeting", "appointment", "schedule", "set up"],
+  answer: "__BOOKING_MEETING_NEW__"
+},
+{
+  question: [
+    "can I reschedule my meeting?",
+    "missed my meeting",
+    "change my appointment with Demetrice"
+  ],
+  keywords: ["meeting", "reschedule", "appointment", "change"],
+  answer: "__BOOKING_MEETING_RESCHEDULE__"
+},
   {
     question: [
       "Why wasn’t I chosen for the unit?",

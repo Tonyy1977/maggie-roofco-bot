@@ -21,8 +21,8 @@
   const chatIframe = document.createElement("iframe");
   chatIframe.src = `${CHAT_URL}/?mode=chat`;
   chatIframe.style.position = "fixed";
-  chatIframe.style.bottom = "80px";
-  chatIframe.style.right = "0px";
+  chatIframe.style.bottom = "0";
+  chatIframe.style.right = "0";
   chatIframe.style.width = "400px";
   chatIframe.style.height = "800px";
   chatIframe.style.border = "none";
@@ -34,17 +34,35 @@
   chatIframe.setAttribute("frameborder", "0");
   document.body.appendChild(chatIframe);
 
+  // ✅ Function: adapt chat size on mobile
+  function resizeChat() {
+    if (window.innerWidth <= 768) {
+      chatIframe.style.width = "100vw";
+      chatIframe.style.height = "100vh";
+      chatIframe.style.borderRadius = "0";
+    } else {
+      chatIframe.style.width = "400px";
+      chatIframe.style.height = "800px";
+      chatIframe.style.borderRadius = "20px";
+    }
+  }
+
+  // Run on load + resize
+  resizeChat();
+  window.addEventListener("resize", resizeChat);
+
   // Message listener: toggle and close logic
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
       const isOpen = chatIframe.style.display === "block";
       chatIframe.style.display = isOpen ? "none" : "block";
-      avatarIframe.style.display = isOpen ? "block" : "none"; // 👈 hide toggle if chat open
+      avatarIframe.style.display = isOpen ? "block" : "none"; // hide toggle if chat open
+      resizeChat(); // adjust size on open
     }
 
     if (event.data === "close-chat") {
       chatIframe.style.display = "none";
-      avatarIframe.style.display = "block"; // 👈 show toggle again
+      avatarIframe.style.display = "block"; // show toggle again
     }
   });
 })();
