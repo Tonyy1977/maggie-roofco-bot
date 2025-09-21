@@ -55,6 +55,8 @@
     } else {
       chatIframe.style.width = "350px";
       chatIframe.style.height = "500px";
+      chatIframe.style.bottom = "20px";  // push up
+      chatIframe.style.right = "20px";   // push left
       chatIframe.style.borderRadius = "20px";
       chatIframe.style.bottom = "0";
       chatIframe.style.right = "0";
