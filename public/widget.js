@@ -33,11 +33,11 @@
   chatIframe.style.borderRadius = "20px";
   chatIframe.style.display = "none";
   chatIframe.style.background = "none"; // force clean background
-  chatIframe.style.overflow = "hidden";
+  chatIframe.style.overflow = "auto";
   chatIframe.style.isolation = "isolate";
   chatIframe.allowTransparency = "true";
   chatIframe.setAttribute("frameborder", "0");
-  chatIframe.setAttribute("scrolling", "no");
+  chatIframe.setAttribute("scrolling", "yes");
   chatIframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
   chatIframe.setAttribute("referrerpolicy", "no-referrer");
   document.body.appendChild(chatIframe);
