@@ -915,6 +915,6 @@ html, body, #root {
   padding: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  background: transparent !important; /* kill white bg */
-  overflow: visible !important;       /* let content scroll normally */
+  overflow: hidden !important;
+  background: none !important; /* force isolation */
 }
