@@ -7,16 +7,19 @@
   avatarIframe.style.position = "fixed";
   avatarIframe.style.bottom = "20px";
   avatarIframe.style.right = "20px";
-  avatarIframe.style.width = "320px";
-  avatarIframe.style.height = "150px";
+  avatarIframe.style.width = "64px";   // ✅ match avatar size
+  avatarIframe.style.height = "64px";  // ✅ match avatar size
   avatarIframe.style.border = "none";
-  avatarIframe.style.zIndex = "2147483646"; // right below chat
+  avatarIframe.style.zIndex = "2147483646";
   avatarIframe.style.background = "transparent";
   avatarIframe.style.pointerEvents = "auto";
   avatarIframe.allowTransparency = "true";
   avatarIframe.setAttribute("frameborder", "0");
   avatarIframe.setAttribute("scrolling", "no");
-  avatarIframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
+  avatarIframe.setAttribute(
+    "sandbox",
+    "allow-scripts allow-same-origin allow-forms allow-popups"
+  );
   avatarIframe.setAttribute("referrerpolicy", "no-referrer");
   document.body.appendChild(avatarIframe);
 
@@ -24,21 +27,24 @@
   const chatIframe = document.createElement("iframe");
   chatIframe.src = `${CHAT_URL}/?mode=chat`;
   chatIframe.style.position = "fixed";
-  chatIframe.style.bottom = "0";
-  chatIframe.style.right = "0";
+  chatIframe.style.bottom = "20px";
+  chatIframe.style.right = "20px";
   chatIframe.style.width = "350px";
   chatIframe.style.height = "500px";
   chatIframe.style.border = "none";
-  chatIframe.style.zIndex = "2147483647"; // top layer
+  chatIframe.style.zIndex = "2147483647";
   chatIframe.style.borderRadius = "20px";
   chatIframe.style.display = "none";
-  chatIframe.style.background = "none"; // force clean background
+  chatIframe.style.background = "transparent"; // ✅ no white bg
   chatIframe.style.overflow = "hidden";
   chatIframe.style.isolation = "isolate";
   chatIframe.allowTransparency = "true";
   chatIframe.setAttribute("frameborder", "0");
   chatIframe.setAttribute("scrolling", "no");
-  chatIframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
+  chatIframe.setAttribute(
+    "sandbox",
+    "allow-scripts allow-same-origin allow-forms allow-popups"
+  );
   chatIframe.setAttribute("referrerpolicy", "no-referrer");
   document.body.appendChild(chatIframe);
 
@@ -56,8 +62,8 @@
       chatIframe.style.width = "350px";
       chatIframe.style.height = "500px";
       chatIframe.style.borderRadius = "20px";
-      chatIframe.style.bottom = "0";
-      chatIframe.style.right = "0";
+      chatIframe.style.bottom = "20px";
+      chatIframe.style.right = "20px";
       chatIframe.style.left = "auto";
       chatIframe.style.top = "auto";
     }
@@ -70,33 +76,31 @@
   // --- Listener: toggle and close logic ---
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
-  const isOpen = chatIframe.style.display === "block";
+      const isOpen = chatIframe.style.display === "block";
 
-  if (isOpen) {
-    // ✅ Closing chat
-    chatIframe.style.display = "none";
-    avatarIframe.style.display = "block";
-    document.body.style.overflow = "auto"; // unlock scroll on close
-  } else {
-    // ✅ Opening chat
-    chatIframe.style.display = "block";
-    avatarIframe.style.display = "none";
-    resizeChat();
+      if (isOpen) {
+        // Closing chat
+        chatIframe.style.display = "none";
+        avatarIframe.style.display = "block";
+        document.body.style.overflow = ""; // ✅ restore default scroll
+      } else {
+        // Opening chat
+        chatIframe.style.display = "block";
+        avatarIframe.style.display = "none";
+        resizeChat();
 
-    // ✅ Lock scroll ONLY on mobile full-screen
-    if (window.innerWidth <= 768) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto"; // desktop stays scrollable
+        if (window.innerWidth <= 768) {
+          document.body.style.overflow = "hidden"; // lock scroll only on mobile
+        } else {
+          document.body.style.overflow = ""; // desktop stays scrollable
+        }
+      }
     }
-  }
-}
 
-if (event.data === "close-chat") {
-  // ✅ Always reset scroll when user closes chat
-  chatIframe.style.display = "none";
-  avatarIframe.style.display = "block";
-  document.body.style.overflow = "auto";
-}
+    if (event.data === "close-chat") {
+      chatIframe.style.display = "none";
+      avatarIframe.style.display = "block";
+      document.body.style.overflow = ""; // ✅ always restore scroll
+    }
   });
 })();
