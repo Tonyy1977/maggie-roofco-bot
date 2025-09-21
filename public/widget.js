@@ -7,12 +7,13 @@
   avatarIframe.style.position = "fixed";
   avatarIframe.style.bottom = "20px";
   avatarIframe.style.right = "20px";
-  avatarIframe.style.width = "320px";
-  avatarIframe.style.height = "150px";
+  avatarIframe.style.width = "64px";
+  avatarIframe.style.height = "64px";
   avatarIframe.style.border = "none";
-  avatarIframe.style.zIndex = "2147483646"; // right below chat
+  avatarIframe.style.zIndex = "2147483646";
   avatarIframe.style.background = "transparent";
   avatarIframe.style.pointerEvents = "auto";
+  avatarIframe.style.borderRadius = "50%";
   avatarIframe.allowTransparency = "true";
   avatarIframe.setAttribute("frameborder", "0");
   avatarIframe.setAttribute("scrolling", "no");
@@ -29,10 +30,10 @@
   chatIframe.style.width = "350px";
   chatIframe.style.height = "500px";
   chatIframe.style.border = "none";
-  chatIframe.style.zIndex = "2147483647"; // top layer
+  chatIframe.style.zIndex = "2147483647";
   chatIframe.style.borderRadius = "20px";
   chatIframe.style.display = "none";
-  chatIframe.style.background = "none"; // force clean background
+  chatIframe.style.background = "#fff";
   chatIframe.style.overflow = "hidden";
   chatIframe.style.isolation = "isolate";
   chatIframe.allowTransparency = "true";
@@ -50,11 +51,9 @@
       chatIframe.style.borderRadius = "0";
       chatIframe.style.top = "0";
       chatIframe.style.left = "0";
-      chatIframe.style.right = "0";
-      chatIframe.style.bottom = "0";
     } else {
-      chatIframe.style.width = "400px";
-      chatIframe.style.height = "800px";
+      chatIframe.style.width = "350px";   // smaller desktop size
+      chatIframe.style.height = "500px";
       chatIframe.style.borderRadius = "20px";
       chatIframe.style.bottom = "0";
       chatIframe.style.right = "0";
@@ -63,31 +62,29 @@
     }
   }
 
-  // Run on load + resize
   resizeChat();
   window.addEventListener("resize", resizeChat);
 
   // --- Listener: toggle and close logic ---
   window.addEventListener("message", (event) => {
     if (event.data === "toggle-chat") {
-  const isOpen = chatIframe.style.display === "block";
-  if (isOpen) {
-    // closing
-    chatIframe.style.display = "none";
-    avatarIframe.style.display = "block";
-    document.body.style.overflow = "auto"; // unlock page scroll
-  } else {
-    // opening
-    chatIframe.style.display = "block";
-    avatarIframe.style.display = "none"; // always hide avatar when open
-    resizeChat();
-    document.body.style.overflow = "hidden"; // lock page scroll
-  }
-}
+      const isOpen = chatIframe.style.display === "block";
+      if (isOpen) {
+        chatIframe.style.display = "none";
+        avatarIframe.style.display = "block";
+        document.body.style.overflow = "auto"; // unlock scroll
+      } else {
+        chatIframe.style.display = "block";
+        avatarIframe.style.display = "none"; // hide avatar while chat open
+        resizeChat();
+        document.body.style.overflow = "hidden"; // lock background scroll
+      }
+    }
 
     if (event.data === "close-chat") {
       chatIframe.style.display = "none";
       avatarIframe.style.display = "block";
+      document.body.style.overflow = "auto";
     }
   });
 })();
