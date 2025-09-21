@@ -46,7 +46,7 @@
   function resizeChat() {
     if (window.innerWidth <= 768) {
       chatIframe.style.width = "100vw";
-      chatIframe.style.height = "100%";
+      chatIframe.style.height = "100vh";
       chatIframe.style.borderRadius = "0";
       chatIframe.style.top = "0";
       chatIframe.style.left = "0";
