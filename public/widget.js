@@ -24,7 +24,7 @@
   const chatIframe = document.createElement("iframe");
   chatIframe.src = `${CHAT_URL}/?mode=chat`;
   chatIframe.style.position = "fixed";
-  chatIframe.style.bottom = "20px";  // push up
+  chatIframe.style.bottom = "40px";  // push up
   chatIframe.style.right = "20px";   // push left
   chatIframe.style.width = "350px";
   chatIframe.style.height = "500px";
@@ -55,11 +55,9 @@
     } else {
       chatIframe.style.width = "350px";
       chatIframe.style.height = "500px";
-      chatIframe.style.bottom = "20px";  // push up
+      chatIframe.style.bottom = "40px";  // push up
       chatIframe.style.right = "20px";   // push left
       chatIframe.style.borderRadius = "20px";
-      chatIframe.style.bottom = "0";
-      chatIframe.style.right = "0";
       chatIframe.style.left = "auto";
       chatIframe.style.top = "auto";
     }
