@@ -16,7 +16,7 @@ const SLOT_RULES = {
 
 const POLICY_SUMMARY =
   "We currently schedule on Wednesday (5–8pm), Saturday (11am–1pm), and Sunday (2–4pm). " +
-  "Tours are 15 minutes; meetings are 30 minutes. Last start is 15/30 minutes before the window ends.";
+  "Tours are 15 minutes; meetings are 30 minutes.";
 
 // ---------- helpers ----------
 const pad2 = (n) => String(n).padStart(2, "0");
