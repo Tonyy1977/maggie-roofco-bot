@@ -365,7 +365,7 @@ const qaData = [
     question: ["What rentals are currently available?"],
     keywords: ["available", "rental available","Homes","Condominiums", "properties", "current"],
     answer: [
-      '<a href="https://ddtenterprise.org/rental-properties/#rutherford" target="_blank" rel="noopener noreferrer">View Available Rentals</a>'
+      '<a href="https://ddtenterprise.org/resident-portal-2-2-2/" target="_blank" rel="noopener noreferrer">View Available Rentals</a>'
     ]
   },
 
