@@ -196,6 +196,7 @@ export default function FullChat() {
   const [menuStep, setMenuStep] = useState(0);
 
   const chatBodyRef = useRef(null);
+  const messagesEndRef = useRef(null);
   const sessionIdRef = useRef(null);
   const [lastPick, setLastPick] = useState(null); // { type, preference, dateYMD, startISO }
 
@@ -346,7 +347,7 @@ export default function FullChat() {
       addMessage({
         sender: 'bot',
         type: 'text',
-        text: `I couldn’t verify availability just now. You can still pick a time here: <a href="${link}" target="_blank" rel="noopener noreferrer">Schedule on TidyCal</a>`,
+        text: `I couldn’t verify schedule just now. You can still pick a time here: <a href="${link}" target="_blank" rel="noopener noreferrer">Schedule on TidyCal</a>`,
       });
       return false;
     }
@@ -405,9 +406,8 @@ export default function FullChat() {
     const hasDateToken = !!parseDateYMD(userRaw);
     const hasTimeToken = !!parseTimeOfDay(userRaw).clock;
     const looksLikeScheduling =
-      hasDateToken || hasTimeToken ||
-      /(schedule|book|set up|arrange|tour|showing|meeting|call|appointment|see the (home|house|property))/i.test(userRaw) ||
-      (qaData || []).some(entry => (entry.keywords || []).some(kw => userRaw.toLowerCase().includes(kw)));
+  hasDateToken || hasTimeToken ||
+  /(tour|meeting|appointment)/i.test(userRaw);
 
     if (looksLikeScheduling) {
       const fallbackType = lastPick?.type || 'meeting';
@@ -435,6 +435,7 @@ export default function FullChat() {
       addMessage({ sender: 'bot', text: 'Server error, please try again.' });
     } finally {
       setIsTyping(false);
+      setShowWelcomeOptions(true);
     }
   };
 
@@ -480,7 +481,74 @@ export default function FullChat() {
           })}
 
           {isTyping && <div className="typing-indicator">Micah is typing...</div>}
-        </div>
+
+          <div ref={messagesEndRef} />
+
+          {!showWelcomeOptions && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+              <div
+                className="option-box"
+                onClick={() => {
+                  setMenuStep(0);
+                  setShowWelcomeOptions(true);
+                }}
+              >
+                Main Menu
+              </div>
+            </div>
+          )}
+
+          {showWelcomeOptions && (
+            <div className="welcome-options">
+              {menuStep === 0 && (
+                <>
+                  <div className="option-box" onClick={() => setMenuStep(1)}>
+                    General Housing Help
+                  </div>
+                  <div
+                    className="option-box"
+                    onClick={() => {
+                      addMessage({ sender: 'user', text: 'Thomas Inspection' });
+                      addMessage({
+                        sender: 'bot',
+                        text:
+                          'Thomas Inspections is a nationwide home inspection company. Learn more at <a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Visit Thomas Inspections</a>',
+                      });
+                      setShowWelcomeOptions(false);
+                    }}
+                  >
+                    Thomas Inspection
+                  </div>
+                  <div
+                    className="option-box"
+                    onClick={() => {
+                      setShowWelcomeOptions(false);
+                      handleSend('Rental Availability');
+                    }}
+                  >
+                    Rental Availability
+                  </div>
+                </>
+              )}
+              {menuStep === 1 && (
+                <>
+                  {[
+                    'I have a question about rent',
+                    'I’d like to ask about payment options',
+                    'I need help with the application process',
+                    'I’d like to schedule a property tour',
+                    'I have an urgent or emergency concern',
+                  ].map((opt) => (
+                    <div key={opt} className="option-box" onClick={() => handleSend(opt)}>
+                      {opt}
+                    </div>
+                  ))}
+                  <div className="option-box" onClick={() => setMenuStep(0)}>⬅ Back</div>
+                </>
+              )}
+            </div>
+          )}
+        </div> {/* closes chat-body */}
 
         {/* Footer */}
         <div className="chat-footer">
@@ -497,8 +565,10 @@ export default function FullChat() {
             </button>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
+
+      </div> {/* closes chat-box */}
+    </div>   {/* closes chat-wrapper */}
+  </div>     
 );
 }
+

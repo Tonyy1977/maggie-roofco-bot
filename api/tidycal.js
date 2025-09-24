@@ -1,108 +1,208 @@
-// api/tidycal.js
+// api/tidycal.js — Vercel serverless version of TidyCal scheduling logic
 import fetch from "node-fetch";
 
-const EVENT_SLUGS = {
-  tour: "15-minute-meeting",
-  meeting: "30-minute-meeting",
-  long: "60-minute-meeting",
+const SLOT_RULES = {
+  types: {
+    tour:    { stepMins: 15, url: "https://tidycal.com/ddtenterpriseusa/15-minute-meeting" },
+    meeting: { stepMins: 30, url: "https://tidycal.com/ddtenterpriseusa/30-minute-meeting" },
+  },
+  workingWindows: {
+    3: [{ start: { h: 17, m: 0 }, end: { h: 20, m: 0 } }], // Wednesday 5–8pm
+    6: [{ start: { h: 11, m: 0 }, end: { h: 13, m: 0 } }], // Saturday 11–1pm
+    0: [{ start: { h: 14, m: 0 }, end: { h: 16, m: 0 } }], // Sunday 2–4pm
+  },
+  bufferMins: 120,
 };
 
-export default async function handler(req, res) {
+const POLICY_SUMMARY =
+  "We currently schedule on Wednesday (5–8pm), Saturday (11am–1pm), and Sunday (2–4pm). " +
+  "Tours are 15 minutes; meetings are 30 minutes. Last start is 15/30 minutes before the window ends.";
+
+// ---------- helpers ----------
+const pad2 = (n) => String(n).padStart(2, "0");
+const ymd = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+const isSameDay = (a, b) => a.toDateString() === b.toDateString();
+const addMinutes = (d, mins) => new Date(d.getTime() + mins * 60000);
+const addDays = (d, days) => { const x = new Date(d); x.setDate(x.getDate() + days); return x; };
+const overlaps = (aStart, aEnd, bStart, bEnd) => aStart < bEnd && aEnd > bStart;
+
+function parseYMD(dateStr) {
+  const [yy, mm, dd] = (dateStr || "").split("-").map(Number);
+  const d = new Date();
+  if (!yy || !mm || !dd) {
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  d.setFullYear(yy, mm - 1, dd);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+function setHhMm(base, hh, mm) {
+  const d = new Date(base);
+  d.setHours(hh, mm, 0, 0);
+  return d;
+}
+function alignToGrid(d, stepMins) {
+  const minutes = d.getMinutes();
+  const over = minutes % stepMins;
+  if (over === 0) return d;
+  return addMinutes(d, stepMins - over);
+}
+function formatHuman(d) {
+  return d.toLocaleString("en-US", {
+    weekday: "short", month: "short", day: "numeric",
+    hour: "numeric", minute: "2-digit"
+  });
+}
+function windowsForDate(dateObj) {
+  return SLOT_RULES.workingWindows[dateObj.getDay()] || [];
+}
+function noon(dateObj) {
+  return setHhMm(dateObj, 12, 0);
+}
+
+async function getAllBookingsJSON() {
   const apiKey = process.env.TIDYCAL_API_KEY;
-  if (!apiKey) {
-    console.error("❌ Missing TIDYCAL_API_KEY");
-    return res.status(500).json({ error: "Missing TidyCal API key" });
+  const resp = await fetch("https://tidycal.com/api/bookings", {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  const data = await resp.json();
+  return data?.data || [];
+}
+
+function buildCandidateWindows(dateObj, typeKey, preference) {
+  const all = windowsForDate(dateObj);
+  const stepMins = SLOT_RULES.types[typeKey].stepMins;
+  if (!all.length) return [];
+  const cand = [];
+  for (const w of all) {
+    const ws = setHhMm(dateObj, w.start.h, w.start.m);
+    const we = setHhMm(dateObj, w.end.h, w.end.m);
+    const latestStart = addMinutes(we, -stepMins);
+    if (latestStart < ws) continue;
+    const n = noon(dateObj);
+    let start = ws, endStart = latestStart;
+    if (preference === "morning") {
+      endStart = addMinutes(n, -stepMins);
+      if (endStart < ws) continue;
+    } else if (preference === "afternoon") {
+      if (latestStart < n) continue;
+      start = n > ws ? n : ws;
+    }
+    cand.push({ start, endStart, stepMins });
   }
+  return cand;
+}
 
-  // ---------------- GET Availability ----------------
-  if (req.method === "GET") {
-    try {
-      const { type } = req.query;
-      if (!type) return res.status(400).json({ error: "Missing type parameter" });
-
-      const slug = EVENT_SLUGS[type];
-      if (!slug) return res.status(400).json({ error: "Invalid booking type" });
-
-      // Step 1: get booking types
-      const typesResponse = await fetch("https://tidycal.com/api/booking-types", {
-        headers: { Authorization: `Bearer ${apiKey}` },
+function findSlotsForDay({ dateObj, typeKey, preference, bookings, afterISO, count = 1, strategy = "first" }) {
+  const windows = buildCandidateWindows(dateObj, typeKey, preference);
+  if (!windows.length) return { slots: [], hadWindows: false };
+  const now = new Date();
+  const isToday = isSameDay(now, dateObj);
+  const candidates = [];
+  for (const w of windows) {
+    let minStart = new Date(w.start);
+    if (afterISO) {
+      let after = /^\d{1,2}:\d{2}$/.test(afterISO)
+        ? setHhMm(dateObj, ...afterISO.split(":").map(Number))
+        : new Date(afterISO);
+      if (isSameDay(after, dateObj) && after > minStart) minStart = after;
+    }
+    if (isToday) {
+      const cutoff = alignToGrid(addMinutes(now, SLOT_RULES.bufferMins), w.stepMins);
+      if (cutoff > minStart) minStart = cutoff;
+    }
+    minStart = alignToGrid(minStart, w.stepMins);
+    for (let cur = new Date(minStart); cur <= w.endStart; cur = addMinutes(cur, w.stepMins)) {
+      const end = addMinutes(cur, w.stepMins);
+      const bad = bookings.some((b) => {
+        const bs = new Date(b.starts_at), be = new Date(b.ends_at);
+        return overlaps(cur, end, bs, be);
       });
-      const typesData = await typesResponse.json();
-      const bookingTypes = typesData?.data || [];
-
-      // Step 2: find by slug
-      const match = bookingTypes.find((bt) => bt.url_slug === slug);
-      if (!match) {
-        console.error(`❌ No booking type found for slug=${slug}`);
-        return res.status(404).json({ error: "Booking type not found" });
-      }
-
-      // Step 3: fetch availability
-      const availResponse = await fetch(
-        `https://tidycal.com/api/booking-types/${match.id}/available-timeslots`,
-        { headers: { Authorization: `Bearer ${apiKey}` } }
-      );
-
-      const contentType = availResponse.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const text = await availResponse.text();
-        console.error("❌ Unexpected response from TidyCal:", text.slice(0, 200));
-        return res.status(500).json({ error: "TidyCal did not return JSON" });
-      }
-
-      const availData = await availResponse.json();
-      return res.status(200).json({ slots: availData?.data || [] });
-    } catch (err) {
-      console.error("❌ TidyCal availability error:", err);
-      return res.status(500).json({ error: "Failed to fetch availability" });
+      if (!bad) candidates.push({ start: new Date(cur), end });
     }
   }
+  if (!candidates.length) return { slots: [], hadWindows: true };
+  let ordered = candidates.slice().sort((a, b) => a.start - b.start);
+  if (strategy === "last") ordered = ordered.slice(-count);
+  else ordered = ordered.slice(0, count);
+  return {
+    slots: ordered.map(({ start, end }) => ({
+      start: start.toISOString(),
+      end: end.toISOString(),
+      human: formatHuman(start),
+    })),
+    hadWindows: true,
+  };
+}
 
-  // ---------------- POST Booking ----------------
-  if (req.method === "POST") {
-    try {
-      const { slot, type } = req.body;
-      if (!slot || !type) {
-        return res.status(400).json({ error: "Missing slot or type" });
-      }
-
-      const slug = EVENT_SLUGS[type];
-      if (!slug) return res.status(400).json({ error: "Invalid booking type" });
-
-      // Step 1: get booking types
-      const typesResponse = await fetch("https://tidycal.com/api/booking-types", {
-        headers: { Authorization: `Bearer ${apiKey}` },
-      });
-      const typesData = await typesResponse.json();
-      const bookingTypes = typesData?.data || [];
-
-      const match = bookingTypes.find((bt) => bt.url_slug === slug);
-      if (!match) {
-        console.error(`❌ No booking type found for slug=${slug}`);
-        return res.status(404).json({ error: "Booking type not found" });
-      }
-
-      // Step 2: create booking
-      const response = await fetch("https://tidycal.com/api/bookings", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          booking_type_id: match.id,
-          starts_at: slot, // must be ISO datetime
-        }),
-      });
-
-      const data = await response.json();
-      return res.status(200).json(data);
-    } catch (err) {
-      console.error("❌ TidyCal booking error:", err);
-      return res.status(500).json({ error: "Failed to create booking" });
+function findNextAvailableForward({ startDateObj, typeKey, preference, bookings, afterISO, count = 3 }) {
+  for (let i = 0; i < 60; i++) {
+    const dateObj = addDays(startDateObj, i);
+    const res = findSlotsForDay({ dateObj, typeKey, preference, bookings, afterISO, count });
+    if (res.slots.length) {
+      return { dateYMD: ymd(dateObj), options: res.slots };
     }
   }
+  return null;
+}
 
-  // ---------------- Method Not Allowed ----------------
-  return res.status(405).json({ error: "Method not allowed" });
+export default async function handler(req, res) {
+  if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
+  try {
+    const apiKey = process.env.TIDYCAL_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: "Missing TidyCal API key" });
+
+    const type = String(req.query.type || "meeting").toLowerCase();
+    const preference = String(req.query.preference || "").toLowerCase();
+    const dateStr = String(req.query.date || ymd(new Date()));
+    const afterISO = req.query.after ? String(req.query.after) : "";
+    const count = Math.max(1, Math.min(5, Number(req.query.count) || 1));
+    const strategy = String(req.query.strategy || "first").toLowerCase();
+
+    if (!SLOT_RULES.types[type]) {
+      return res.status(400).json({ error: "Invalid booking type" });
+    }
+
+    const dateObj = parseYMD(dateStr);
+    const bookings = await getAllBookingsJSON();
+    const windows = windowsForDate(dateObj);
+
+    if (!windows.length) {
+      const next = findNextAvailableForward({
+        startDateObj: addDays(dateObj, 1), typeKey: type, preference, bookings, afterISO,
+      });
+      return res.status(403).json({
+        error: "Closed day", closedDay: true, policy: POLICY_SUMMARY,
+        type, preference, dateYMD: ymd(dateObj),
+        bookingUrl: SLOT_RULES.types[type].url,
+        nextAvailable: next,
+      });
+    }
+
+    const { slots, hadWindows } = findSlotsForDay({ dateObj, typeKey: type, preference, bookings, afterISO, count, strategy });
+    if (!slots.length) {
+      const next = findNextAvailableForward({
+        startDateObj: addDays(dateObj, 1), typeKey: type, preference, bookings, afterISO,
+      });
+      return res.status(404).json({
+        error: hadWindows ? "Fully booked" : "Closed day", fullyBooked: hadWindows,
+        closedDay: !hadWindows, policy: POLICY_SUMMARY,
+        type, preference, dateYMD: ymd(dateObj),
+        bookingUrl: SLOT_RULES.types[type].url,
+        nextAvailable: next,
+      });
+    }
+
+    const primary = slots[0];
+    return res.status(200).json({
+      type, preference, dateYMD: ymd(dateObj),
+      bookingUrl: SLOT_RULES.types[type].url,
+      options: slots, start: primary.start, end: primary.end,
+      human: primary.human, policy: POLICY_SUMMARY,
+    });
+  } catch (err) {
+    console.error("❌ /api/tidycal error:", err);
+    return res.status(500).json({ error: "Failed to suggest a time" });
+  }
 }
