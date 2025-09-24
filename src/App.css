@@ -910,11 +910,22 @@ html, body, #root {
     height: calc(100vh - 100px); /* header + footer accounted */
   }
 }
+
+/* 🌍 Global */
 html, body, #root {
-  margin: 0 !important;
-  padding: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  overflow: hidden !important;
-  background: none !important; /* force isolation */
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;   /* ✅ dashboard scrolls */
+  background: #fff;   /* keep safe default */
 }
+
+/* 🤖 Chatbot isolation */
+.micah-chat {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;   /* ✅ only chatbot locks overflow */
+  background: none;
+}
+

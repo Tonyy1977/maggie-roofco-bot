@@ -1,16 +1,4 @@
 const qaData = [
-  {
-    question: [
-      "tour",
-      "schedule a tour",
-      "when can i tour",
-      "home tour",
-      "how do i schedule a tour"
-    ],
-    keywords: ["tour", "schedule", "visit", "home"],
-    answer: ["__BOOKING_TOUR_NEW__"
-    ]
-  },
 
   {
     question: [
@@ -95,16 +83,6 @@ const qaData = [
   },
   {
   question: [
-    "When can I tour the property?",
-    "How do I schedule a tour?",
-    "I wanna come see the house — when works?",
-    "When is the tour available?"
-  ],
-  keywords: ["tour", "schedule", "visit", "see", "home"],
-  answer: "__BOOKING_TOUR_AVAIL__" // availability
-},
-  {
-  question: [
     "I just applied. What now?",
     "What happens after submitting the application?"
   ],
@@ -152,31 +130,42 @@ const qaData = [
       "All homes managed by DDT Enterprise are encrypted with padded Electrical Locks. Once the pro-rated/1st month’s rent is paid, 4 hours prior to your move-in time (4:00 pm), you will receive the code to allot for your move-in.",
     ],
   },
-  {
-    question: ["I missed my tour — can I reschedule?", "I wasn’t able to make my appointment. Can I set another time?"],
-    keywords: ["reschedule", "tour", "appointment", "change"],
-    answer: "__BOOKING_TOUR_RESCHEDULE__" // reschedule
-  },
-  // --- MEETINGS ---
+ // --- TOURS ---
 {
   question: [
-    "schedule meeting",
-    "book a meeting",
-    "set up a meeting with Demetrice",
-    "I want to meet Demetrice",
-    "appointment with Micah"
+    "When can I tour the property?",
+    "How do I schedule a tour?",
+    "I want to come see the house",
+    "When is the tour available?"
   ],
-  keywords: ["meeting", "appointment", "schedule", "set up"],
-  answer: "__BOOKING_MEETING_NEW__"
+  keywords: ["tour", "visit", "see", "property", "home"],
+  answer: ["__BOOKING_TOUR_AVAIL__"],
+  type: "schedule_tour"
 },
 {
   question: [
-    "can I reschedule my meeting?",
-    "missed my meeting",
-    "change my appointment with Demetrice"
+    "I missed my tour — can I reschedule?",
+    "I wasn’t able to make my appointment. Can I set another time?",
+    "Can I change my tour date?",
+    "I need to reschedule my tour"
   ],
-  keywords: ["meeting", "reschedule", "appointment", "change"],
-  answer: "__BOOKING_MEETING_RESCHEDULE__"
+  keywords: ["reschedule", "missed", "change", "tour", "appointment"],
+  answer: ["__BOOKING_TOUR_RESCHEDULE__"],
+  type: "schedule_reschedule"
+},
+
+// --- MEETINGS ---
+{
+  question: [
+    "Schedule a meeting",
+    "Book a meeting with Demetrice",
+    "Set up a meeting with the landlord",
+    "I want to meet Demetrice",
+    "Schedule appointment with landlord"
+  ],
+  keywords: ["meeting", "appointment", "landlord", "demetrice"],
+  answer: ["__BOOKING_MEETING_NEW__"],
+  type: "schedule_meeting"
 },
   {
     question: [
