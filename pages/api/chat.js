@@ -16,9 +16,9 @@ async function parseJsonBody(req) {
     req.on('end', () => {
       try {
         resolve(JSON.parse(data));
-      } catch (err) {
-        reject(new Error('Invalid JSON'));
-      }
+      } catch {
+  reject(new Error('Invalid JSON'));
+}
     });
     req.on('error', reject);
   });

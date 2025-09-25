@@ -27,7 +27,9 @@ export default function FullChat() {
         if (parsed?.name && parsed?.email) {
           setUser(parsed);
         }
-      } catch {}
+      } catch (e) {
+  console.error("JSON parse error:", e);
+}
     }
   }, []);
 
