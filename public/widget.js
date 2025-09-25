@@ -5,8 +5,8 @@
   const avatarIframe = document.createElement("iframe");
   avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
   avatarIframe.style.position = "fixed";
-  avatarIframe.style.bottom = "20px";
-  avatarIframe.style.right = "20px";
+  avatarIframe.style.bottom = "0px";
+  avatarIframe.style.right = "0px";
   avatarIframe.style.width = "320px";
   avatarIframe.style.height = "150px";
   avatarIframe.style.border = "none";
