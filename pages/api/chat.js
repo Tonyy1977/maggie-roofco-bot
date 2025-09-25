@@ -79,8 +79,8 @@ export default async function handler(req, res) {
         const topic = classifyRes.data.topic;
         if (topic) topics = [topic];
       } catch (err) {
-        console.error('⚠️ GPT classification failed:', err.message);
-      }
+  console.error('⚠️ GPT classification failed:', err.message);
+}
 
       await Message.create({ sessionId, sender: 'user', text: userMsg.content, topics }); // ✅ Save with topics
     }
@@ -90,9 +90,9 @@ export default async function handler(req, res) {
     }
 
   } catch (err) {
-    console.error('❌ Network / fetch error:', err);
-    return res.status(502).json({ error: 'Upstream request failed' });
-  }
+  console.error('❌ Network / fetch error:', err);
+  return res.status(502).json({ error: 'Upstream request failed', details: err.message });
+}
 
   if (!openaiRes.ok) {
     console.error('❌ OpenAI error:', data);

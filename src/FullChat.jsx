@@ -74,8 +74,8 @@ export default function FullChat() {
             })}`;
           }
         } catch (e) {
-          // Not JSON → leave as is
-        }
+  console.error("JSON parse error:", e);
+}
 
         return {
           sender: msg.sender,
@@ -242,8 +242,9 @@ FAQs: ${JSON.stringify(qaData)}
           reply = ""; // ✅ prevent raw JSON from rendering
         }
       } catch (e) {
-        bookingObj = null;
-      }
+  console.error("Booking JSON parse failed:", e);
+  bookingObj = null;
+}
 
         if (bookingObj?.date && bookingObj?.time && bookingObj?.type) {
   try {
