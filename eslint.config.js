@@ -38,4 +38,10 @@ export default defineConfig([
       },
     },
   },
+  {
+  files: ['pages/_app.js'],
+  rules: {
+    'no-unused-vars': 'off'
+  }
+}
 ])
