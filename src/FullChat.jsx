@@ -12,7 +12,7 @@ export default function FullChat() {
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [menuStep, setMenuStep] = useState(0);
-  const [pendingBooking, setPendingBooking] = useState(null); // ✅ track booking waiting for name/email
+  const [pendingBooking, setPendingBooking] = useState(null);
 
   const chatBodyRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -55,24 +55,46 @@ export default function FullChat() {
         const res = await axios.get(`${API_BASE}/history`, { params: { sessionId } });
         const history = Array.isArray(res.data) ? res.data : [];
         setMessages(
-          history.length > 0
-            ? history.map((msg) => ({
-                sender: msg.sender,
-                text: String(msg.text),
-                type: "text",
-                timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }),
-              }))
-            : [
-                {
-                  sender: "bot",
-                  text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
-                  type: "text",
-                },
-              ]
-        );
+  history.length > 0
+    ? history.map((msg) => {
+        let displayText = String(msg.text);
+
+        // ✅ Detect booking JSON and format it
+        try {
+          const obj = JSON.parse(displayText);
+          if (obj?.date && obj?.time && obj?.type) {
+            const dt = new Date(`${obj.date}T${obj.time}:00`);
+            displayText = `📅 ${obj.type} scheduled for ${dt.toLocaleString("en-US", {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+            })}`;
+          }
+        } catch (e) {
+          // Not JSON → leave as is
+        }
+
+        return {
+          sender: msg.sender,
+          text: displayText,
+          type: "text",
+          timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+      })
+    : [
+        {
+          sender: "bot",
+          text: "Hi, I'm Micah, DDT's virtual assistant. How can I help you today?",
+          type: "text",
+        },
+      ]
+);
       } catch {
         setMessages([
           {
@@ -113,42 +135,54 @@ export default function FullChat() {
     addMessage({ sender: "user", text: userRaw });
 
     // ✅ Handle pending booking (waiting for name/email)
-    if (pendingBooking) {
-      const parts = userRaw.split(/[,|]/).map((s) => s.trim());
-      if (parts.length >= 2) {
-        const name = parts[0];
-        const email = parts[1];
+    // ✅ Handle pending booking (waiting for name/email)
+if (pendingBooking) {
+  const parts = userRaw.split(/[,|]/).map((s) => s.trim());
 
-        try {
-          const bookRes = await axios.post(`${API_BASE}/tidycal/book`, {
-            ...pendingBooking,
-            name,
-            email,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          });
+  // Check if user actually gave name + email
+  const looksLikeEmail = parts.length >= 2 && /\S+@\S+\.\S+/.test(parts[1]);
 
-          if (bookRes.status === 201) {
-            addMessage({
-              sender: "bot",
-              text: `Great! I’ve booked your ${pendingBooking.type} for ${pendingBooking.date} at ${pendingBooking.time}. ✅ A confirmation email has been sent.`,
-            });
-          } else {
-            addMessage({ sender: "bot", text: "Something went wrong. Please try again later." });
-          }
-        } catch (err) {
-          console.error("Booking error:", err);
-          addMessage({ sender: "bot", text: "I couldn’t connect to TidyCal right now. Please try again later." });
-        }
+  if (looksLikeEmail) {
+    const name = parts[0];
+    const email = parts[1];
 
-        setPendingBooking(null);
-      } else {
+    try {
+      const bookRes = await axios.post(`${API_BASE}/tidycal/book`, {
+        type: pendingBooking.type,
+        date: pendingBooking.date,
+        time: pendingBooking.time,
+        name,
+        email,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      });
+
+      if (bookRes.status === 201) {
         addMessage({
           sender: "bot",
-          text: "Please provide both your name and email, separated by a comma. Example: John Doe, john@example.com",
+          text: `Booked your ${pendingBooking.type} for ${pendingBooking.date} at ${pendingBooking.time}. A confirmation email has been sent.`,
         });
+      } else if (bookRes.status === 409) {
+        addMessage({ sender: "bot", text: "Sorry, that timeslot is no longer available. Please choose another time." });
+      } else {
+        addMessage({ sender: "bot", text: "⚠️ Something went wrong. Please try again later." });
       }
-      return; // stop here
+    } catch (err) {
+      if (err.response?.status === 409) {
+        addMessage({ sender: "bot", text: "That timeslot is already booked. Please try a different one." });
+      } else {
+        console.error("Booking error:", err);
+        addMessage({ sender: "bot", text: "I couldn’t connect to Calendar right now. Please try again later." });
+      }
     }
+
+    setPendingBooking(null); // ✅ Clear after success or fail
+    return;
+  } else {
+    // User typed something else → cancel booking flow and continue normally
+    setPendingBooking(null);
+    // continue to GPT handling instead of forcing email request
+  }
+}
 
     try {
       setIsTyping(true);
@@ -160,15 +194,17 @@ You speak with light Southern charm and polite hospitality, but keep it professi
 Be clear, concise, and helpful. Keep answers short — 2–3 sentences unless necessary.
 
 📅 Scheduling Rules:
-- Appointments are only available:
-  - Wednesday: 5–8 PM
-  - Saturday: 11 AM–1 PM
-  - Sunday: 2–4 PM
-- Tours = 15 minutes, Meetings = 30 minutes
-- Never suggest outside these windows.
-- If the user provides a valid day and time, confirm once and finalize. 
+- Users may request any day or time. Do not enforce scheduling windows yourself.
+- Always output the user’s requested booking as JSON with {type, date, time}, using the exact date/time they said.
+- The backend API will validate whether the request is inside scheduling windows, closed, or fully booked.
+- Tours = 15 minutes, Meetings = 30 minutes.
+
+- If the user provides only a vague reference (e.g., “this week,” “Wednesday evening,” “after 3”), politely ask them for the specific date and time?.
+- If the user already provides a clear date (e.g., “Wednesday, October 2” or “2025-09-28”), accept it and continue without asking again.
+- Never correct or shift the date yourself — trust the backend validation.
 - If a booking is requested, output ONLY valid JSON (no code blocks, no text). 
   Example: {"type":"meeting","date":"2025-09-28","time":"15:00"}
+
 
 🛡️ Boundaries:
 - Only answer property management and scheduling questions.
@@ -203,61 +239,93 @@ FAQs: ${JSON.stringify(qaData)}
         const match = reply.match(/\{[^}]+\}/);
         if (match) {
           bookingObj = JSON.parse(match[0]);
+          reply = ""; // ✅ prevent raw JSON from rendering
         }
       } catch (e) {
         bookingObj = null;
       }
 
-      if (bookingObj?.date && bookingObj?.time && bookingObj?.type) {
-        if (!user?.name || !user?.email) {
-          addMessage({
-            sender: "bot",
-            text: "To confirm your booking, please provide your name and email.",
-          });
-          setPendingBooking(bookingObj);
-          return;
-        }
+        if (bookingObj?.date && bookingObj?.time && bookingObj?.type) {
+  try {
+    // ✅ Step 1: Check slot availability first
+    let primary = null;
+try {
+  const suggestRes = await axios.get(`${API_BASE}/tidycal/suggest`, {
+    params: {
+      type: bookingObj.type,
+      date: bookingObj.date,
+      after: bookingObj.time,
+      count: 1,
+    },
+  });
+  primary = suggestRes.data?.options?.[0];
+} catch (err) {
+  if (err.response?.status === 404) {
+    addMessage({
+      sender: "bot",
+      text: "That day is fully booked. Please choose another date. Here’s the next available slot: " +
+        (err.response.data?.nextAvailable?.options?.[0]?.human || "none found"),
+    });
+    return;
+  }
+  if (err.response?.status === 403) {
+    addMessage({
+      sender: "bot",
+      text: "We don’t schedule on that day. " + (err.response.data?.policy || ""),
+    });
+    return;
+  }
+  console.error("Suggest error:", err);
+  addMessage({ sender: "bot", text: "⚠️ Couldn’t check schedule right now. Please try again later." });
+  return;
+}
 
-        try {
-          const suggestRes = await axios.get(`${API_BASE}/tidycal/suggest`, {
-            params: {
-              type: bookingObj.type,
-              date: bookingObj.date,
-              after: bookingObj.time,
-              count: 3,
-            },
-          });
+if (!primary) {
+  addMessage({ sender: "bot", text: "Sorry, no slots available. Try another day." });
+  return;
+}
 
-          const primary = suggestRes.data?.options?.[0];
-          if (!primary) {
-            addMessage({ sender: "bot", text: "Sorry, no slots available. Try another day." });
-            return;
-          }
+    // ✅ Step 2: If user info missing, ask for it
+    if (!user?.name || !user?.email) {
+      addMessage({
+        sender: "bot",
+        text: `The slot ${primary.human} is available! Please provide your name and email to confirm.`,
+      });
+      setPendingBooking({
+  type: bookingObj.type,
+  date: primary.date,
+  time: primary.time,
+});
+      return;
+    }
 
-          const bookRes = await axios.post(`${API_BASE}/tidycal/book`, {
-            type: bookingObj.type,
-            date: bookingObj.date,
-            time: bookingObj.time,
-            name: user?.name || "Guest User",
-            email: user?.email || "guest@example.com",
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          });
+    // ✅ Step 3: If user info exists, book immediately
+    const bookRes = await axios.post(`${API_BASE}/tidycal/book`, {
+      type: bookingObj.type,
+      date: bookingObj.date,
+      time: bookingObj.time,
+      name: user.name,
+      email: user.email,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
 
-          if (bookRes.status === 201) {
-            addMessage({
-              sender: "bot",
-              text: `Great! I’ve booked your ${bookingObj.type} for ${primary.human}. ✅ A confirmation email has been sent.`,
-            });
-          } else {
-            addMessage({ sender: "bot", text: "I tried booking, but something went wrong. Please try again later." });
-          }
-          return;
-        } catch (err) {
-          console.error("Booking error:", err);
-          addMessage({ sender: "bot", text: "I couldn’t connect to Schedule right now. Please try again later." });
-          return;
-        }
-      }
+    if (bookRes.status === 201) {
+      addMessage({
+        sender: "bot",
+        text: `Booked your ${bookingObj.type} for ${primary.human}. A confirmation email has been sent.`,
+      });
+    } else if (bookRes.status === 409) {
+      addMessage({ sender: "bot", text: "That timeslot is no longer available. Please pick another time." });
+    } else {
+      addMessage({ sender: "bot", text: "I tried booking, but something went wrong. Please try again later." });
+    }
+    return;
+  } catch (err) {
+    console.error("Booking error:", err);
+    addMessage({ sender: "bot", text: "⚠️ Couldn’t check schedule. Try again later." });
+    return;
+  }
+}
 
       if (reply) {
         addMessage({ sender: "bot", text: reply });

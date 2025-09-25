@@ -35,28 +35,34 @@ export default async function handler(req, res) {
 
     // ✅ Create booking
     const response = await axios.post(
-      `https://tidycal.com/api/booking-types/${bookingType.id}/bookings`,
-      {
-        starts_at,
-        name,
-        email,
-        timezone: timezone || "America/New_York",
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.TIDYCAL_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  `https://tidycal.com/api/booking-types/${bookingType.id}/bookings`,
+  {
+    starts_at,
+    name,
+    email,
+    timezone: timezone || Intl.DateTimeFormat().resolvedOptions().timeZone, // ✅ default
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${process.env.TIDYCAL_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+  }
+);
 
     return res.status(201).json(response.data);
 
   } catch (error) {
-    console.error("❌ TidyCal booking error:", error.response?.data || error.message);
-    return res.status(error.response?.status || 500).json({
-      error: "Booking failed",
-      details: error.response?.data || error.message,
+  const status = error.response?.status || 500;
+  if (status === 409) {
+    return res.status(409).json({
+      error: "Timeslot unavailable",
+      details: error.response?.data || "The requested time is already booked."
     });
   }
+  return res.status(status).json({
+    error: "Booking failed",
+    details: error.response?.data || error.message,
+  });
+}
 }
