@@ -27,7 +27,12 @@
       "namedRegex": "^/(?:/)?$"
     }
   ],
-  "dataRoutes": [],
+  "dataRoutes": [
+    {
+      "page": "/",
+      "dataRouteRegex": "^/_next/data/rU4spKqUYO_jWlhVaSMc_/index\\.json$"
+    }
+  ],
   "rsc": {
     "header": "rsc",
     "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
