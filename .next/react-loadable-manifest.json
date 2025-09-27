@@ -1,31 +1,30 @@
 {
   "node_modules\\jspdf\\dist\\jspdf.es.min.js -> canvg": {
-    "id": 6582,
+    "id": "node_modules\\jspdf\\dist\\jspdf.es.min.js -> canvg",
     "files": [
-      "static/chunks/4163ae0c.6fe0560d978ba229.js",
-      "static/chunks/414.23def3eed9351f03.js"
+      "static/chunks/_pages-dir-browser_node_modules_canvg_lib_index_es_js.js"
     ]
   },
   "node_modules\\jspdf\\dist\\jspdf.es.min.js -> dompurify": {
-    "id": 2227,
+    "id": "node_modules\\jspdf\\dist\\jspdf.es.min.js -> dompurify",
     "files": [
-      "static/chunks/227.e3efb644c422586d.js"
+      "static/chunks/_pages-dir-browser_node_modules_dompurify_dist_purify_es_mjs.js"
     ]
   },
   "node_modules\\jspdf\\dist\\jspdf.es.min.js -> html2canvas": {
-    "id": 3028,
+    "id": "node_modules\\jspdf\\dist\\jspdf.es.min.js -> html2canvas",
     "files": []
   },
   "node_modules\\next\\dist\\client\\index.js -> ../pages/_app": {
-    "id": 1806,
+    "id": "node_modules\\next\\dist\\client\\index.js -> ../pages/_app",
     "files": [
-      "static/chunks/425.f367498d34ab9c19.js"
+      "static/chunks/_pages-dir-browser_node_modules_next_dist_pages__app_js.js"
     ]
   },
   "node_modules\\next\\dist\\client\\index.js -> ../pages/_error": {
-    "id": 8123,
+    "id": "node_modules\\next\\dist\\client\\index.js -> ../pages/_error",
     "files": [
-      "static/chunks/123.f3d27f38429d3ab5.js"
+      "static/chunks/_pages-dir-browser_node_modules_next_dist_pages__error_js.js"
     ]
   }
 }

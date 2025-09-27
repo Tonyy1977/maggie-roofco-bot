@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const messages = await Message.find({}).sort({ timestamp: 1 });
+      const messages = await Message.find({}).sort({ createdAt: 1 });
       res.status(200).json(messages);
     } catch (err) {
       console.error('❌ Error fetching messages:', err);

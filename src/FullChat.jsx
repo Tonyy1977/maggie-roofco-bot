@@ -34,21 +34,60 @@ export default function FullChat() {
   }, []);
 
   // ✅ Generate sessionId (user or guest)
-  useEffect(() => {
-    if (!sessionIdRef.current) {
-      if (user) {
-        sessionIdRef.current = `${user.name}-${user.email}`;
-      } else if (typeof window !== "undefined") {
-        let guestId = localStorage.getItem("micah-guest-session");
-        if (!guestId) {
-          guestId = `guest-${uuidv4()}`;
-          localStorage.setItem("micah-guest-session", guestId);
-        }
-        sessionIdRef.current = guestId;
-      }
+  // ✅ Keep sessionId in state so effects re-run when it's ready
+const [sessionId, setSessionId] = useState(null);
+
+// Initialize a stable sessionId immediately on mount (prefer stored user; else guest)
+useEffect(() => {
+  if (typeof window === "undefined" || sessionId) return;
+
+  let id = null;
+  try {
+    const stored = localStorage.getItem("micah-user");
+    const parsed = stored ? JSON.parse(stored) : null;
+    if (parsed?.name && parsed?.email) {
+      id = `${parsed.name}-${parsed.email}`;
     }
-  }, [user]);
-  const sessionId = sessionIdRef.current;
+  } catch (e) {
+    console.error("JSON parse error:", e);
+  }
+
+  if (!id) {
+    let guestId = localStorage.getItem("micah-guest-session");
+    if (!guestId) {
+      guestId = `guest-${uuidv4()}`;
+      localStorage.setItem("micah-guest-session", guestId);
+    }
+    id = guestId;
+  }
+
+  setSessionId(id);
+}, [sessionId]);
+
+// Helper to guarantee an ID exists even if user types instantly
+const ensureSessionId = () => {
+  if (sessionId) return sessionId;
+  if (typeof window === "undefined") return "guest";
+
+  let id = null;
+  try {
+    const stored = localStorage.getItem("micah-user");
+    const parsed = stored ? JSON.parse(stored) : null;
+    if (parsed?.name && parsed?.email) id = `${parsed.name}-${parsed.email}`;
+  } catch {}
+
+  if (!id) {
+    let guestId = localStorage.getItem("micah-guest-session");
+    if (!guestId) {
+      guestId = `guest-${uuidv4()}`;
+      localStorage.setItem("micah-guest-session", guestId);
+    }
+    id = guestId;
+  }
+
+  setSessionId(id);
+  return id;
+};
 
   // ✅ Load history
   useEffect(() => {
@@ -195,23 +234,28 @@ You are the virtual assistant for DDT Enterprise, a nationwide property manageme
 You speak with light Southern charm and polite hospitality, but keep it professional and easy to understand. 
 Be clear, concise, and helpful. Keep answers short — 2–3 sentences unless necessary.
 
+MEMORY & CONTEXT (SESSION-SCOPED):
+- Treat the conversation as continuous for this session ID. Reuse details already provided instead of re-asking.
+- If the user gave some but not all booking details, ask ONLY for the missing pieces.
+
 📅 Scheduling Rules:
 - Users may request any day or time. Do not enforce scheduling windows yourself.
 - Always output the user’s requested booking as JSON with {type, date, time}, using the exact date/time they said.
 - The backend API will validate whether the request is inside scheduling windows, closed, or fully booked.
 - Tours = 15 minutes, Meetings = 30 minutes.
+- When interpreting user requests with a day-of-week (e.g., “Saturday”), always assume the soonest upcoming date that matches, not a date next year.
 
 - If the user provides only a vague reference (e.g., “this week,” “Wednesday evening,” “after 3”), politely ask them for the specific date and time?.
 - If the user already provides a clear date (e.g., “Wednesday, October 2” or “2025-09-28”), accept it and continue without asking again.
 - Never correct or shift the date yourself — trust the backend validation.
 - If a booking is requested, output ONLY valid JSON (no code blocks, no text). 
   Example: {"type":"meeting","date":"2025-09-28","time":"15:00"}
+- If date and type are already known, and the user later gives only the time (or vice versa), combine them into one booking JSON instead of re-asking.
 
 
-🛡️ Boundaries:
-- Only answer property management and scheduling questions.
-- If off-topic, politely reply: 
-  “I can only help with property management and scheduling. Can I check available times for you?”
+OFF‑TOPIC HANDLING (SOFTER):
+- If a question is outside property management (e.g., investing), give ONE short, safe, high‑level sentence to be helpful, then pivot back with a relevant option (e.g., “If you’d like, I can schedule a meeting to discuss our services.”).
+- Only refuse outright if the topic is unsafe/inappropriate.
 
 ✅ Behavior:
 - Map “meet Demetrice” → meeting.  
@@ -228,11 +272,18 @@ FAQs: ${JSON.stringify(qaData)}
         { role: "user", content: userRaw },
       ];
 
-      const res = await axios.post(`${API_BASE}/chat`, {
-        model: "gpt-4o",
-        messages: messagesPayload,
-        sessionId,
-      });
+      // ✅ Always include the full system prompt and a guaranteed sessionId
+const sid = ensureSessionId();
+
+const res = await axios.post(`${API_BASE}/chat`, {
+  model: "gpt-4o",
+  messages: [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: userRaw }
+  ],
+  sessionId: sid,
+});
+
 
       let reply = res.data?.choices?.[0]?.message?.content || "";
       let bookingObj = null;
