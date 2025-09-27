@@ -16,7 +16,7 @@ export default function FullChat() {
 
   const chatBodyRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const sessionIdRef = useRef(null);
+  //const sessionIdRef = useRef(null);
 
   // ✅ Load user from localStorage
   useEffect(() => {
@@ -269,10 +269,10 @@ OFF‑TOPIC HANDLING (SOFTER):
 FAQs: ${JSON.stringify(qaData)}
       `;
 
-      const messagesPayload = [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userRaw },
-      ];
+      //const messagesPayload = [
+        //{ role: "system", content: systemPrompt },
+        //{ role: "user", content: userRaw },
+      //];
 
       // ✅ Always include the full system prompt and a guaranteed sessionId
 const sid = ensureSessionId();
