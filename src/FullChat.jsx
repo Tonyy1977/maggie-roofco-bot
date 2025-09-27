@@ -74,7 +74,9 @@ const ensureSessionId = () => {
     const stored = localStorage.getItem("micah-user");
     const parsed = stored ? JSON.parse(stored) : null;
     if (parsed?.name && parsed?.email) id = `${parsed.name}-${parsed.email}`;
-  } catch {}
+  } catch (e) {
+  console.error("JSON parse error:", e);
+}
 
   if (!id) {
     let guestId = localStorage.getItem("micah-guest-session");
