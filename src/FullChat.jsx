@@ -33,19 +33,19 @@ export default function FullChat() {
 }, []);
 
   // ✅ Load user from localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("micah-user");
-      try {
-        const parsed = JSON.parse(stored);
-        if (parsed?.name && parsed?.email) {
-          setUser(parsed);
-        }
-      } catch (e) {
-        console.error("JSON parse error:", e);
-      }
-    }
-  }, []);
+  //useEffect(() => {
+    //if (typeof window !== "undefined") {
+      //const stored = localStorage.getItem("micah-user");
+      //try {
+        //const parsed = JSON.parse(stored);
+        //if (parsed?.name && parsed?.email) {
+          //setUser(parsed);
+        //}
+      //} catch (e) {
+        //console.error("JSON parse error:", e);
+      //}
+    //}
+  //}, []);
 
   // ✅ Generate sessionId (user or guest)
   const [sessionId, setSessionId] = useState(null);
