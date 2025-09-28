@@ -13,12 +13,15 @@ export default function FullChat() {
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [menuStep, setMenuStep] = useState(0);
-
+  const [showPopup, setShowPopup] = useState(true);
   const chatBodyRef = useRef(null);
   const messagesEndRef = useRef(null);
 
   const [bookingTypes, setBookingTypes] = useState([]);
-
+useEffect(() => {
+    const timer = setTimeout(() => setShowPopup(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
   // ✅ Fetch booking types from TidyCal
   useEffect(() => {
   const fetchTypes = async () => {
@@ -424,6 +427,11 @@ FAQs: ${JSON.stringify(qaData)}
         {/* closes chat-box */}
       </div>{" "}
       {/* closes chat-wrapper */}
-    </div>
+      {showPopup && (
+        <div className="popup-greeting">
+          Hi, I'm Micah, DDT's virtual assistant. How can I help you today?
+        </div>
+      )}
+    </div>   //{/* closes micah-chat */}
   );
 }

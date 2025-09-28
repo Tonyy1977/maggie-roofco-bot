@@ -585,7 +585,15 @@ const qaData = [
 },
 {
   question: ["Pet fee?"],
-  answer: ["The pet fee at DDT Enterprise is $575 for a non-refundable deposit. If you have more questions about bringing your fur-baby with you, feel free to ask!"],
+  answer: ["The pet fee at DDT Enterprise is $575 pet fee regardless of the number of pets. If you have more questions about bringing your fur-baby with you, feel free to ask!"],
+},
+{
+  question: ["Does DDT have any financing options?"],
+  answer: ["Yes, DDT does offer financing to home owners whose homes are managed in their community."],
+},
+{
+  question: ["How long does DDT take to typically get a home rented?"],
+  answer: ["DDT averages an extremely low vacancy rate of 17 days or less per home."],
 },
 ];
 
