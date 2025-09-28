@@ -86,12 +86,26 @@ try {
     content: m.text,
   }));
 
-  // 4) Use the client’s system prompt if provided, otherwise a safe fallback
-  const clientSystem = incoming.find(m => m.role === 'system')?.content;
-  const systemPrompt =
-    clientSystem ||
-    "You are Micah, DDT Enterprise’s virtual assistant. Keep memory within this session ID only. Be clear, concise, and follow scheduling rules. When booking, output ONLY JSON {type,date,time} (no extra text).";
+  // 4) Use the client’s system prompt if provided, otherwise build one with TODAY + USER_TZ
+const TODAY_ISO = new Date().toISOString().slice(0, 10);
+const USER_TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+const clientSystem = incoming.find(m => m.role === 'system')?.content;
+
+const systemPrompt = clientSystem || `
+You are Micah, the virtual assistant for DDT Enterprise.
+TODAY is ${TODAY_ISO}.
+USER_TZ is ${USER_TZ}.
+
+📅 Scheduling Rules:
+- Always interpret day-of-week or vague dates relative to TODAY in USER_TZ.
+- Never invent or guess dates/times.
+- Always assume the current year is 2025 unless the user explicitly specifies a different year.
+- If the user gives only a day-of-week (e.g., "Saturday"), resolve it to the soonest upcoming matching date after TODAY.
+- If the user gives a month/day without a year (e.g., "October 2"), use that date in 2025.
+- If booking is requested, output ONLY JSON like:
+  {"type":"meeting"|"tour","date":"YYYY-MM-DD","time":"HH:mm"}
+`;
   const messagesForOpenAI = [
     { role: 'system', content: systemPrompt },
     ...historyMessages,
@@ -110,18 +124,44 @@ try {
     }),
   });
 
-  data = await openaiRes.json();
+    data = await openaiRes.json();
 
-  const botMsg = data.choices?.[0]?.message?.content;
+let botMsg = data.choices?.[0]?.message?.content;
 
-  if (!botMsg) {
-    console.warn('⚠️ OpenAI response missing message content:', data);
+// 🛡️ Year-normalization guardrail (dynamic to current year)
+if (botMsg) {
+  try {
+    const match = botMsg.match(/\{[^}]+\}/);
+    if (match) {
+      const bookingObj = JSON.parse(match[0]);
+
+      if (bookingObj?.date) {
+        const d = new Date(bookingObj.date);
+        const currentYear = new Date().getFullYear();
+
+        // If GPT gave a past or wrong year, normalize to current year
+        if (d.getFullYear() !== currentYear) {
+          d.setFullYear(currentYear);
+          bookingObj.date = d.toISOString().slice(0, 10);
+          console.log("🔧 Normalized booking date to:", bookingObj.date);
+        }
+
+        // Re-stringify the normalized object back into botMsg
+        botMsg = JSON.stringify(bookingObj);
+      }
+    }
+  } catch (e) {
+    console.error("⚠️ Booking JSON parse failed:", e);
   }
+} else {
+  console.warn('⚠️ OpenAI response missing message content:', data);
+}
 
-  // 6) Save the bot reply
-  if (botMsg) {
-    await Message.create({ sessionId, sender: 'bot', text: botMsg });
-  }
+// 6) Save the bot reply (after possible normalization)
+if (botMsg) {
+  await Message.create({ sessionId, sender: 'bot', text: botMsg });
+}
+
 } catch (err) {
   console.error('❌ Network / fetch error:', err);
   return res.status(502).json({ error: 'Upstream request failed', details: err.message });
