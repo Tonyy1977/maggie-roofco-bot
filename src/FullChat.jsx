@@ -8,7 +8,7 @@ const API_BASE = "/api";
 
 export default function FullChat() {
   const [messages, setMessages] = useState([]);
-  const [user, setUser] = useState(null);
+  //const [user, setUser] = useState(null);
   const [input, setInput] = useState("");
   const [showWelcomeOptions, setShowWelcomeOptions] = useState(true);
   const [isTyping, setIsTyping] = useState(false);

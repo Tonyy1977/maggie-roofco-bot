@@ -3,6 +3,6 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/api/tidycal/book": "pages/api/tidycal/book.js",
-  "/api/tidycal/availability": "pages/api/tidycal/availability.js"
+  "/api/tidycal/types": "pages/api/tidycal/types.js",
+  "/api/history": "pages/api/history.js"
 }
