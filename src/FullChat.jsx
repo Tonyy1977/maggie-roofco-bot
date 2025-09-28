@@ -261,7 +261,9 @@ FAQs: ${JSON.stringify(qaData)}
               ×
             </button>
           </div>
-
+<div className="chat-toggle" onClick={() => setShowWelcomeOptions(!showWelcomeOptions)}>
+  <img src="/micah-header.jpg" alt="Micah Avatar" />
+</div>
           {/* Messages */}
           <div
             ref={chatBodyRef}
