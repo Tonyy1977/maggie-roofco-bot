@@ -12,7 +12,7 @@ export default defineConfig({
     allowedHosts: [
       'localhost',
       '127.0.0.1',
-      'micah.docsapp.org', // 👈 Cloudflare Tunnel hostname
+      'brian.docsapp.org', // 👈 Cloudflare Tunnel hostname
     ],
   },
 })

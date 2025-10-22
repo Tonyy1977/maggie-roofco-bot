@@ -183,7 +183,6 @@ if (!authenticated) {
   <p><strong>Unique Sessions:</strong> {[...new Set(filtered.map(msg => msg.sessionId))].length}</p>
   <p><strong>User Messages:</strong> {filtered.filter(msg => msg.sender === 'user').length}</p>
   <p><strong>Bot Messages:</strong> {filtered.filter(msg => msg.sender === 'bot').length}</p>
-  <p><strong>Summary:</strong> {analytics ? JSON.stringify(analytics) : 'loading...'}</p>
 </div>
 
 {/* ✅ Chart Display */}

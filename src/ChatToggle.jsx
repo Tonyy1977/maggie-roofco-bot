@@ -42,7 +42,7 @@ const ChatToggle = () => {
             color: '#333',
           }}
         >
-          Hi, I'm Micah, DDT's virtual assistant. How can I help you today?
+          Hey there, I’m Cara, your assistant at The Roofing Company. What can I do for you today?
         </div>
       )}
 
@@ -52,7 +52,7 @@ const ChatToggle = () => {
     width: '60px',
     height: '60px',
     borderRadius: '50%',
-    backgroundImage: 'url(/micah-toggle.jpg)',
+    backgroundImage: 'url(/Maggie.png)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',

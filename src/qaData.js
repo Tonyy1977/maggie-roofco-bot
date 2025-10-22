@@ -1,601 +1,206 @@
+// qaData.js — Basic policy-focused Q&A for The Roofing Company
+
 const qaData = [
-
+  // Hours, scheduling & confirmations
   {
-    question: [
-      "payment",
-      "how do i pay",
-      "pay rent",
-      "payment methods",
-      "pay online"
-    ],
-    keywords: ["payment", "pay", "online", "methods"],
-    answer: [
-      "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
-      '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
-    ],
-    followUps: {
-      "how do i pay rent": [
-      "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
-      '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
-    ],
-      "when is payment due": "Rent payment is due on the 5th of each month. Late fees apply after that date.",
-      "what payment methods are accepted": "We accept debit cards, credit cards, and bank transfers through the Resident Portal."
-    }
+    question: "What are your office hours?",
+    answer: "Monday–Friday, 9:30 AM to 4:30 PM."
+  },
+  {
+    question: "What appointment times do you offer?",
+    answer: "Monday–Friday at 9:00 AM, 11:00 AM, 2:00 PM, or 4:00 PM."
+  },
+  {
+    question: "How do I schedule an appointment?",
+    answer: "Call or text Contact us today: (757) 867-6600, submit the Contact Us form on our website, or email [admingroup@theroofingcompany.com](mailto:admingroup@theroofingcompany.com). We'll confirm by email with your estimator's photo and contact info and send a text reminder before the visit."
+  },
+  {
+    question: "Do I need to be home for the appointment?",
+    answer: "Yes! Someone should be present to provide access and discuss the concerns. For slate or complex roofs we may also request attic access."
+  },
+  {
+    question: "What information should I have ready when booking?",
+    answer: "Service address and ZIP, property type (single-family, townhome/condo, duplex, commercial), roof type (asphalt, slate, metal, flat, tile), leak status (active water vs. staining), number of stories/access (e.g., porch), occupancy (tenant or vacant), and your best phone and email."
   },
 
+  // Service area
   {
-  question: [
-    "inspection",
-    "move-in inspection",
-    "home inspection",
-    "inspection deadline",
-    "inspection process"
-  ],
-  keywords: ["inspection", "move-in", "deadline", "process"],
-  answer: [
-    "Are you asking about when your move-in inspection is due, how often inspections are done, or what the inspection process includes? Please select one or ask more specifically."
-  ],
-  followUps: {
-    "when do i need to complete move-in inspection": "You need to complete the move-in inspection within 5 business days after moving in.",
-    "how often are inspections done": "DDT conducts an annual inspection and a semi-annual inspection during your lease.",
-    "what is the inspection process": "During inspection, we assess the condition of the property and any reported maintenance issues.",
+    question: "What areas do you service?",
+    answer: "Hampton, Newport News, Williamsburg, Yorktown, Poquoson, Virginia Beach, Chesapeake, Norfolk, Portsmouth, Suffolk, Smithfield, Gloucester, and Mathews."
+  },
+  {
+    question: "Do you service Richmond?",
+    answer: "Yes—Richmond service is limited to slate roofing projects only."
+  },
+
+  // Ways to reach you
+  {
+    question: "How can customers reach you?",
+    answer: "Phone/text: Contact us today: (757) 867-6600. Website (Contact Us form). Email: [admingroup@theroofingcompany.com](mailto:admingroup@theroofingcompany.com)."
+  },
+
+  // Estimates, inspections, real estate, policies
+  {
+    question: "Are standard repair estimates free?",
+    answer: "Yes—free for residential and commercial property owners when there’s an active issue or a replacement under consideration."
+  },
+  {
+    question: "How do I request a roof inspection with no active leak?",
+    answer: "Call our main number to schedule. A $495 assessment fee applies when there is no active leak (e.g., “lifetime of roof” assessment or planning to sell). The fee can be applied to future repairs if you hire us."
+  },
+  {
+    question: "What is the real estate transaction fee?",
+    answer: "If the house is listed for sale and needs an estimate based on a home inspector’s report, the fee is $495 due at booking. This can be applied to repairs if you hire us."
+  },
+  {
+    question: "How long are quotes valid?",
+    answer: "Basic quotes remain valid as long as there haven’t been material or labor cost increases."
+  },
+
+  // Emergency & storms
+  {
+    question: "How soon can you respond after a storm?",
+    answer: "For non-emergency leaks, we schedule like a standard repair based on availability. For emergencies, ask about our Emergency Watertight service."
+  },
+  {
+    question: "What is Emergency Watertight service?",
+    answer: "An interim, weather-dependent service to keep water out until permanent repairs can be completed. It starts at $825, requires a brief authorization form, and final cost depends on location, coverage area, and damage type."
+  },
+  {
+    question: "Can you perform Emergency Watertight service during rain?",
+    answer: "No. For safety and effectiveness, this work is weather-permitting. We'll schedule the first safe window."
+  },
+
+  // Property and job types
+  {
+    question: "Do you work on condos, townhomes, or duplexes?",
+    answer: "Typically no, unless it's a slate roof or you own the entire building. For shared-ownership roofs, we may require agreement from all owners before proceeding."
+  },
+  {
+    question: "Do you do commercial roofing?",
+    answer: "Yes! Repairs, replacements, and maintenance on commercial roofs. Standard repair estimates are free when there’s an active issue or replacement under consideration; schedule and approach depend on roof type and access."
+  },
+  {
+    question: "Do you bid government contracts (e.g., VA Medical Center)?",
+    answer: "No, we do not take government contract work."
+  },
+
+  // Roof systems & services
+  {
+    question: "What roof types do you service?",
+    answer: "Asphalt shingle, slate, metal, flat, and tile roofing."
+  },
+  {
+    question: "What services do you provide?",
+    answer: "Roof repair, roof replacement, skylights, gutters, chimneys, fascia/trim, and soffit."
+  },
+  {
+    question: "Do you clean gutters?",
+    answer: "We install and repair gutters and offer protection systems, but we do not provide gutter cleaning."
+  },
+
+  // What to expect at the visit
+  {
+    question: "What happens during the estimate visit?",
+    answer: "Your estimator will inspect the area of concern, may use a drone or photos for documentation (especially on taller roofs), review findings with you, and provide professional recommendations."
+  },
+  {
+    question: "Will you use a drone?",
+    answer: "Often on multi‑story homes, yes—so we can safely document conditions and share photos/video with you."
+  },
+
+  // Timelines & scheduling realities
+  {
+    question: "How long do repairs take?",
+    answer: "From half a day for simple items to several days or weeks for complex, persistent leaks. Scheduling depends on scope, weather, and crew availability."
+  },
+  {
+    question: "How long does a roof replacement take?",
+    answer: "A straightforward replacement can be completed in about a day; larger or more intricate projects may take up to a couple of weeks."
+  },
+  {
+    question: "What affects your production timeline?",
+    answer: "Weather conditions, crew availability, and other in‑progress jobs. These can shift start dates or extend timelines beyond the actual installation time."
+  },
+
+  // Warranties, payments, financing
+  {
+    question: "Do you provide warranties?",
+    answer: "Yes—on both our workmanship and the roofing products we install."
+  },
+  {
+    question: "What payment methods do you accept?",
+    answer: "Visa, MasterCard, Discover, AMEX, and ACH."
+  },
+  {
+  question: "Do you offer financing?",
+  answer: "Yes, we offer financing options. Visit [Our Financing option](https://www.theroofingcompany.com/offers/financing/)."
+},
+
+
+  // Courtesy/aftercare
+  {
+    question: "Do you offer courtesy inspections after a completed job?",
+    answer: "In some cases, we offer courtesy follow‑ups to help monitor completed work. Availability and eligibility vary—ask your estimator at the visit."
+  },
+  [
+  {
+    "question": "What are the signs that I need a new roof?",
+    "answer": "Common signs that your roof may need to be replaced include leaks, cracked, curled, or missing shingles, and excessive granule loss from asphalt shingles, which often appears in your gutters. Other interior signs, like cracked paint, discolored plasterboard, or peeling wallpaper, can also indicate a problem with your roof. While a single leak doesn't always mean a full replacement is needed, these signs are a good reason to get a professional inspection."
+  },
+  {
+    "question": "How do I choose the right roofing contractor?",
+    "answer": "When selecting a roofing contractor, it's essential to vet and choose a qualified, reputable company. You should look for contractors who are licensed and insured, have a strong local reputation, and can provide references or examples of their past work. It's also a good idea to get two or three estimates and compare them. Remember that the lowest bid isn't always the best choice—quality of materials and craftsmanship are just as important as cost."
+  },
+  {
+    "question": "How long will it take to install my new roof?",
+    "answer": "The timeline for a new roof installation can vary. Factors like the size and complexity of your roof, the materials being used, and the weather can all affect the schedule. Generally, a new roof can be installed in one day to a couple of weeks."
+  },
+  {
+    "question": "Do you offer a warranty on your work?",
+    "answer": "Yes, we provide warranties on both our workmanship and the roofing products we install. We believe in the quality of our work and the materials we use. When you get a new roof, you can expect a warranty to protect your investment."
+  },
+  {
+    "question": "What type of roofing material is best for my home?",
+    "answer": "The best roofing material for your home in the Hampton Roads, Virginia area depends on several factors, including climate, budget, aesthetics, and durability. Our region experiences a humid subtropical climate with hot summers and mild winters, and occasional severe weather like hurricanes. With this in mind, popular and effective options include: Asphalt Shingles: A cost-effective and popular choice that performs well in the local climate. Metal Roofing: An extremely durable and long-lasting option that comes in various styles. Tile Roofing: Provides an elegant look and can withstand harsh weather conditions. We recommend a consultation with one of our professionals to help you select the ideal option for your property."
+  },
+  {
+    "question": "How much will a new roof cost?",
+    "answer": "The cost of a new roof varies widely based on factors such as the size and layout of your roof, the materials you choose, and local labor rates. To get an accurate idea of the cost for your specific project, we recommend getting a free estimate. Our estimators can provide a detailed breakdown, helping you find the right balance of cost, quality, and long-term value. To help you determine the potential annual cost of your new roof, you can use this simple formula: Total Cost (materials and labor) / Life Expectancy of Roof (in years) = Annual Cost"
+  },
+  {
+    "question": "How long will a new roof last?",
+    "answer": "The lifespan of a roof depends on the material, proper installation, and maintenance. According to the American Society of Home Inspectors, here are the typical lifespans for some common materials: Asphalt Shingles: 15–20 years Wood Shingles/Shakes: 10–40 years Concrete Tiles: 20  years Slate: 75–200 years Metal Roofing: 15–75 years Proper installation and routine maintenance are crucial for maximizing your roof's lifespan."
+  },
+  {
+    "question": "How long does a slate roof last?",
+    "answer": "Slate is one of the most durable and long-lasting roofing materials available. A properly maintained slate roof can last anywhere from 75 to several hundred years, depending on the type of slate. For example, Virginia Buckingham slate is known to protect homes for 200 years or more."
+  },
+  {
+    "question": "Does my slate roof need to be replaced, or can it be repaired?",
+    "answer": "Just because you find broken or missing slate pieces doesn't necessarily mean you need an entire new roof. Individual pieces can often be replaced as needed to maintain the roof's integrity. Our trained inspectors can assess the general condition of your roof and recommend the necessary repairs. If your historic roof is nearing the end of its service life, we will provide a free estimate to help you determine the best course of action."
+  },
+  {
+    "question": "How often should I have my slate roof inspected?",
+    "answer": "We recommend a yearly inspection for all slate roofs, or after any major storms, to ensure there are no broken or missing pieces. Our professionals will inspect the entire roofing system—including the slate, flashings, and gutters—to catch any issues early and prevent costly interior leaks. As a token of our appreciation, we are proud to offer an exclusive Customer Appreciation Inspection Details with every residential project we complete. This complimentary inspection ensures your new roof is functioning perfectly and gives you peace of mind that your investment is sound."
+  },
+  {
+    "question": "Why is my chimney leaking?",
+    "answer": "Chimney leaks can be difficult to diagnose because there are many potential causes. Common reasons include cracks in the chimney crown, damaged flashing, deteriorated mortar joints, or a faulty chimney cap. A leak may have one or more of these causes, and it may take more than one repair to completely fix it. If you suspect your chimney is leaking, our team can provide a thorough inspection to determine the source of the problem."
+  },
+  {
+    "question": "What are the best commercial roofing materials?",
+    "answer": "The best commercial roofing material depends on the building's specific needs, budget, and local climate. We often recommend two excellent single-ply membrane options: GAF TPO Roof Installation Videos : TPO is durable, energy-efficient, and highly resistant to UV radiation. Its seams are hot-air welded, making them three times stronger than conventional rubber roofs, which helps prevent leaks. TPO is also flexible and easy to install. FiberTite Commercial Roofing Videos : FiberTite is a high-performance, single-ply membrane known for its exceptional durability and longevity. It is engineered with a heavier base fabric than TPO or PVC, giving it superior resistance to punctures and tears. FiberTite's proprietary formula also provides excellent resistance to a broad range of chemicals, grease, and fats, making it a great choice for roofs exposed to harsh environmental factors. EPDM Roofing Systems Videos : EPDM (ethylene propylene diene terpolymer) is a durable synthetic rubber roofing membrane that has been a top choice for low-slope commercial roofs for decades. It is available in black or white and can be installed in a variety of ways, including fully adhered, mechanically attached, or ballasted.​ EPDM is known for its resistance to weathering, ozone, and abrasion, as well as its flexibility in low temperatures. We can help you choose the best material for your specific commercial building and provide a detailed assessment."
+  },
+  {
+    "question": "When should I repair or replace my commercial roof?",
+    "answer": "The decision to repair or replace your commercial roof depends on the extent of the damage. Minor leaks, punctures, or localized damage can often be repaired. However, if there are widespread issues, multiple leaks, or your roof is nearing the end of its expected lifespan, a full replacement may be the more cost-effective long-term solution. Our team can inspect your roof and provide a detailed assessment to help you make an informed decision. This video demonstrates a specific part of the installation process for a FiberTite mechanical roof system. FiberTite Mechanical Install"
+  },
+  {
+    "question": "Do you provide estimates for real estate transactions, roof certifications, or other documentation?",
+    "answer": "Yes, we do. We offer specialized assessments for a variety of property-related transactions, which we call transaction estimates . Whether you're a property manager, handling an insurance claim, or involved in a real estate transaction, our expert reports provide the documentation and guidance you need. Due to the detailed nature of these services, we charge a standard fee for all on-site inspections and assessments. This fee covers our comprehensive report for purposes such as: Roof inspections and certifications for property management and rental properties Insurance claims and repairs Real estate transactions Repair or replacement estimates for \"long distance\" properties The fee is due in full before you receive your report. For your convenience, we accept credit cards over the phone or a check at the time of the on-site inspection. The best part? If you choose to have The Roofing Company complete the work based on our assessment, we will apply the fee to the overall project cost. This means your inspection essentially becomes a complimentary service. By partnering with us, you can trust that you're getting accurate, reliable information to protect your property investments. Contact us today: (757) 867-6600 or [admingroup@theroofingcompany.com](mailto:admingroup@theroofingcompany.com) to schedule your assessment."
   }
-},
-
-  {
-  question: [
-    "pay rent",
-    "payment",
-    "house rent",
-  ],
-  keywords: ["rent", "payment", "house", "miss"],
-  answer: [
-    "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
-    '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
-  ],
-  followUps: {
-    "when is rent due": [
-      "Rent is due on the 5th of each month. Late fees apply after that.",
-      "The late fee of $10 per day rent is late.",
-    ],
-    "how do i pay rent": [
-      "Great question, rent payments are made simple through your resident portal. Please use link below if you are having any issues.",
-      '<a href="https://ddtenterprise.org/rental-properties-2/" target="_blank" rel="noopener noreferrer">Resident Portal</a>'
-    ],
-    "what happens if i miss rent": [
-      "If you miss rent, you will be issued a 21 day eviction notice.",
-      " In your lease, it states if a problem is not rectified within 21 days, that the home can be re-leased to a paying tenant.",
-    ],
-  },
-},
-
-  {
-    question: [
-      "What are your rental requirements?",
-      "What do I need to qualify?",
-      "Can I tour the Norfolk unit? What do you look for in a tenant?",
-      "What’s needed to rent?",
-    ],
-    keywords: ["rental", "requirements", "qualify", "tenant", "tour", "rent"],
-    answer: [
-      "We conduct a best fit assessment based off all applicants. The requirements are:\n625 minimum credit score, Monthly income is 2.5 x rent, Background check, No previous evictions.",
-    ],
-  },
-  {
-  question: [
-    "I just applied. What now?",
-    "What happens after submitting the application?"
-  ],
-  keywords: ["apply", "submitted", "next step"],
-  answer: "__BOOKING_TOUR_NEW__" // 👈 triggers the booking flow
-},
-  {
-    question: [
-      "I paid the deposit — what now?",
-      "What happens after I send the deposit?",
-    ],
-    keywords: ["deposit paid", "payment", "security paid", "paid"],
-    answer: [
-      "I will place the home off the market now that the security deposit is paid. From there I will send you an email explaining follow-on instructions which will include a welcome letter, Move-in Inspection Document, and utilities transfer document.",
-    ],
-  },
-  {
-    question: [
-      "When do I get my deposit back?",
-      "How long to return deposit?",
-      "Will I get my deposit back?",
-    ],
-    keywords: ["deposit return", "refund", "return", "security return"],
-    answer: [
-      "At DDT Enterprise we state that security deposits will be returned no later than (30) days after your move out date. An inspection and neccesary repairs needs to be conducted prior to supporting the return of your deposit.",
-    ],
-  },
-  {
-    question: [
-      "When will I find out if I’m selected for the home?",
-      "How do I know if I got the rental?",
-    ],
-    keywords: ["selected", "rental", "application status", "approval"],
-    answer: [
-      "DDT will decide based on a best fit assessment along with the prerequisite requirements.",
-    ],
-  },
-  {
-    question: [
-      "When will I get the keys?",
-      "How do I access the house on move-in day?",
-    ],
-    keywords: ["keys", "key", "access", "entry"],
-    answer: [
-      "All homes managed by DDT Enterprise are encrypted with padded Electrical Locks. Once the pro-rated/1st month’s rent is paid, 4 hours prior to your move-in time (4:00 pm), you will receive the code to allot for your move-in.",
-    ],
-  },
- // --- TOURS ---
-{
-  question: [
-    "When can I tour the property?",
-    "How do I schedule a tour?",
-    "I want to come see the house",
-    "When is the tour available?"
-  ],
-  keywords: ["tour", "visit", "see", "property", "home"],
-  answer: ["__BOOKING_TOUR_AVAIL__"],
-  type: "schedule_tour"
-},
-{
-  question: [
-    "I missed my tour — can I reschedule?",
-    "I wasn’t able to make my appointment. Can I set another time?",
-    "Can I change my tour date?",
-    "I need to reschedule my tour"
-  ],
-  keywords: ["reschedule", "missed", "change", "tour", "appointment"],
-  answer: ["__BOOKING_TOUR_RESCHEDULE__"],
-  type: "schedule_reschedule"
-},
-
-// --- MEETINGS ---
-{
-  question: [
-    "Schedule a meeting",
-    "Book a meeting with Demetrice",
-    "Set up a meeting with the landlord",
-    "I want to meet Demetrice",
-    "Schedule appointment with landlord"
-  ],
-  keywords: ["meeting", "appointment", "landlord", "demetrice"],
-  answer: ["__BOOKING_MEETING_NEW__"],
-  type: "schedule_meeting"
-},
-  {
-    question: [
-      "Why wasn’t I chosen for the unit?",
-      "Is there a reason I didn’t get approved?",
-    ],
-    keywords: ["not chosen", "rejected", "denied", "approval"],
-    answer: [
-      "At DDT Enterprise we conduct a best fit assessment off all applicants. We chose an applicant we determined to be a better fit for the home and in a more extremis situation. I will keep you in mind when our next rental comes available. Please sign up for our waitlist.",
-    ],
-  },
-  {
-    question: [
-      "After the tour, when can I move in?",
-      "When would I start the lease if approved?",
-    ],
-    keywords: ["move in", "lease start", "after tour"],
-    answer: [
-      "It was great conducting a tour with you today, what would be your projected move-in date in the event you were selected?",
-    ],
-  },
-  {
-    question: [
-      "There’s a leak, and my stuff is damaged. What should I do?",
-      "Water damage ruined my items, who’s responsible?",
-    ],
-    keywords: ["leak", "water damage", "reimbursement", "responsible"],
-    answer: [
-      "I am sorry to hear about this issue, rest assured we are working diligently to mitigate this issue. Regarding your potential reimbursement, please contact your renter’s insurance. Additionally, please place your maintenance issue in your Resident portal for more efficient updates and repair statuses.",
-    ],
-  },
-  {
-    question: [
-      "My AC is only blowing hot air, what do I do?",
-      "The air conditioner isn't cooling — help?",
-    ],
-    keywords: ["AC", "air conditioner", "cooling", "hot air", "oven", "stove"],
-    answer: [
-      "Thank you for the proper communication. Please place your maintenance issue in your Resident portal for more efficient updates and repair statuses.",
-    ],
-  },
-  {
-    question: [
-      "When do I need to complete the move-in inspection?",
-      "Deadline for submitting move-in inspection?",
-    ],
-    keywords: ["inspection", "move-in", "deadline"],
-    answer: [
-      "Within (5) business days of move in date.",
-    ],
-  },
-  {
-    question: [
-      "How often does DDT inspect the home?",
-      "Will there be regular inspections?",
-    ],
-    keywords: ["inspection", "home inspection", "regular", "annual", "semi-annual"],
-    answer: [
-      "DDT Enterprise conducts at least one Annual Inspection per year and a Semi-annual inspection during the 4–6-month mark of your initial lease.",
-    ],
-  },
-  {
-    question: [
-      "What are the move-out instructions?",
-      "What do I need to do before move-out?",
-    ],
-    keywords: ["move-out", "move out", "instructions", "departure", "cleaning"],
-    answer: [
-      "Please have the home cleaned prior to your departure date. If you do not have a preferred cleaner (receipt required), we will use our preferred vendor to conduct the service.",
-      "Please place keys on the countertop of the home and leave the doors unlocked on the date of your departure unless specific instructions are specified by the manager.",
-      "Security deposits will be released within (30) days of the departure date.",
-      "Place lights and water out of your name on the day after your departure.",
-      "Notify the manager of any issues that you may have prior to your departure date.",
-      "Ensure all utilites remain on in the resident until the day after your lease concludes.",
-      "The cost for missing a service call is $85.00.",
-    ],
-  },
-  {
-  question: [
-    "How long does maintenance take?",
-    "When is routine maintenance?"
-  ],
-  keywords: ["maintenance", "repair"],
-  answer: [
-    "For routine repairs, we repair on the 25th – 29th every month.",
-    "For emergency repairs, they are done within 48 hours of request."
-  ],
-},
-  {
-  question: ["Emergency", "Emergency contact"],
-  answer: ["Please call us at (757) 408-7241"],
-},
-
-  {
-    question: [
-      "When do I find out if I got selected?",
-      "When is the selection finalized?",
-    ],
-    keywords: ["selection", "approval", "rental", "decision"],
-    answer: [
-      "DDT Enterprise chooses resident(s) on a best fit assessment at least (3) days before leased availability date.",
-    ],
-  },
-  {
-    question: [
-      "When can I renew my lease?",
-      "Can I start my renewal?",
-    ],
-    keywords: ["renew", "lease renewal", "contract"],
-    answer: [
-      "If you are selected for renewal your renewal offer will be initiated with you within the (60) days prior to your lease expiring.",
-    ],
-  },  
-  {
-  question: [
-    "what is the management fee",
-    "management fee",
-    "how much do you charge to manage a property",
-    "management cost",
-  ],
-  keywords: ["management", "fee", "cost", "charge"],
-  answer: [
-    "8% of monthly rent, which is 2% lower than market standard.",
-  ],
-},
-{
-  question: [
-    "what does ddt operate in its management regions",
-    "where does ddt operate",
-    "ddt management regions",
-    "what areas does ddt cover",
-  ],
-  keywords: ["ddt", "operate", "management", "regions", "areas", "cover"],
-  answer: [
-    "DDT operates throughout the entirety of the United States.",
-  ],
-},
-{
-  question: [
-    "who is the owner of ddt enterprise",
-    "who owns ddt",
-    "ddt enterprise owner",
-  ],
-  keywords: ["owner", "ddt", "enterprise", "who"],
-  answer: [
-    "Demetrice Thomas",
-  ],
-},
-{
-  question: [
-    "What is the application fee?",
-  ],
-  
-    answer: [ "The application fee is $25",
-  ],
-},
-{
-  question: [
-    "who is demetrice thomas",
-    "tell me about demetrice thomas",
-    "background of demetrice thomas",
-    "who owns ddt",
-    "who is he",
-    "who are they",
-  ],
-  keywords: ["demetrice", "thomas", "background"],
-  answer: [
-    "He is a Navy veteran with over a decade of commercial and residential real estate experience.",
-  ],
-},
-   {
-    question: ["Can I speak to a person?", "I want to talk to a live agent."],
-    keywords: ["speak", "person", "live agent", "contact", "customer service"],
-    answer: [
-      "We would love to hear from you. Please use the link below.",
-      '<a href="https://ddtenterprise.org/contact-us/" target="_blank" rel="noopener noreferrer">Contact Us</a>'
-    ]
-  },
-
-  {
-    question:[ "What happens if I pay rent late or only partially?", ],
-    answer: [ "Yes, late payments are fine, however any payment made after the 5th of the month late fees will be assessed." ],
-  },
-
-  {
-    question: [ "What should I do in case of flooding, fire, death, or criminal activity?", ],
-    answer: [ "Please call DDT immediately on (757) 408-7241" ],
-  },
-
-  {
-    question: ["Can I bring my pet when I come for a tour?",],
-    answer: ["Your fur-baby is a part of your family, and we want to ensure that they are comfortable with the home as well, their vote counts!"
-    ],
-    },
-
-   {
-    question: ["What rentals are currently available?"],
-    keywords: ["available", "rental available","Homes","Condominiums", "properties", "current"],
-    answer: [
-      '<a href="https://ddtenterprise.org/resident-portal-2-2-2/" target="_blank" rel="noopener noreferrer">View Available Rentals</a>'
-    ]
-  },
-
-    {
-    question: ["I'm having trouble placing a maintenance request",
-                "I can't request maintenance",
-    ],
-    keywords: ["maintenance", "request", "trouble", "issue", "form"],
-    answer: [
-      '<a href="https://ddtenterprise.managebuilding.com/manager/app/tasks/add?taskTypeId=2" target="_blank" rel="noopener noreferrer">Submit Maintenance Request</a>'
-    ]
-  },
-    {
-  question: [
-    "Thomas Inspections",
-    "Does DDT partner with any companies?",
-    "partner inspection",
-    "who do you work with for inspections",
-    "Thomas Inspections, a nation wide Home Inspection Company",
-    "inspection partner"
-  ],
-  keywords: ["Thomas Inspections", "partner"],
-  answer: [
-    "Yes! DDT Enterprise proudly partners with Thomas Inspections, a nationwide home inspection company that helps us deliver exceptional service.",
-    '<a href="https://www.thomasinspectionsva.com/" target="_blank" rel="noopener noreferrer">Visit Thomas Inspections</a>'
-  ]
-},
-{
-  question: [
-    "I cleaned, how can I receive my deposit?",
-    "cleaning receipt",
-    "cleaning proof",
-    "how to get security deposit back",
-    "great question, to receive your full security deposit you will need a professional cleaning (receipt required) as well as a Move Out Inspection"
-  ],
-  keywords: ["receipt", "deposit", "cleaning", "proof"],
-  answer: [
-    "To receive your full security deposit, please provide a cleaning receipt from a professional cleaning service.",
-    "Make sure the receipt includes date, address, and detailed services."
-  ]
-},
-{
-  question: [
-    "discount",
-    "any deals",
-    "can i get a discount",
-    "military discount",
-    "promo code"
-  ],
-  keywords: ["discount", "deal", "promo", "sale"],
-  answer: [
-    "We currently do not offer any discounts or promotional rates.",
-    "Our pricing reflects the quality and value of our service."
-  ]
-},
-{
-  question: ["Who is the best property management company?"],
-  answer: ["DDT Enterprise"],
-},
-{
-  question: [
-    "can we install ring doorbells",
-    "can i install doorbell",
-    "ring doorbell allowed"
-  ],
-  keywords: ["doorbell", "install"],
-  answer: [
-    "At DDT Enterprise, we want you to feel comfortable inside your house of course, you can install a doorbell for your home."
-  ],
-},
-
-{
-  question: [
-    "can we paint the walls",
-    "can i paint the house",
-    "painting allowed"
-  ],
-  keywords: ["paint", "walls"],
-  answer: [
-    "At DDT Enterprise, we want you to feel comfortable inside your house of course, you can paint the house. We ask that once you terminate your lease that you restore the interior back to its original condition"
-  ],
-},
-
-{
-  question: [
-    "where is your physical location",
-    "what is the address of ddt enterprise",
-    "do you have an office"
-  ],
-  keywords: ["location", "address", "physical", "office"],
-  answer: [
-    "DDT does not have a physical location; it is a completely remote property management company with local Agents and Brokers operating throughout the entire nation."
-  ],
-},
-{
-    "question": [
-      "What is DDT Enterprise responsible for?",
-      "What services does DDT offer?"
-    ],
-    "keywords": [
-      "responsible",
-      "services",
-      "management"
-    ],
-    "answer": [
-      "DDT Enterprise handles leasing, advertising, tenant screening, rent collection, maintenance coordination, and responding to emergency issues as part of its management services."
-    ]
-  },
-  {
-    "question": [
-      "Can DDT sign leases and accept deposits?",
-      "Does DDT represent owners for lease agreements?"
-    ],
-    "keywords": [
-      "sign leases",
-      "accept deposits",
-      "lease agreements"
-    ],
-    "answer": [
-      "Yes, DDT Enterprise is authorized to sign leases, accept deposits, and complete property checklists for residents."
-    ]
-  },
-  {
-    "question": [
-      "Does DDT inspect my property?",
-      "How often are inspections done?"
-    ],
-    "keywords": [
-      "inspect",
-      "property",
-      "inspection",
-      "move-in",
-      "move-out"
-    ],
-    "answer": [
-      "Yes, DDT Enterprise performs inspections at move-in, move-out, and conducts semiannual inspections."
-    ]
-  },
-  {
-    "question": [
-      "What happens if repairs are needed?",
-      "How does DDT handle repairs?"
-    ],
-    "keywords": [
-      "repair",
-      "repairs",
-      "fix",
-      "maintenance"
-    ],
-    "answer": [
-      "DDT handles repair coordination and may conduct emergency repairs up to $800 without Property owner approval."
-    ]
-  },
-  {
-    "question": [
-      "When is DDT available?",
-      "What are DDT\u2019s business hours?"
-    ],
-    "keywords": [
-      "available",
-      "business hours",
-      "contact"
-    ],
-    "answer": [
-      "DDT Enterprise is available to tenants daily from 8 a.m. to 6 p.m., Monday through Sunday."
-    ]
-  },
-  {
-    "question": [
-      "How do I terminate the agreement?",
-      "Cancel property management agreement"
-    ],
-    "keywords": [
-      "terminate",
-      "cancel",
-      "end",
-      "agreement"
-    ],
-    "answer": [
-      "Either party may cancel with 30 days notice. The agreement can also be terminated immediately for serious issues."
-    ]
-  },
-  {
-    "question": [
-      "How are tenant complaints handled?",
-      "What happens when tenants complain?"
-    ],
-    "keywords": [
-      "complaint",
-      "complaints",
-      "issues",
-      "tenant"
-    ],
-    "answer": [
-      "DDT logs complaints, categorizes them, and informs owners about necessary repairs or actions."
-    ]
-  },
-  {
-  question: ["What's DDT slogan?"],
-  answer: ["Where community meets value."],
-},
-{
-  question: ["Is Micah a real person?"],
-  answer: ["Yes, my name is Micah Thomas from Marion, Arkansas"],
-},
-{
-  question: ["What is DDT Enterprise's vacancy rate?"],
-  answer: ["DDT Enterprise averages a 17 day (or less) vacany rate on average. We pride ourselves on ensuring we keep the best residents in the best homes at all times."],
-},
-{
-  question: ["My toilet is backed up."],
-  answer: ["I'm sorry to hear about that. Please place your maintenance issue in your Resident Portal for efficient updates and repair statuses. If it's an emergency, don't hesitate to call us directly at (757) 408-7241."],
-},
-{
-  question: ["How much is kept in the reserve account?"],
-  answer: ["	DDT Enterprise typically maintains a reserve amount of $800 for each property to handle any unexpected expenses or necessary repairs. This helps ensure prompt attention to any urgent maintenance issues. If you have any more questions about property management details, feel free to ask!"],
-},
-{
-  question: ["Pet fee?"],
-  answer: ["The pet fee at DDT Enterprise is $575 pet fee regardless of the number of pets. If you have more questions about bringing your fur-baby with you, feel free to ask!"],
-},
-{
-  question: ["Does DDT have any financing options?"],
-  answer: ["Yes, DDT does offer financing to home owners whose homes are managed in their community."],
-},
-{
-  question: ["How long does DDT take to typically get a home rented?"],
-  answer: ["DDT averages an extremely low vacancy rate of 17 days or less per home."],
-},
+]
 ];
-
 
 export default qaData;

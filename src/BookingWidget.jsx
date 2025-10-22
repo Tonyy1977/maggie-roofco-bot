@@ -1,33 +1,26 @@
-// src/BookingWidget.jsx
+// src/BookingWidget.jsx — Outlook version
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { DateTime } from "luxon";
 
 export default function BookingWidget({ bookingTypeId, bookingTypeName, addMessage }) {
-  const [slots, setSlots] = useState({});
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [slots, setSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [step, setStep] = useState("select"); // select | confirm | details | done
+  const [step, setStep] = useState("select"); // select | details | done
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  // track which month is shown
-  const [currentMonth, setCurrentMonth] = useState(
-    DateTime.now().setZone("America/New_York").startOf("month")
-  );
-
-  // fetch availability
   useEffect(() => {
     const fetchAvailability = async () => {
       try {
-        const res = await axios.get("/api/tidycal/availability", {
-          params: { bookingTypeId },
+        const res = await axios.get("/api/outlook/availability", {
+          params: { calendarId: bookingTypeId },
         });
-        setSlots(res.data.slots || {});
+        setSlots(res.data.freeTimes || []);
       } catch (err) {
-        console.error("Error fetching availability:", err);
+        console.error("Error fetching Outlook availability:", err);
       } finally {
         setLoading(false);
       }
@@ -35,170 +28,102 @@ export default function BookingWidget({ bookingTypeId, bookingTypeName, addMessa
     fetchAvailability();
   }, [bookingTypeId]);
 
-  if (loading) return <p>Loading calendar...</p>;
+  if (loading) return <p>Loading Outlook calendar...</p>;
 
-  // build calendar grid
-  const startOfMonth = currentMonth.startOf("month");
-  const endOfMonth = currentMonth.endOf("month");
-  const days = [];
-  const firstDayOfWeek = startOfMonth.weekday % 7;
-  for (let i = 0; i < firstDayOfWeek; i++) days.push(null);
-  for (let d = 1; d <= endOfMonth.day; d++) {
-    const nyDate = DateTime.fromObject(
-      { year: currentMonth.year, month: currentMonth.month, day: d },
-      { zone: "America/New_York" }
-    );
-    days.push(nyDate.toFormat("yyyy-MM-dd"));
-  }
-
-  // navigation
-  const prevMonth = () => setCurrentMonth(currentMonth.minus({ months: 1 }));
-  const nextMonth = () => setCurrentMonth(currentMonth.plus({ months: 1 }));
-
-  return (
-    <div className="booking-widget">
-      {/* Calendar Header */}
-      <div className="calendar-header">
-        <span className="month-label">{currentMonth.toFormat("LLLL yyyy")}</span>
-        <div className="nav-buttons">
-          <button onClick={prevMonth}>‹</button>
-          <button onClick={nextMonth}>›</button>
-        </div>
-      </div>
-
-      {/* Calendar Grid */}
-      <div className="calendar-grid">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-          <div key={d} className="calendar-day-name">{d}</div>
-        ))}
-
-        {days.map((dateStr, i) => {
-          if (!dateStr) return <div key={i} className="calendar-day empty"></div>;
-          const isAvailable = slots[dateStr]?.length > 0;
-          const isSelected = selectedDate === dateStr;
+  if (step === "select")
+    return (
+      <div className="booking-widget">
+        <p>
+          Available times for <strong>{bookingTypeName}</strong>:
+        </p>
+        {slots.length === 0 && <p>No available slots in the next 2 weeks.</p>}
+        {slots.map((slot) => {
+          const start = DateTime.fromISO(slot.start, { zone: "utc" }).setZone("America/New_York");
+          const end = DateTime.fromISO(slot.end, { zone: "utc" }).setZone("America/New_York");
+          const label = `${start.toFormat("EEE MMM d, h:mm a")} – ${end.toFormat("h:mm a")}`;
           return (
             <button
-              key={dateStr}
-              className={`calendar-day ${isAvailable ? "available" : "disabled"} ${isSelected ? "selected" : ""}`}
+              key={slot.start}
+              className={`time-slot ${selectedSlot === slot ? "selected" : ""}`}
               onClick={() => {
-                if (isAvailable) {
-                  setSelectedDate(dateStr);
-                  setSelectedTime(null);
-                  setStep("select");
-                }
+                setSelectedSlot(slot);
+                setStep("details");
               }}
             >
-              {DateTime.fromISO(dateStr).day}
+              {label}
             </button>
           );
         })}
       </div>
+    );
 
-      {/* Show time slots */}
-      {selectedDate && step === "select" && (
-        <div className="time-slots">
-          <p>
-            Available times for <strong>{bookingTypeName}</strong> on{" "}
-            {DateTime.fromISO(selectedDate).toFormat("MMM d, yyyy")}:
-          </p>
-          {slots[selectedDate]?.map((slot) => {
-            const nyTime = DateTime.fromISO(`${selectedDate}T${slot}`, { zone: "utc" })
+  if (step === "details" && selectedSlot)
+    return (
+      <div className="details-form">
+        <p>
+          You selected{" "}
+          <strong>
+            {DateTime.fromISO(selectedSlot.start, { zone: "utc" })
               .setZone("America/New_York")
-              .toFormat("h:mm a");
-            return (
-              <button
-                key={slot}
-                className={`time-slot ${selectedTime === slot ? "selected" : ""}`}
-                onClick={() => {
-                  setSelectedTime(slot);
-                  setStep("confirm");
-                }}
-              >
-                {nyTime}
-              </button>
-            );
-          })}
-        </div>
-      )}
+              .toFormat("EEE MMM d, h:mm a")}
+          </strong>
+          {" "}for {bookingTypeName}.
+        </p>
+        <input
+          type="text"
+          placeholder="Your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="email"
+          placeholder="Your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <button
+          onClick={async () => {
+            try {
+              await axios.post("/api/outlook/booking", {
+                calendarId: bookingTypeId,
+                name,
+                email,
+                start: selectedSlot.start,
+                end: selectedSlot.end,
+              });
 
-      {/* Confirm step */}
-      {step === "confirm" && selectedDate && selectedTime && (
-        <div className="confirm-step">
-          <p>
-            You selected <strong>{bookingTypeName}</strong> on{" "}
-            {DateTime.fromISO(selectedDate).toFormat("MMM d, yyyy")} at{" "}
-            {DateTime.fromISO(`${selectedDate}T${selectedTime}`, { zone: "utc" })
-              .setZone("America/New_York")
-              .toFormat("h:mm a")} (New York time).
-          </p>
-          <button onClick={() => setStep("details")}>Confirm</button>
-          <button onClick={() => setStep("select")}>Back</button>
-        </div>
-      )}
-
-      {/* Name/email form */}
-      {step === "details" && (
-        <div className="details-form">
-          <p>Please enter your details to complete the booking:</p>
-          <input
-            type="text"
-            placeholder="Your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button
-            onClick={async () => {
-              try {
-                await axios.post("/api/tidycal/book", {
-                  bookingTypeId,
-                  date: selectedDate,
-                  time: selectedTime,
-                  name,
-                  email,
+              // Chat confirmation
+              if (addMessage) {
+                const startTime = DateTime.fromISO(selectedSlot.start, { zone: "utc" })
+                  .setZone("America/New_York")
+                  .toFormat("EEE MMM d, h:mm a");
+                addMessage({
+                  sender: "bot",
+                  type: "text",
+                  text: `✅ Your ${bookingTypeName} has been scheduled for ${startTime} (New York time). A confirmation has been added to our Outlook calendar.`,
                 });
-
-                // ✅ Send success as a chat bubble
-                if (addMessage) {
-                  const formattedDate = DateTime.fromISO(selectedDate).toFormat("MMM d, yyyy");
-                  const formattedTime = DateTime.fromISO(`${selectedDate}T${selectedTime}`, { zone: "utc" })
-                    .setZone("America/New_York")
-                    .toFormat("h:mm a");
-
-                  addMessage({
-                    sender: "bot",
-                    type: "text",
-                    text: `Your ${bookingTypeName} has been scheduled for ${formattedDate} at ${formattedTime} (New York time). A confirmation email has been sent.`,
-                  });
-                }
-
-                setStep("done");
-              } catch (err) {
-                console.error("Booking failed:", err);
-                if (addMessage) {
-                  addMessage({
-                    sender: "bot",
-                    type: "text",
-                    text: "⚠️ Sorry, something went wrong while booking. Please try again.",
-                  });
-                }
               }
-            }}
-          >
-            Confirm Booking
-          </button>
-        </div>
-      )}
 
-      {/* Inline success (optional, can remove if bubble is enough) */}
-      {step === "done" && (
-        <p>Booking complete.</p>
-      )}
-    </div>
-  );
+              setStep("done");
+            } catch (err) {
+              console.error("Outlook booking failed:", err);
+              if (addMessage) {
+                addMessage({
+                  sender: "bot",
+                  type: "text",
+                  text: "⚠️ Sorry, something went wrong while booking through Outlook. Please try again.",
+                });
+              }
+            }
+          }}
+        >
+          Confirm Booking
+        </button>
+        <button onClick={() => setStep("select")}>Back</button>
+      </div>
+    );
+
+  if (step === "done") return <p>✅ Booking complete.</p>;
+
+  return null;
 }
