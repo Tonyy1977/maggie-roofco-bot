@@ -23,7 +23,7 @@ export default function FullChat() {
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const res = await axios.get("/api/outlook/types");
+        //const res = await axios.get("/api/outlook/types");
         //setBookingTypes(res.data || []);
       } catch (err) {
         console.error("Error fetching booking types:", err);

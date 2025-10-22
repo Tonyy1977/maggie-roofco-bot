@@ -53,7 +53,7 @@ setFiltered(messages);
   // ✅ Define fetchAnalytics
   const fetchAnalytics = async () => {
   try {
-    const res = await axios.get('/api/analytics/summary');
+    //const res = await axios.get('/api/analytics/summary');
   } catch (err) {
     console.error('❌ Failed to load analytics summary:', err);
   }
