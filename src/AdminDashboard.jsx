@@ -54,7 +54,6 @@ setFiltered(messages);
   const fetchAnalytics = async () => {
   try {
     const res = await axios.get('/api/analytics/summary');
-    setAnalytics(res.data);
   } catch (err) {
     console.error('❌ Failed to load analytics summary:', err);
   }
