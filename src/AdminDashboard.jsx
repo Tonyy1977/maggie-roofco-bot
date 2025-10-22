@@ -11,7 +11,7 @@ function AdminDashboard() {
   const [uniqueSessions, setUniqueSessions] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [analytics, setAnalytics] = useState(null);
+  //const [analytics, setAnalytics] = useState(null);
   const [tab, setTab] = useState('history');
 
   const [authenticated, setAuthenticated] = useState(false);

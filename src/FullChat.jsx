@@ -16,7 +16,7 @@ export default function FullChat() {
   const [menuStep, setMenuStep] = useState(0);
   const chatBodyRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const [bookingTypes, setBookingTypes] = useState([]);
+  //const [bookingTypes, setBookingTypes] = useState([]);
   const [sessionId, setSessionId] = useState(null);
 
   // ✅ Fetch booking types (Outlook)
