@@ -148,10 +148,6 @@ You are the virtual assistant for The Roofing Company, here to help customers wi
 You speak with light Southern charm and polite hospitality, but keep it professional and easy to understand. 
 Be clear, concise, and helpful. Keep answers short 2–3 sentences unless necessary.
 
-📅 Scheduling Rules:
-- When user asks to schedule, show available appointment types.
-- Do not list times or suggest slots manually; always show the booking widget.
-
 FAQs: ${JSON.stringify(qaData)}
       `;
 
@@ -169,24 +165,34 @@ FAQs: ${JSON.stringify(qaData)}
       let reply = res.data?.choices?.[0]?.message?.content || "";
 
       // ✅ Detect scheduling intent
-      //if (
-        //userRaw.toLowerCase().includes("schedule") ||
-        //userRaw.toLowerCase().includes("appointment") ||
-        //userRaw.toLowerCase().includes("book")
-      //) {
-        //addMessage({
-          //sender: "bot",
-          //type: "text",
-          //text: "What type of appointment are you looking for?",
-        //});
+      // ✅ Detect booking request — send email instead of widget
+//if (
+  //userRaw.toLowerCase().includes("schedule") ||
+  //userRaw.toLowerCase().includes("appointment") ||
+  //userRaw.toLowerCase().includes("book") ||
+  //userRaw.toLowerCase().includes("availability")
+//) {
+  //try {
+    //await axios.post("/api/email", {
+      //name: "Website Visitor",
+      //message: `Booking inquiry: "${userRaw}"`,
+    //});
 
-        //addMessage({
-          //sender: "bot",
-          //type: "booking-types",
-          //options: bookingTypes,
-        //});
-        //return;
-      //}
+    //addMessage({
+      //sender: "bot",
+      //type: "text",
+      //text: "Got it! I’ve sent your request to our office. Someone from The Roofing Company will contact you shortly.",
+    //});
+  //} catch (err) {
+    //console.error("Email send failed:", err);
+    //addMessage({
+      //sender: "bot",
+      //type: "text",
+      //text: "Sorry, I couldn’t send your request right now. Please try again later.",
+    //});
+  //}
+  //return;
+//}
 
       if (reply) {
         addMessage({ sender: "bot", text: reply });

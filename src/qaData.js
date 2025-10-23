@@ -11,10 +11,6 @@ const qaData = [
     answer: "Monday–Friday at 9:00 AM, 11:00 AM, 2:00 PM, or 4:00 PM."
   },
   {
-    question: "How do I schedule an appointment?",
-    answer: "Call or text Contact us today: (757) 867-6600, submit the Contact Us form on our website, or email [admingroup@theroofingcompany.com](mailto:admingroup@theroofingcompany.com). We'll confirm by email with your estimator's photo and contact info and send a text reminder before the visit."
-  },
-  {
     question: "Do I need to be home for the appointment?",
     answer: "Yes! Someone should be present to provide access and discuss the concerns. For slate or complex roofs we may also request attic access."
   },
@@ -199,6 +195,11 @@ const qaData = [
   {
     "question": "Do you provide estimates for real estate transactions, roof certifications, or other documentation?",
     "answer": "Yes, we do. We offer specialized assessments for a variety of property-related transactions, which we call transaction estimates . Whether you're a property manager, handling an insurance claim, or involved in a real estate transaction, our expert reports provide the documentation and guidance you need. Due to the detailed nature of these services, we charge a standard fee for all on-site inspections and assessments. This fee covers our comprehensive report for purposes such as: Roof inspections and certifications for property management and rental properties Insurance claims and repairs Real estate transactions Repair or replacement estimates for \"long distance\" properties The fee is due in full before you receive your report. For your convenience, we accept credit cards over the phone or a check at the time of the on-site inspection. The best part? If you choose to have The Roofing Company complete the work based on our assessment, we will apply the fee to the overall project cost. This means your inspection essentially becomes a complimentary service. By partnering with us, you can trust that you're getting accurate, reliable information to protect your property investments. Contact us today: (757) 867-6600 or [admingroup@theroofingcompany.com](mailto:admingroup@theroofingcompany.com) to schedule your assessment."
+  },
+  {
+    "question": "I’d like to schedule an appointment",
+    "answer": ["Great! To schedule an appointment, you can call or text us at (757) 867-6600, submit the Contact Us form on our website, or email us at [admingroup@theroofingcompany.com](mailto:admingroup@theroofingcompany.com)."]
+              ["Once we receive your request, we'll confirm by email with your estimator’s photo and contact info and send a text reminder before the visit. Please let me know if you need any more assistance!"],
   }
 ]
 ];
