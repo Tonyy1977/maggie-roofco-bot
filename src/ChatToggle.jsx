@@ -15,7 +15,7 @@ const ChatToggle = () => {
   return (
     <div
   style={{
-    position: 'relative',
+    position: 'fixed',
     width: '100%',
     height: '100%',
     background: 'transparent',
@@ -33,7 +33,7 @@ const ChatToggle = () => {
             position: 'absolute',
             bottom: '80px',
             right: '0',
-            background: '#fff',
+            background: '#C7C7C7',
             padding: '10px 14px',
             borderRadius: '16px',
             boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
@@ -42,7 +42,7 @@ const ChatToggle = () => {
             color: '#333',
           }}
         >
-          Hey there, I’m Cara, your assistant at The Roofing Company. What can I do for you today?
+          Hey there, I’m Maggie, your assistant at The Roofing Company. What can I do for you today?
         </div>
       )}
 

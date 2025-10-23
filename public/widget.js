@@ -1,12 +1,12 @@
 (function () {
-  const CHAT_URL = "https://ddt-chatbot-gy6g.vercel.app";
+  const CHAT_URL = "https://maggie-roofco-bot.vercel.app";
 
   // --- Avatar Toggle iframe ---
   const avatarIframe = document.createElement("iframe");
   avatarIframe.src = `${CHAT_URL}/?mode=toggle`;
   avatarIframe.style.position = "fixed";
-  avatarIframe.style.bottom = "0px";
-  avatarIframe.style.right = "0px";
+  avatarIframe.style.bottom = "20px";
+  avatarIframe.style.right = "20px";
   avatarIframe.style.width = "320px";
   avatarIframe.style.height = "150px";
   avatarIframe.style.border = "none";
