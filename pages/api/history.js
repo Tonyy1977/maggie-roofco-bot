@@ -23,11 +23,13 @@ export default async function handler(req, res) {
     console.log("📥 Loading history for:", sessionId);
 
     try {
-      const filter = {};
-      if (sessionId && sessionId !== 'null') filter.sessionId = sessionId;
+      if (!sessionId || sessionId === 'null' || sessionId === 'undefined') {
+  console.warn("⚠️ No valid sessionId provided — rejecting history request");
+  return res.status(400).json({ error: "Missing or invalid sessionId" });
+}
 
-      const messages = await Message.find(filter).sort({ createdAt: 1 });
-      return res.status(200).json(messages);
+const messages = await Message.find({ sessionId }).sort({ createdAt: 1 });
+return res.status(200).json(messages);
     } catch (err) {
       console.error('❌ Error fetching history:', err);
       return res.status(500).json({ success: false, error: err.message });

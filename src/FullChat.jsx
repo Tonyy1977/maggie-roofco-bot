@@ -37,23 +37,23 @@ export default function FullChat() {
     if (typeof window === "undefined" || sessionId) return;
     let id = null;
     try {
-      const stored = localStorage.getItem("brian-user");
-      const parsed = stored ? JSON.parse(stored) : null;
-      if (parsed?.name && parsed?.email) {
-        id = `${parsed.name}-${parsed.email}`;
-      }
-    } catch (e) {
-      console.error("JSON parse error:", e);
-    }
-    if (!id) {
-      let guestId = localStorage.getItem("brian-guest-session");
-      if (!guestId) {
-        guestId = `guest-${uuidv4()}`;
-        localStorage.setItem("brian-guest-session", guestId);
-      }
-      id = guestId;
-    }
-    setSessionId(id);
+  const stored = localStorage.getItem("maggie-user");
+  const parsed = stored ? JSON.parse(stored) : null;
+  if (parsed?.name && parsed?.email) {
+    id = `${parsed.name}-${parsed.email}`;
+  }
+} catch (e) {
+  console.error("JSON parse error:", e);
+}
+if (!id) {
+  let guestId = localStorage.getItem("maggie-guest-session");
+  if (!guestId) {
+    guestId = `guest-${uuidv4()}`;
+    localStorage.setItem("maggie-guest-session", guestId);
+  }
+  id = guestId;
+}
+setSessionId(id);
   }, [sessionId]);
 
   const ensureSessionId = () => {
