@@ -198,8 +198,7 @@ const qaData = [
   },
   {
     "question": "I’d like to schedule an appointment",
-    "answer": ["Great! To schedule an appointment, you can call or text us at (757) 867-6600, submit the Contact Us form on our website, or email us at [admingroup@theroofingcompany.com](mailto:admingroup@theroofingcompany.com)."]
-              ["Once we receive your request, we'll confirm by email with your estimator’s photo and contact info and send a text reminder before the visit. Please let me know if you need any more assistance!"],
+    "answer": "Great! To schedule an appointment, you can call or text us at (757) 867-6600, submit the Contact Us form on our website, or email us at [admingroup@theroofingcompany.com](mailto:admingroup@theroofingcompany.com). Once we receive your request, we'll confirm by email with your estimator’s photo and contact info and send a text reminder before the visit. Please let me know if you need any more assistance!"
   }
 ]
 ];
