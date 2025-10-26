@@ -10,6 +10,13 @@ import jsPDF from 'jspdf';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#8dd1e1'];
 
+const getMessageDate = (msg) => {
+  const raw = msg?.timestamp || msg?.createdAt;
+  if (!raw) return null;
+  const date = new Date(raw);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
 function ChartPanel({ messages }) {
   const chartRef = useRef();
 
@@ -43,7 +50,9 @@ function ChartPanel({ messages }) {
   const dailyStats = useMemo(() => {
     const countByDay = {};
     messages.forEach(msg => {
-      const date = new Date(msg.createdAt || msg.timestamp).toISOString().split('T')[0];
+      const dateObj = getMessageDate(msg);
+      if (!dateObj) return;
+      const date = dateObj.toISOString().split('T')[0];
       countByDay[date] = (countByDay[date] || 0) + 1;
     });
     return Object.entries(countByDay).map(([date, count]) => ({ date, count }));
@@ -73,11 +82,20 @@ function ChartPanel({ messages }) {
 
   // 📦 Cumulative Growth
   const cumulativeStats = useMemo(() => {
-    const sorted = [...messages].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    const sorted = [...messages].sort((a, b) => {
+      const da = getMessageDate(a);
+      const db = getMessageDate(b);
+      if (!da && !db) return 0;
+      if (!da) return 1;
+      if (!db) return -1;
+      return da - db;
+    });
     const result = [];
     let total = 0;
     sorted.forEach(msg => {
-      const date = new Date(msg.createdAt || msg.timestamp).toISOString().split('T')[0];
+      const dateObj = getMessageDate(msg);
+      if (!dateObj) return;
+      const date = dateObj.toISOString().split('T')[0];
       total++;
       result.push({ date, total });
     });

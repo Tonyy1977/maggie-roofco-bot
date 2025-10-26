@@ -42,12 +42,15 @@ mongoose
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-const chatSchema = new mongoose.Schema({
-  sender: String,
-  text: String,
-  timestamp: Date,
-  sessionId: String,
-});
+const chatSchema = new mongoose.Schema(
+  {
+    sender: { type: String, required: true },
+    text: { type: mongoose.Schema.Types.Mixed, required: true },
+    timestamp: { type: Date, default: Date.now },
+    sessionId: { type: String, required: true, index: true },
+  },
+  { timestamps: true }
+);
 const Chat = mongoose.model("Chat", chatSchema);
 
 /* ------------------------- Debug keys ------------------------- */

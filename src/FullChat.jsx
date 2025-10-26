@@ -77,15 +77,22 @@ export default function FullChat() {
 
         setMessages(
           history.length > 0
-            ? history.map((msg) => ({
-                sender: msg.sender,
-                text: String(msg.text),
-                type: "text",
-                timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }),
-              }))
+            ? history.map((msg) => {
+                const rawTs = msg.timestamp || msg.createdAt;
+                const date = rawTs ? new Date(rawTs) : null;
+                const timestamp = date && !Number.isNaN(date.getTime())
+                  ? date.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "--:--";
+                return {
+                  sender: msg.sender,
+                  text: String(msg.text),
+                  type: "text",
+                  timestamp,
+                };
+              })
             : [
                 {
                   sender: "bot",

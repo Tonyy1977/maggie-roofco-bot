@@ -87,7 +87,10 @@ setFiltered(messages);
       const start = new Date(startDate);
       const end = new Date(endDate);
       filteredData = filteredData.filter(msg => {
-        const msgDate = new Date(msg.timestamp);
+        const rawTs = msg.timestamp || msg.createdAt;
+        if (!rawTs) return false;
+        const msgDate = new Date(rawTs);
+        if (Number.isNaN(msgDate.getTime())) return false;
         return msgDate >= start && msgDate <= end;
       });
     }
@@ -99,11 +102,14 @@ setFiltered(messages);
   const rows = [['Session ID', 'Sender', 'Text', 'Timestamp', 'Topic']];
 
   messages.forEach(msg => {
+    const rawTs = msg.timestamp || msg.createdAt;
+    const date = rawTs ? new Date(rawTs) : null;
+    const tsString = date && !Number.isNaN(date.getTime()) ? date.toISOString() : '';
     rows.push([
       msg.sessionId || '',
       msg.sender || '',
       `"${msg.text?.toString().replace(/"/g, '""') || ''}"`,
-      msg.timestamp || '',
+      tsString,
       msg.topic || ''
     ]);
   });
@@ -249,7 +255,14 @@ if (!authenticated) {
               <td>{msg.sessionId}</td>
               <td style={{ fontWeight: 'bold' }}>{msg.sender === 'bot' ? 'Bot' : 'User'}</td>
               <td style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{msg.text}</td>
-              <td>{new Date(msg.timestamp).toLocaleString()}</td>
+              <td>
+                {(() => {
+                  const rawTs = msg.timestamp || msg.createdAt;
+                  if (!rawTs) return '—';
+                  const date = new Date(rawTs);
+                  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString();
+                })()}
+              </td>
             </tr>
           ))}
         </tbody>
