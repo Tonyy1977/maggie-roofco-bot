@@ -93,7 +93,7 @@ setSessionId(id);
                 sender: msg.sender,
                 text: String(msg.text),
                 type: "text",
-                timestamp: msg.createdAt,
+                timestamp: msg.createdAt || msg.timestamp,
               }))
             : [
                 {
@@ -274,40 +274,13 @@ FAQs: ${JSON.stringify(qaData)}
 
                     {/* ✅ Fixed Timestamp */}
                     <span className="timestamp">
-                      {(() => {
-                        try {
-                          if (!m.timestamp) return "—";
-                          let dateObj = null;
-                          const t = m.timestamp;
-
-                          if (typeof t === "object" && t.$date) {
-                            dateObj = new Date(t.$date);
-                          } else if (typeof t === "number") {
-                            dateObj = new Date(t);
-                          } else if (typeof t === "string") {
-                            const trimmed = t.trim().replace(/^"|"$/g, "");
-                            if (/^\d+$/.test(trimmed)) {
-                              dateObj = new Date(parseInt(trimmed));
-                            } else {
-                              const parsed = Date.parse(trimmed);
-                              if (!isNaN(parsed)) dateObj = new Date(parsed);
-                            }
-                          }
-
-                          return dateObj && !isNaN(dateObj.getTime())
-                            ? dateObj.toLocaleString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              })
-                            : "—";
-                        } catch {
-                          return "—";
-                        }
-                      })()}
-                    </span>
+  {m.createdAt || m.timestamp
+    ? new Date(m.createdAt || m.timestamp).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : ""}
+</span>
                   </div>
                 </div>
               );

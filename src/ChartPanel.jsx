@@ -1,3 +1,4 @@
+//ChartPanel.jsx
 import React, { useMemo, useRef } from 'react';
 import {
   PieChart, Pie, Cell, Tooltip, Legend,
@@ -42,7 +43,7 @@ function ChartPanel({ messages }) {
   const dailyStats = useMemo(() => {
     const countByDay = {};
     messages.forEach(msg => {
-      const date = new Date(msg.timestamp).toISOString().split('T')[0];
+      const date = new Date(msg.createdAt || msg.timestamp).toISOString().split('T')[0];
       countByDay[date] = (countByDay[date] || 0) + 1;
     });
     return Object.entries(countByDay).map(([date, count]) => ({ date, count }));
@@ -76,7 +77,7 @@ function ChartPanel({ messages }) {
     const result = [];
     let total = 0;
     sorted.forEach(msg => {
-      const date = new Date(msg.timestamp).toISOString().split('T')[0];
+      const date = new Date(msg.createdAt || msg.timestamp).toISOString().split('T')[0];
       total++;
       result.push({ date, total });
     });

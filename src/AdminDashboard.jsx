@@ -143,7 +143,7 @@ if (!authenticated) {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Micah Admin Dashboard</h1>
+      <h1>Maggie Admin Dashboard</h1>
 
 <div style={{ marginBottom: '20px' }}>
   <button onClick={() => setTab('history')} style={{ marginRight: '10px' }}>
