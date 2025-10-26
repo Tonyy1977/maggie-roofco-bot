@@ -6,7 +6,7 @@ import BookingWidget from "./BookingWidget";
 import ReactMarkdown from "react-markdown";
 
 const API_BASE = "/api";
-const BOT_NAME = "Brian";
+const BOT_NAME = "Maggie";
 
 export default function FullChat() {
   const [messages, setMessages] = useState([]);
@@ -16,44 +16,30 @@ export default function FullChat() {
   const [menuStep, setMenuStep] = useState(0);
   const chatBodyRef = useRef(null);
   const messagesEndRef = useRef(null);
-  //const [bookingTypes, setBookingTypes] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-
-  // ✅ Fetch booking types (Outlook)
-  useEffect(() => {
-    const fetchTypes = async () => {
-      try {
-        //const res = await axios.get("/api/outlook/types");
-        //setBookingTypes(res.data || []);
-      } catch (err) {
-        console.error("Error fetching booking types:", err);
-      }
-    };
-    fetchTypes();
-  }, []);
 
   // ✅ Session handling
   useEffect(() => {
     if (typeof window === "undefined" || sessionId) return;
     let id = null;
     try {
-  const stored = localStorage.getItem("maggie-user");
-  const parsed = stored ? JSON.parse(stored) : null;
-  if (parsed?.name && parsed?.email) {
-    id = `${parsed.name}-${parsed.email}`;
-  }
-} catch (e) {
-  console.error("JSON parse error:", e);
-}
-if (!id) {
-  let guestId = localStorage.getItem("maggie-guest-session");
-  if (!guestId) {
-    guestId = `guest-${uuidv4()}`;
-    localStorage.setItem("maggie-guest-session", guestId);
-  }
-  id = guestId;
-}
-setSessionId(id);
+      const stored = localStorage.getItem("maggie-user");
+      const parsed = stored ? JSON.parse(stored) : null;
+      if (parsed?.name && parsed?.email) {
+        id = `${parsed.name}-${parsed.email}`;
+      }
+    } catch (e) {
+      console.error("JSON parse error:", e);
+    }
+    if (!id) {
+      let guestId = localStorage.getItem("maggie-guest-session");
+      if (!guestId) {
+        guestId = `guest-${uuidv4()}`;
+        localStorage.setItem("maggie-guest-session", guestId);
+      }
+      id = guestId;
+    }
+    setSessionId(id);
   }, [sessionId]);
 
   const ensureSessionId = () => {
@@ -61,17 +47,17 @@ setSessionId(id);
     if (typeof window === "undefined") return "guest";
     let id = null;
     try {
-      const stored = localStorage.getItem("brian-user");
+      const stored = localStorage.getItem("maggie-user");
       const parsed = stored ? JSON.parse(stored) : null;
       if (parsed?.name && parsed?.email) id = `${parsed.name}-${parsed.email}`;
     } catch (e) {
       console.error("JSON parse error:", e);
     }
     if (!id) {
-      let guestId = localStorage.getItem("brian-guest-session");
+      let guestId = localStorage.getItem("maggie-guest-session");
       if (!guestId) {
         guestId = `guest-${uuidv4()}`;
-        localStorage.setItem("brian-guest-session", guestId);
+        localStorage.setItem("maggie-guest-session", guestId);
       }
       id = guestId;
     }
@@ -79,36 +65,50 @@ setSessionId(id);
     return id;
   };
 
-  // ✅ Load history
+  // ✅ Load chat history
   useEffect(() => {
     const fetchHistory = async () => {
+      if (!sessionId) return;
       try {
         const res = await axios.get(`${API_BASE}/history`, {
           params: { sessionId },
         });
         const history = Array.isArray(res.data) ? res.data : [];
+
         setMessages(
           history.length > 0
             ? history.map((msg) => ({
                 sender: msg.sender,
                 text: String(msg.text),
                 type: "text",
-                timestamp: msg.createdAt || msg.timestamp,
+                timestamp: new Date(msg.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
               }))
             : [
                 {
                   sender: "bot",
                   text: "Hey there, I’m Maggie, your assistant at The Roofing Company. What can I do for you today?",
                   type: "text",
+                  timestamp: new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }),
                 },
               ]
         );
-      } catch {
+      } catch (err) {
+        console.error("❌ Error loading chat history:", err);
         setMessages([
           {
             sender: "bot",
             text: "Hey there, I’m Maggie, your assistant at The Roofing Company. What can I do for you today?",
             type: "text",
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
           },
         ]);
       }
@@ -126,9 +126,12 @@ setSessionId(id);
     const full = {
       ...msg,
       type: msg.type || "text",
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
-    setMessages((p) => [...p, full]);
+    setMessages((prev) => [...prev, full]);
     setMenuStep(0);
   };
 
@@ -142,64 +145,32 @@ setSessionId(id);
     try {
       setIsTyping(true);
 
-      const systemPrompt = `
-You are Maggie, a friendly and helpful 28-year-old woman from Marion, Arkansas. 
-You are the virtual assistant for The Roofing Company, here to help customers with roofing questions and services.
-You speak with light Southern charm and polite hospitality, but keep it professional and easy to understand. 
-Be clear, concise, and helpful. Keep answers short 2–3 sentences unless necessary.
-
-FAQs: ${JSON.stringify(qaData)}
-      `;
-
       const sid = ensureSessionId();
 
       const res = await axios.post(`${API_BASE}/chat`, {
         model: "gpt-4o",
         messages: [
-          { role: "system", content: systemPrompt },
+          {
+            role: "system",
+            content: `
+You are Maggie, a friendly and helpful assistant for The Roofing Company. 
+Keep responses clear, polite, and under 3 sentences unless necessary.
+FAQs: ${JSON.stringify(qaData)}
+            `,
+          },
           { role: "user", content: userRaw },
         ],
         sessionId: sid,
       });
 
       let reply = res.data?.choices?.[0]?.message?.content || "";
-
-      // ✅ Detect scheduling intent
-      // ✅ Detect booking request — send email instead of widget
-//if (
-  //userRaw.toLowerCase().includes("schedule") ||
-  //userRaw.toLowerCase().includes("appointment") ||
-  //userRaw.toLowerCase().includes("book") ||
-  //userRaw.toLowerCase().includes("availability")
-//) {
-  //try {
-    //await axios.post("/api/email", {
-      //name: "Website Visitor",
-      //message: `Booking inquiry: "${userRaw}"`,
-    //});
-
-    //addMessage({
-      //sender: "bot",
-      //type: "text",
-      //text: "Got it! I’ve sent your request to our office. Someone from The Roofing Company will contact you shortly.",
-    //});
-  //} catch (err) {
-    //console.error("Email send failed:", err);
-    //addMessage({
-      //sender: "bot",
-      //type: "text",
-      //text: "Sorry, I couldn’t send your request right now. Please try again later.",
-    //});
-  //}
-  //return;
-//}
-
       if (reply) {
         addMessage({ sender: "bot", text: reply });
       } else {
         addMessage({ sender: "bot", text: "Sorry, something went wrong." });
       }
-    } catch {
+    } catch (err) {
+      console.error("❌ Chat error:", err);
       addMessage({ sender: "bot", text: "Server error, please try again." });
     } finally {
       setIsTyping(false);
@@ -210,11 +181,18 @@ FAQs: ${JSON.stringify(qaData)}
   return (
     <div className="micah-chat">
       <div className="chat-wrapper">
-        <div className="chat-box" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <div
+          className="chat-box"
+          style={{ display: "flex", flexDirection: "column", height: "100%" }}
+        >
           {/* Header */}
           <div className="chat-header no-blur">
             <div className="header-left">
-              <img src="/Maggie.png" alt="Micah Avatar" className="header-avatar no-blur square-avatar" />
+              <img
+                src="/Maggie.png"
+                alt="Maggie Avatar"
+                className="header-avatar no-blur square-avatar"
+              />
               <div className="header-info">
                 <span className="bot-name">Maggie</span>
                 <span className="ai-badge">AI</span>
@@ -229,12 +207,25 @@ FAQs: ${JSON.stringify(qaData)}
           </div>
 
           {/* Messages */}
-          <div ref={chatBodyRef} className="chat-body" style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
+          <div
+            ref={chatBodyRef}
+            className="chat-body"
+            style={{ flex: 1, overflowY: "auto", padding: "16px" }}
+          >
             {messages.map((m, i) => {
               const isBot = m.sender === "bot";
               return (
-                <div key={i} className={`message-row ${isBot ? "bot-row" : "user-row"}`}>
-                  {isBot && <img src="/Maggie.png" alt="bot-avatar" className="avatar no-blur" />}
+                <div
+                  key={i}
+                  className={`message-row ${isBot ? "bot-row" : "user-row"}`}
+                >
+                  {isBot && (
+                    <img
+                      src="/Maggie.png"
+                      alt="bot-avatar"
+                      className="avatar no-blur"
+                    />
+                  )}
                   <div className={`message ${isBot ? "bot-msg" : "user-msg"}`}>
                     {m.type === "text" && (
                       <div className="message-text">
@@ -272,21 +263,16 @@ FAQs: ${JSON.stringify(qaData)}
                       />
                     )}
 
-                    {/* ✅ Fixed Timestamp */}
-                    <span className="timestamp">
-  {m.createdAt || m.timestamp
-    ? new Date(m.createdAt || m.timestamp).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : ""}
-</span>
+                    {/* ✅ Timestamp fixed */}
+                    <span className="timestamp">{m.timestamp}</span>
                   </div>
                 </div>
               );
             })}
 
-            {isTyping && <div className="typing-indicator">Maggie is typing...</div>}
+            {isTyping && (
+              <div className="typing-indicator">Maggie is typing...</div>
+            )}
             <div ref={messagesEndRef} />
 
             {/* Welcome Options */}
@@ -294,7 +280,10 @@ FAQs: ${JSON.stringify(qaData)}
               <div className="welcome-options">
                 {menuStep === 0 && (
                   <>
-                    <div className="option-box" onClick={() => setMenuStep(1)}>
+                    <div
+                      className="option-box"
+                      onClick={() => setMenuStep(1)}
+                    >
                       General Help
                     </div>
                   </>
@@ -306,11 +295,18 @@ FAQs: ${JSON.stringify(qaData)}
                       "I’d like to schedule an appointment",
                       "I have an urgent or emergency concern",
                     ].map((opt) => (
-                      <div key={opt} className="option-box" onClick={() => handleSend(opt)}>
+                      <div
+                        key={opt}
+                        className="option-box"
+                        onClick={() => handleSend(opt)}
+                      >
                         {opt}
                       </div>
                     ))}
-                    <div className="option-box" onClick={() => setMenuStep(0)}>
+                    <div
+                      className="option-box"
+                      onClick={() => setMenuStep(0)}
+                    >
                       ⬅ Back
                     </div>
                   </>
@@ -329,7 +325,10 @@ FAQs: ${JSON.stringify(qaData)}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
               />
-              <button className="send-arrow-btn" onClick={() => handleSend()}>
+              <button
+                className="send-arrow-btn"
+                onClick={() => handleSend()}
+              >
                 <span className="send-arrow">➤</span>
               </button>
             </div>

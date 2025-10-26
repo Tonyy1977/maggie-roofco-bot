@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     console.log("📥 Loading history for:", sessionId);
 
     try {
-      const messages = await Message.find({ sessionId }).sort({ createdAt: 1 });
+      const messages = await Message.find({ sessionId }).sort({ timestamp: 1 });
       res.status(200).json(messages);
     } catch (err) {
       console.error("❌ Error fetching history:", err);
