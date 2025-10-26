@@ -1,3 +1,4 @@
+// pages/api/history.js
 import dbConnect from "../../lib/dbConnect.js";
 import Message from "../../models/messages.js";
 
@@ -9,8 +10,22 @@ export default async function handler(req, res) {
     console.log("📥 Loading history for:", sessionId);
 
     try {
-      const messages = await Message.find({ sessionId }).sort({ timestamp: 1 });
-      res.status(200).json(messages);
+      // ✅ Sort by createdAt (Mongoose timestamp field)
+      const messages = await Message.find({ sessionId })
+        .sort({ createdAt: 1 })
+        .lean();
+
+      // ✅ Map to frontend format with proper timestamp
+      const formatted = messages.map((msg) => ({
+        sender: msg.sender,
+        text: msg.text,
+        topics: msg.topics || [],
+        timestamp: msg.createdAt, // ✅ Use actual Mongoose timestamp
+        createdAt: msg.createdAt,
+        updatedAt: msg.updatedAt,
+      }));
+
+      res.status(200).json(formatted);
     } catch (err) {
       console.error("❌ Error fetching history:", err);
       res.status(500).json({ success: false, error: err.message });
@@ -18,8 +33,20 @@ export default async function handler(req, res) {
   } else if (req.method === "POST") {
     const { sessionId, sender, text } = req.body;
     try {
-      const msg = await Message.create({ sessionId, sender, text });
-      res.status(200).json({ success: true, data: msg });
+      // ✅ Create message - Mongoose handles timestamps
+      const msg = await Message.create({
+        sessionId,
+        sender,
+        text,
+      });
+
+      res.status(200).json({
+        success: true,
+        data: {
+          ...msg.toObject(),
+          timestamp: msg.createdAt, // ✅ Include timestamp in response
+        },
+      });
     } catch (err) {
       console.error("❌ Error saving message:", err);
       res.status(500).json({ success: false, error: err.message });

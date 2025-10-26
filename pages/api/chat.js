@@ -5,7 +5,7 @@ import axios from "axios";
 
 export const config = {
   api: {
-    bodyParser: false, // We manually parse JSON body
+    bodyParser: false,
   },
 };
 
@@ -22,23 +22,6 @@ async function parseJsonBody(req) {
     });
     req.on("error", reject);
   });
-}
-
-// ✅ Normalizes any Date or string into proper ISO
-function normalizeMessage(doc) {
-  if (!doc) return null;
-  const fixDate = (v) => {
-    if (!v) return null;
-    if (typeof v === "string") return new Date(v).toISOString();
-    if (typeof v === "object" && v.$date) return new Date(v.$date).toISOString();
-    return new Date(v).toISOString();
-  };
-  return {
-    ...doc,
-    createdAt: fixDate(doc.createdAt || Date.now()),
-    updatedAt: fixDate(doc.updatedAt || Date.now()),
-    timestamp: fixDate(doc.createdAt || Date.now()),
-  };
 }
 
 export default async function handler(req, res) {
@@ -94,10 +77,11 @@ export default async function handler(req, res) {
         sender: "user",
         text: userContent,
         topics,
+        // ✅ No need to set timestamps - Mongoose handles it automatically
       });
     }
 
-    // 3️⃣ Get updated history
+    // 3️⃣ Get updated history (using createdAt instead of timestamp)
     const historyDocs = await Message.find({ sessionId })
       .sort({ createdAt: 1 })
       .lean();
@@ -107,7 +91,7 @@ export default async function handler(req, res) {
       content: m.text,
     }));
 
-    // 4️⃣ Send conversation directly to OpenAI (no system prompt)
+    // 4️⃣ Send conversation to OpenAI
     openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -123,7 +107,7 @@ export default async function handler(req, res) {
     data = await openaiRes.json();
     let botMsg = data.choices?.[0]?.message?.content || "";
 
-    // 5️⃣ Attempt to normalize booking JSON if any
+    // 5️⃣ Normalize booking JSON if any
     if (botMsg) {
       try {
         const match = botMsg.match(/\{[^}]+\}/);
@@ -149,6 +133,7 @@ export default async function handler(req, res) {
         sessionId,
         sender: "bot",
         text: botMsg,
+        // ✅ Mongoose timestamps handle createdAt/updatedAt
       });
     }
   } catch (err) {
@@ -167,13 +152,9 @@ export default async function handler(req, res) {
     });
   }
 
-  // ✅ Attach clean timestamp
-  try {
-    if (Array.isArray(data.choices)) {
-      data.timestamp = new Date().toISOString();
-    }
-  } catch (e) {
-    console.warn("⚠️ Timestamp normalization skipped:", e);
+  // ✅ Add clean timestamp to response
+  if (data && Array.isArray(data.choices)) {
+    data.timestamp = new Date().toISOString();
   }
 
   return res.status(200).json(data);
