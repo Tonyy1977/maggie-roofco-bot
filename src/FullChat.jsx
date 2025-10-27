@@ -205,9 +205,9 @@ FAQs: ${JSON.stringify(qaData)}
     const sid = ensureSessionId();
 
     const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://maggie-roofco-bot.vercel.app"
-    : "http://localhost:4000";
+  typeof window !== "undefined" && window.location.hostname.includes("localhost")
+    ? "http://localhost:4000"
+    : "https://maggie-roofco-bot.vercel.app";
 
     const response = await fetch(
       `${BASE_URL}/api/history/download?sessionId=${encodeURIComponent(sid)}`
