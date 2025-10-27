@@ -127,30 +127,6 @@ function ChartPanel({ messages }) {
           </ResponsiveContainer>
         </div>
 
-        {/* 🧠 Topic Pie Chart */}
-        <div style={{ marginTop: '40px' }}>
-          <h3>🧠 Message Topic Breakdown</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={topicStats}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={90}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
-              >
-                {topicStats.map((entry, i) => (
-                  <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
         {/* 🥧 User vs Bot */}
         <div style={{ marginTop: '40px' }}>
           <h3>🥧 User vs Bot Messages</h3>

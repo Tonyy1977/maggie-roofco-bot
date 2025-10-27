@@ -17,6 +17,8 @@ export default function FullChat() {
   const chatBodyRef = useRef(null);
   const messagesEndRef = useRef(null);
   const [sessionId, setSessionId] = useState(null);
+  const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false);
+  const headerMenuRef = useRef(null);
 
   // ✅ Session handling
   useEffect(() => {
@@ -96,7 +98,7 @@ export default function FullChat() {
             : [
                 {
                   sender: "bot",
-                  text: "Hey there, I’m Maggie, your assistant at The Roofing Company. What can I do for you today?",
+                  text: "Hey there, I'm Maggie, your assistant at The Roofing Company. What can I do for you today?",
                   type: "text",
                   timestamp: new Date().toLocaleTimeString([], {
                     hour: "2-digit",
@@ -128,6 +130,19 @@ export default function FullChat() {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
   }, [messages.length]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (headerMenuRef.current && !headerMenuRef.current.contains(event.target)) {
+        setIsHeaderMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const addMessage = (msg) => {
     const full = {
@@ -185,6 +200,40 @@ FAQs: ${JSON.stringify(qaData)}
     }
   };
 
+  const handleDownloadTranscript = async () => {
+  try {
+    const sid = ensureSessionId();
+
+    const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://maggie-roofco-bot.vercel.app"
+    : "http://localhost:4000";
+
+    const response = await fetch(
+      `${BASE_URL}/api/history/download?sessionId=${encodeURIComponent(sid)}`
+    );
+
+    if (!response.ok) {
+      console.error("❌ Failed to download transcript:", response.statusText);
+      return;
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `maggie-chat-${sid}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("❌ Error downloading transcript:", error);
+  } finally {
+    setIsHeaderMenuOpen(false);
+  }
+};
+
   return (
     <div className="micah-chat">
       <div className="chat-wrapper">
@@ -205,12 +254,33 @@ FAQs: ${JSON.stringify(qaData)}
                 <span className="ai-badge">AI</span>
               </div>
             </div>
-            <button
-              className="close-btn"
-              onClick={() => window.parent.postMessage("close-chat", "*")}
-            >
-              ×
-            </button>
+            <div className="header-actions" ref={headerMenuRef}>
+              <button
+                className="header-icon-btn"
+                type="button"
+                onClick={() => setIsHeaderMenuOpen((prev) => !prev)}
+                aria-haspopup="menu"
+                aria-expanded={isHeaderMenuOpen}
+                aria-label="Chat options"
+              >
+                ⋮
+              </button>
+              {isHeaderMenuOpen && (
+                <div className="header-menu" role="menu">
+                  <button type="button" onClick={handleDownloadTranscript} role="menuitem">
+                    Download transcript
+                  </button>
+                </div>
+              )}
+              <button
+                className="close-btn"
+                onClick={() => window.parent.postMessage("close-chat", "*")}
+                type="button"
+                aria-label="Close chat"
+              >
+                ×
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -298,8 +368,8 @@ FAQs: ${JSON.stringify(qaData)}
                 {menuStep === 1 && (
                   <>
                     {[
-                      "I’d like to ask about payment options",
-                      "I’d like to schedule an appointment",
+                      "I'd like to ask about payment options",
+                      "I'd like to schedule an appointment",
                       "I have an urgent or emergency concern",
                     ].map((opt) => (
                       <div

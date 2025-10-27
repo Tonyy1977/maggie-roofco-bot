@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ChartPanel from './ChartPanel';
 
+
 function AdminDashboard() {
   const [messages, setMessages] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -26,7 +27,7 @@ const handleLogin = async () => {
   try {
     const res = await axios.post('/api/admin/login', loginInput);
     if (res.data.success) {
-      localStorage.setItem('micah-admin-auth', 'true');
+      localStorage.setItem('maggie-admin-auth', 'true');
       setAuthenticated(true);
     } else {
       alert('❌ Invalid credentials');
