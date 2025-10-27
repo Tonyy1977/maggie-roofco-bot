@@ -13,7 +13,7 @@ const chatSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Chat = mongoose.models.Chat || mongoose.model("Chat", chatSchema);
+const Chat = mongoose.models.Chat || mongoose.model("Chat", chatSchema, "messages");
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
